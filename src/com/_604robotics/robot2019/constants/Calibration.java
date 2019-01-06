@@ -2,51 +2,89 @@ package com._604robotics.robot2019.constants;
 
 import com._604robotics.robotnik.utils.AutonMovement;
 import com._604robotics.robotnik.utils.annotations.Unreal;
+import com._604robotics.robotnik.utils.annotations.Untested;
+import jaci.pathfinder.Trajectory;
 
 public class Calibration {
     private Calibration () {}
 
-    public static final double TELEOP_DEADBAND = 0.3;
-    public static final double TELEOP_FACTOR   = -1;
+    @Unreal("Values must be updated when the real robot is designed")
+    public static final double TELEOP_DRIVE_DEADBAND = 0.3;
+    @Unreal("Values must be updated when the real robot is designed")
+    public static final double TELEOP_MANIP_DEADBAND = 0.2;
+    @Unreal("Values must be updated when the real robot is designed")
+    public static final double TELEOP_FACTOR = -1;
 
-    public static final double DRIVE_MOVE_PID_P = 0.005;
+    @Unreal("Values must be updated when the real robot is designed")
+    public static final double DRIVE_MOVE_PID_P = 0.0045;
+    @Unreal("Values must be updated when the real robot is designed")
     public static final double DRIVE_MOVE_PID_I = 0;
-    public static final double DRIVE_MOVE_PID_D = 0.01;
-    public static final double DRIVE_MOVE_PID_MAX = 0.5;
-    public static final double DRIVE_MOVE_TOLERANCE = 20;
+    @Unreal("Values must be updated when the real robot is designed")
+    public static final double DRIVE_MOVE_PID_D = 0.00;
+    @Unreal("Values must be updated when the real robot is designed")
+    public static final double DRIVE_MOVE_PID_MAX = 0.85; //0.7
+    @Unreal("Values must be updated when the real robot is designed")
+    public static final double DRIVE_MOVE_TOLERANCE = 100;
+    @Unreal("Values must be updated when the real robot is designed")
+    public static final double SLOW_ROTATION_MODIFIER = 0.66;
 
-    // Rotate PID is now calibrated-don't touch
-    public static final double DRIVE_ROTATE_PID_P = 0.01;
+    @Unreal("Values must be updated when the real robot is designed")
+    public static final double DRIVE_ROTATE_PID_P = 0.003; // 0.003 / 0.005 / 0.01
     public static final double DRIVE_ROTATE_PID_I = 0;
-    public static final double DRIVE_ROTATE_PID_D = 0.018;
-    public static final double DRIVE_ROTATE_PID_MAX = 0.3;// was 0.5
-    public static final double DRIVE_ROTATE_TOLERANCE = 20;
+    @Unreal("Values must be updated when the real robot is designed")
+    public static final double DRIVE_ROTATE_PID_D = 0.01; // 0.005
+    @Unreal("Values must be updated when the real robot is designed")
+    public static final double DRIVE_ROTATE_PID_MAX = 0.4;// was 0.5
+    @Unreal("Values must be updated when the real robot is designed")
+    public static final double DRIVE_ROTATE_TOLERANCE = 80;
 
-    public static final double DRIVE_PID_AFTER_TIMING = 1.5;
+    @Unreal("Values must be updated when the real robot is designed")
+    public static final double DRIVE_PID_AFTER_TIMING = 0.75;
+    @Unreal("Values must be updated when the real robot is designed")
     public static final double DRIVE_PID_SAMPLE_RATE = 0.01;
 
+    @Unreal("Values must be updated when the real robot is designed")
     public static final double DRIVE_MOVE_STILL_TARGET = 0;
+    @Unreal("Values must be updated when the real robot is designed")
     public static final double DRIVE_ROTATE_STILL_TARGET = 0;
 
-    @Unreal("Width and wheelRadius need to be adjusted."
-        + "Remaining two parameters are to be empirically determined.")
+    @Unreal("Values must be updated when the real robot is designed")
+    public static final double DRIVE_MOTOR_RAMP = 4;
+
+    @Unreal("Values must be updated when the real robot is designed")
     public static final AutonMovement.DriveTrainProperties DRIVE_PROPERTIES
-        = new AutonMovement.DriveTrainProperties(490, 29.5, 2, 20.767, 8.323); // second to last = coefficient second value = offset
+    = new AutonMovement.DriveTrainProperties(490, 26.64, 2.5, 20.767, 8.323);//26.05
+    // second to last = coefficient, second value = offset
+    // Width was 26.7
     static {
         System.out.println("Clicks over inches is "+DRIVE_PROPERTIES.getClicksOverInches());
         System.out.println("Clicks over degrees is "+DRIVE_PROPERTIES.getDegreesOverClicks());
     }
+    
+    /* Marionette */
+    public static final boolean AUTO_APPEND_TIMESTAMP = true;
+    
+    public static final String CUSTOM_PRIMARY = "single00.switchLeft.marionette";
+    public static final String CUSTOM_SECONDARY = "half00.switchRight.marionette";
 
-    // Testing targets
-    public static final double DRIVE_ROTATE_LEFT_TARGET
-        = AutonMovement.degreesToClicks(DRIVE_PROPERTIES, 360);
-    public static final double DRIVE_ROTATE_RIGHT_TARGET
-        = AutonMovement.degreesToClicks(DRIVE_PROPERTIES, -360);
-    public static final double DRIVE_MOVE_FORWARD_TARGET
-        = AutonMovement.inchesToClicks(DRIVE_PROPERTIES, 72);
-    public static final double DRIVE_MOVE_BACKWARD_TARGET
-        = AutonMovement.inchesToClicks(DRIVE_PROPERTIES, -72);
+    /* Pathfinder */
+    @Unreal("Values must be updated when the real robot is designed")
+    public final class Pathfinder {
+        public static final double ROBOT_WIDTH = 0.66;
+        public static final double KP = 2;
+        public static final double KI = 0;
+        public static final double KD = 0.0;
+        public static final double KV = 1.0/2.3;
+        public static final double KA = 0.03;
+        public static final double K_KAPPA = 0.09;
+        public static final double K_PTHETA_0 = 2.8;
+        public static final double K_PTHETA_DECAY = 0.7;
+        public static final double K_DTHETA_0 = 0.02;
+        public static final double K_DTHETA_DECAY = 0.3;
+    }
 
-    // Empirical auton mode
-    public static final double DRIVE_MOVE_FORWARD_TEST_INCHES = AutonMovement.empericalInchesToClicks(DRIVE_PROPERTIES, 36);
+    public static final Trajectory.Config PATHFINDER_CONFIG = new Trajectory.Config(
+            Trajectory.FitMethod.HERMITE_QUINTIC,
+            Trajectory.Config.SAMPLES_LOW,
+            0.025, 1.6, 1.1, 3.5 );
 }

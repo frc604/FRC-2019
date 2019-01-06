@@ -1,32 +1,46 @@
 package com._604robotics.robot2019.modules;
 
+import com._604robotics.robot2019.constants.Calibration;
 import com._604robotics.robot2019.constants.Ports;
 import com._604robotics.robotnik.Action;
 import com._604robotics.robotnik.Input;
 import com._604robotics.robotnik.Module;
 import com._604robotics.robotnik.Output;
+import com._604robotics.robotnik.prefabs.devices.wrappers.RampMotor;
 
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.PWMVictorSPX;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive extends Module {
-    private final RobotDrive robotDrive = new RobotDrive(
-            Ports.DRIVE_FRONT_LEFT_MOTOR,
-            Ports.DRIVE_REAR_LEFT_MOTOR,
-            Ports.DRIVE_FRONT_RIGHT_MOTOR,
-            Ports.DRIVE_REAR_RIGHT_MOTOR);
+    private final RampMotor m_frontLeft = new RampMotor(new PWMVictorSPX(Ports.DRIVE_FRONT_LEFT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
+    private final RampMotor m_rearLeft = new RampMotor(new PWMVictorSPX(Ports.DRIVE_REAR_LEFT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
+    private final SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontLeft, m_rearLeft);
+
+    private final RampMotor m_frontRight = new RampMotor(new PWMVictorSPX(Ports.DRIVE_FRONT_RIGHT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
+    private final RampMotor m_rearRight = new RampMotor(new PWMVictorSPX(Ports.DRIVE_REAR_RIGHT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
+    private final SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontRight, m_rearRight);
+
+    DifferentialDrive robotDrive = new DifferentialDrive(m_left, m_right);
 
     // Reversed from previously due to new mountings
     private final Encoder encoderLeft = new Encoder(Ports.ENCODER_LEFT_A,
             Ports.ENCODER_LEFT_B,
-            true,
+            false,
             CounterBase.EncodingType.k4X);
     private final Encoder encoderRight = new Encoder(Ports.ENCODER_RIGHT_A,
             Ports.ENCODER_RIGHT_B,
-            false,
+            true,
             CounterBase.EncodingType.k4X);
     
+    private final BuiltInAccelerometer accel = new BuiltInAccelerometer();
+    public final Output<Double> xAccel = addOutput("X accel",accel::getX);
+    public final Output<Double> yAccel = addOutput("Y accel",accel::getY);
+    public final Output<Double> zAccel = addOutput("Z accel",accel::getZ);
     //private final AnalogGyro horizGyro=new AnalogGyro(Ports.HORIZGYRO);
     
     public synchronized void resetSensors() {
@@ -82,6 +96,9 @@ public class Drive extends Module {
 
         @Override
         public void run () {
+            if (leftPower.get()>1 || leftPower.get()<-1 || rightPower.get()>1 || rightPower.get()<-1) {
+                System.out.println("L"+leftPower.get()+"R"+rightPower.get());
+            }
             robotDrive.tankDrive(leftPower.get(), rightPower.get(), squared);
         }
     }
@@ -119,6 +136,7 @@ public class Drive extends Module {
 
     public Drive () {
         super(Drive.class);
+        robotDrive.setDeadband(0.04);
         //horizGyro.calibrate();
         setDefaultAction(idle);
     }

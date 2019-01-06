@@ -1,13 +1,13 @@
 package com._604robotics.robotnik.prefabs.devices.wrappers;
 
 import edu.wpi.first.wpilibj.PIDOutput;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.RobotDrive;
 
 /**
  * PID output for tank drive.
  */
 public class TankDrivePIDOutput {
-    private final DifferentialDrive drive;
+    private final RobotDrive drive;
 
     private double leftPower = 0D;
     private double rightPower = 0D;
@@ -38,7 +38,7 @@ public class TankDrivePIDOutput {
      * Creates a tank drive PID output.
      * @param drive Robot drive to use.
      */
-    public TankDrivePIDOutput( DifferentialDrive drive ) {
+    public TankDrivePIDOutput (RobotDrive drive) {
         this.drive = drive;
     }
 
