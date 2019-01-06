@@ -1,27 +1,28 @@
 package com._604robotics.robotnik;
 
-import edu.wpi.first.wpilibj.tables.ITable;
+import edu.wpi.first.networktables.NetworkTable;
 
-class TableIndex {
-    private final ITable table;
+@Deprecated
+class TableIndex { // Stores multiple values under one key. Why, though.
+    private final NetworkTable table;
     private final String key;
 
-    public TableIndex (ITable table, String key) {
+    public TableIndex (NetworkTable table, String key) {
         this.table = table;
         this.key = key;
-
-        table.putString(key, "");
+        
+        table.getEntry(key).setString("");
     }
 
-    public void add (String type, String name) {
+    public void add( String type, String name ) {
         if (name.isEmpty()) {
             throw new IllegalArgumentException(type + " names may not be empty");
         }
         if (name.contains(",")) {
             throw new IllegalArgumentException(type + " names may not contain commas");
         }
-
-        final String oldList = table.getString(key, "");
-        table.putString(key, oldList.isEmpty() ? name : oldList + "," + name);
+        final String oldList = table.getEntry(key).getString("");
+        
+        table.getEntry(key).setString( oldList.isEmpty() ? name : oldList + "," + name );
     }
 }
