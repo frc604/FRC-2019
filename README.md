@@ -33,3 +33,5 @@ Depending on your IDE, the command is (respectively):
 
 ## Dependencies
 This year's robot code uses [604's modified version of Pathfinder](https://github.com/frc604/Pathfinder), the original version of which can be found [here](https://github.com/JacisNonsense/Pathfinder).
+
+Uses Pixy code adapted from [team 3840](https://github.com/croadfeldt/wpilib_pixy_spi_java)
