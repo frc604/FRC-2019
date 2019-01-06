@@ -1,0 +1,56 @@
+// https://github.com/wpilibsuite/GradleRIO
+plugins {
+    id "java"
+    id "eclipse"
+    id "idea"
+    id "edu.wpi.first.GradleRIO" version "2019.1.1"
+}
+
+def TEAM = 604
+def ROBOT_CLASS = "com._604robotics.robot2019.Robot2019"
+
+// Add common repositories
+// repositories {
+//     maven {
+//         url "https://plugins.gradle.org/m2/"
+//     }
+//     mavenLocal()
+// }
+
+dependencies {
+    compile wpi.deps.wpilib()
+    compile wpi.deps.vendor.java()
+    nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
+    nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
+    // compile ctre()
+}
+
+deploy {
+    targets {
+        roboRIO("roborio") {
+            team = frc.getTeamOrDefault(TEAM)
+            // addresses << '10.6.4.2' // RIO IP Address
+        }
+    }
+    artifacts {
+        frcJavaArtifact('frcJava') {
+            targets << "roborio"
+            // Debug can be overridden by command line, for use with VSCode
+            debug = frc.getDebugOrDefault(false)
+        }
+        // Built in artifact to deploy arbitrary files to the roboRIO.
+        fileTreeArtifact('frcStaticFileDeploy') {
+            // The directory below is the local directory to deploy
+            files = fileTree(dir: 'src/main/deploy')
+            // Deploy to RoboRIO target, into /home/lvuser/deploy
+            targets << "roborio"
+            directory = '/home/lvuser/deploy'
+        }
+    }
+}
+
+// Fat Jar with manifest
+jar {
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_CLASS)
+}
