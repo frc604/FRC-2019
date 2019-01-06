@@ -23,6 +23,7 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
     // compile ctre()
+    compile fileTree(dir: 'lib', include: ['*.jar'])
 }
 
 deploy {
