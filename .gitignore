@@ -153,6 +153,8 @@ build.xml
 .idea/**/dbnavigator.xml
 
 *.iws
+*.iml
+*.ipr
 out
 .idea/modules.xml
 .idea/*.iml
