@@ -12,7 +12,9 @@ package com._604robotics.robotnik.prefabs.controller;
 import java.util.TimerTask;
 import java.util.concurrent.locks.ReentrantLock;
 
-import edu.wpi.first.wpilibj.HLUsageReporting;
+import edu.wpi.first.hal.FRCNetComm;
+import edu.wpi.first.hal.HAL;
+import edu.wpi.first.hal.util.BoundaryException;
 import edu.wpi.first.wpilibj.PIDInterface;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
@@ -22,7 +24,6 @@ import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.filters.LinearDigitalFilter;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import edu.wpi.first.wpilibj.util.BoundaryException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -184,8 +185,11 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
 
     m_controlLoop.schedule(new PIDTask(this), 0L, (long) (m_period * 1000));
 
+    // This is used for specific debugging. When in doubt, check the offical PIDController class from WPILib
+    // Possibly due to WPILib being in Cpp and Java, so a debugger written for Cpp would need to have Java linked
+    // through JNI to have said theoretical debugger work properly. Or maybe that's just completely wrong.
     instances++;
-    HLUsageReporting.reportPIDController(instances);
+    HAL.report( FRCNetComm.tResourceType.kResourceType_PIDController, instances);
     m_tolerance = new NullTolerance();
     setName("PIDController", instances);
   }
@@ -871,8 +875,7 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
   /**
    * Begin running the PIDController.
    */
-  @Override
-  public void enable() {
+  private void enable() {
     m_thisMutex.lock();
     try {
       m_enabled = true;
@@ -884,8 +887,7 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
   /**
    * Stop running the PIDController, this sets the output to zero before stopping.
    */
-  @Override
-  public void disable() {
+  private void disable() {
     // Ensures m_enabled check and pidWrite() call occur atomically
     m_pidWriteMutex.lock();
     try {
@@ -916,8 +918,7 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
   /**
    * Return true if PIDController is enabled.
    */
-  @Override
-  public boolean isEnabled() {
+  private boolean isEnabled() {
     m_thisMutex.lock();
     try {
       return m_enabled;
