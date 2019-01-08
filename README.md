@@ -35,3 +35,6 @@ Depending on your IDE, the command is (respectively):
 This year's robot code uses [604's modified version of Pathfinder](https://github.com/frc604/Pathfinder), the original version of which can be found [here](https://github.com/JacisNonsense/Pathfinder).
 
 Uses Pixy code adapted from [BHSRobotix/Steamworks2017](https://github.com/BHSRobotix/Steamworks2017)
+
+## Documentation
+The datasheet for the VL53L0X rangefinder can be found [here](https://www.st.com/content/ccc/resource/technical/document/user_manual/group0/6b/4e/24/90/d8/05/47/a5/DM00279088/files/DM00279088.pdf/jcr:content/translations/en.DM00279088.pdf).
