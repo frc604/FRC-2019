@@ -24,8 +24,6 @@ public class Dashboard extends DashboardModule {
         // Following are actual strategy selections
 
         // Calibration autons to verify angles and distances
-        ROTATE_LEFT_TEST,
-        ROTATE_RIGHT_TEST,
         FAILSAFE_FORWARD_12,
         FAILSAFE_BACKWARD_12,
 
