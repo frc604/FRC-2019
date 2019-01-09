@@ -1,9 +1,18 @@
-package com._604robotics.robotnik.prefabs.devices;
+package com._604robotics.robotnik.prefabs.modules;
 
+import com._604robotics.robotnik.Action;
+import com._604robotics.robotnik.Module;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class Limelight {
+public class Limelight extends Module {
+
+    /*
+     * Perhaps refactor so that the targets are saved to Output<> tables
+     * and accessed that way, and checked using a run() function
+     *
+     * That sounds good.
+     */
 
     private NetworkTable table;
 
@@ -21,11 +30,39 @@ public class Limelight {
     }
 
     public Limelight() {
+        super(Limelight.class);
         this.table = NetworkTableInstance.getDefault().getTable("limelight");
+        setDefaultAction(scan);
     }
 
+    private class Scan extends Action {
+        public Scan() {
+            super(Limelight.this, Scan.class);
+        }
+
+        @Override
+        public void begin() {
+            table.getEntry("camMode").setNumber(0);
+        }
+    }
+
+    private class Driver extends Action {
+        public Driver() {
+            super(Limelight.this, Driver.class);
+        }
+
+        @Override
+        public void begin() {
+            // When swapping to this action, we need to disable vision processing
+            table.getEntry("camMode").setNumber(1);
+        }
+    }
+
+    public final Action scan = new Scan();
+    public final Action driver = new Driver();
+
     public boolean hasTarget() {
-        return table.getEntry("tv").getNumber((Number) 0).intValue() == 1;
+        return this.getRunningAction() == scan && table.getEntry("tv").getNumber((Number) 0).intValue() == 1;
     }
 
     public Double getArea() {
@@ -46,10 +83,6 @@ public class Limelight {
 
     public void setLED(LEDState state) {
         table.getEntry("ledMode").setNumber(state.ordinal());
-    }
-
-    public void processVision(boolean enabled) {
-        table.getEntry("camMode").setNumber((enabled ? 1 : 0));
     }
 
     public void setPipeline(int pipe) {

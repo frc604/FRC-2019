@@ -87,4 +87,7 @@ public class Calibration {
             Trajectory.FitMethod.HERMITE_QUINTIC,
             Trajectory.Config.SAMPLES_LOW,
             0.025, 1.6, 1.1, 3.5 );
+
+    @Untested("Currently matches value in PixyMon")
+    public static final int PIXY_MAX_BLOCKS = 20; // May or may not have to match PixyMon settings...
 }
