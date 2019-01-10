@@ -35,3 +35,9 @@ Depending on your IDE, the command is (respectively):
 This year's robot code uses [604's modified version of Pathfinder](https://github.com/frc604/Pathfinder), the original version of which can be found [here](https://github.com/JacisNonsense/Pathfinder).
 
 Uses Pixy code adapted from [BHSRobotix/Steamworks2017](https://github.com/BHSRobotix/Steamworks2017)
+
+## Limelight
+### Flashing
+When flashing the Limelight, follow the instructions found [here](http://docs.limelightvision.io/en/latest/getting_started.html#imaging).
+However, it is also nessessary to install the drivers for a Raspberry Pi compute module as well.
+You will know you have succeeded when the Pi shows up as a removable drive (if on Windows).
