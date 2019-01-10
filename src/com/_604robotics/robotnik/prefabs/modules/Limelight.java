@@ -1,20 +1,26 @@
 package com._604robotics.robotnik.prefabs.modules;
 
 import com._604robotics.robotnik.Action;
+import com._604robotics.robotnik.Input;
 import com._604robotics.robotnik.Module;
+import com._604robotics.robotnik.Output;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Limelight extends Module {
 
-    /*
-     * Perhaps refactor so that the targets are saved to Output<> tables
-     * and accessed that way, and checked using a run() function
-     *
-     * That sounds good.
-     */
-
     private NetworkTable table;
+
+    public Output<Boolean> limelightHasTargets;
+    public Output<Double> limelightX;
+    public Output<Double> limelightY;
+    public Output<Double> limelightArea;
+    public Output<Double> limelightSkew;
+
+    public Input<LEDState> limelightLED;
+    public Input<StreamMode> limelightStreamMode;
+    public Input<Integer> limelightPipeline;
+    public Input<Boolean> limelightSnapshotEnabled;
 
     public enum LEDState {
         CURRENT,
@@ -32,6 +38,18 @@ public class Limelight extends Module {
     public Limelight() {
         super(Limelight.class);
         this.table = NetworkTableInstance.getDefault().getTable("limelight");
+
+        limelightHasTargets = addOutput("limelightHasTargets", () -> table.getEntry("tv").getNumber((Number) 0).intValue() == 1);
+        limelightX = addOutput("limelightX", () -> table.getEntry("tx").getDouble(0));
+        limelightY = addOutput("limelightY", () -> table.getEntry("ty").getDouble(0));
+        limelightArea = addOutput("limelightArea", () -> table.getEntry("ta").getDouble(0));
+        limelightSkew = addOutput("limelightSkew", () -> table.getEntry("ts").getDouble(0));
+
+        limelightPipeline = addInput("limelightPipelineInput", 0);
+        limelightLED = addInput("limelightLEDInput", LEDState.CURRENT);
+        limelightStreamMode = addInput("limelightStreamModeInput", StreamMode.STANDARD);
+        limelightSnapshotEnabled = addInput("limelightSnapshotEnabledInput", false);
+
         setDefaultAction(scan);
     }
 
@@ -43,6 +61,25 @@ public class Limelight extends Module {
         @Override
         public void begin() {
             table.getEntry("camMode").setNumber(0);
+        }
+
+        @Override
+        public void run() {
+            if( limelightPipeline.isFresh() ) {
+                table.getEntry("pipeline").setNumber(limelightPipeline.get());
+            }
+
+            if( limelightLED.isFresh() ) {
+                table.getEntry("ledMode").setNumber(limelightLED.get().ordinal());
+            }
+
+            if( limelightSnapshotEnabled.isFresh() ) {
+                table.getEntry("snapshot").setNumber((limelightSnapshotEnabled.get() ? 1 : 0));
+            }
+
+            if( limelightStreamMode.isFresh() ) {
+                table.getEntry("stream").setNumber(limelightStreamMode.get().ordinal());
+            }
         }
     }
 
@@ -56,46 +93,25 @@ public class Limelight extends Module {
             // When swapping to this action, we need to disable vision processing
             table.getEntry("camMode").setNumber(1);
         }
+
+        @Override
+        public void run() {
+            if( limelightLED.isFresh() ) {
+                table.getEntry("ledMode").setNumber(limelightLED.get().ordinal());
+            }
+
+            if( limelightSnapshotEnabled.isFresh() ) {
+                table.getEntry("snapshot").setNumber((limelightSnapshotEnabled.get() ? 1 : 0));
+            }
+
+            if( limelightStreamMode.isFresh() ) {
+                table.getEntry("stream").setNumber(limelightStreamMode.get().ordinal());
+            }
+        }
     }
 
     public final Action scan = new Scan();
     public final Action driver = new Driver();
-
-    public boolean hasTarget() {
-        return this.getRunningAction() == scan && table.getEntry("tv").getNumber((Number) 0).intValue() == 1;
-    }
-
-    public Double getArea() {
-        return table.getEntry("ta").getDouble(0);
-    }
-
-    public Double getVirtOffset() {
-        return table.getEntry("ty").getDouble(0);
-    }
-
-    public Double getHorizOffset() {
-        return table.getEntry("tx").getDouble(0);
-    }
-
-    public Double getAngle() {
-        return table.getEntry("ts").getDouble(0);
-    }
-
-    public void setLED(LEDState state) {
-        table.getEntry("ledMode").setNumber(state.ordinal());
-    }
-
-    public void setPipeline(int pipe) {
-        table.getEntry("pipeline").setNumber(pipe);
-    }
-
-    public void setStreamMode(StreamMode stream) {
-        table.getEntry("stream").setNumber(stream.ordinal());
-    }
-
-    public void takeSnapshots(boolean enabled) {
-        table.getEntry("snapshot").setNumber((enabled ? 1 : 0));
-    }
 
     // Note: It is possible to use the raw contour data. This is not implemented here.
 
