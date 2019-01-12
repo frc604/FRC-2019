@@ -317,10 +317,7 @@ public class TeleopMode extends Coordinator {
     }
 
     private class LimelightManager {
-        public LimelightManager() {
-            robot.limelight.scan.activate();
-        }
-
+        public LimelightManager() { robot.limelight.driver.activate(); }
         public void run() {}
     }
     

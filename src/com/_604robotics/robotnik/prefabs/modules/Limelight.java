@@ -6,6 +6,8 @@ import com._604robotics.robotnik.Module;
 import com._604robotics.robotnik.Output;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.CameraServer;
+
 
 public class Limelight extends Module {
 
@@ -84,6 +86,9 @@ public class Limelight extends Module {
     }
 
     private class Driver extends Action {
+        public static final int IMG_WIDTH = 320;
+        public static final int IMG_HEIGHT = 240;
+
         public Driver() {
             super(Limelight.this, Driver.class);
         }
@@ -92,6 +97,7 @@ public class Limelight extends Module {
         public void begin() {
             // When swapping to this action, we need to disable vision processing
             table.getEntry("camMode").setNumber(1);
+            CameraServer.getInstance().startAutomaticCapture();
         }
 
         @Override

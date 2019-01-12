@@ -19,7 +19,7 @@ public class Robot2019 extends Robot {
     public final Camera cameraBack = addModule(new Camera("video1"));
 
     public final Limelight limelight = addModule(new Limelight());
-    public final Pixy pixy = addModule(new Pixy());
+    //public final Pixy pixy = addModule(new Pixy());
 
     public final TeleopMode teleopMode = setTeleopMode(new TeleopMode(this));
     public final AutonomousMode autonomousMode = setAutonomousMode(new AutonomousMode(this));
