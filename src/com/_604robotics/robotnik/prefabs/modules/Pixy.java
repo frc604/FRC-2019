@@ -122,7 +122,9 @@ public class Pixy extends Module {
 			}
 
 			for( int i = 0; i < packets.length; ++i ) {
-				packets[i] = readPacket(i);
+				//Modified to allow lime light code to run
+				try {packets[i] = readPacket(i);} 
+				catch (PixyException e) {}
 
 				if( packets[i] == null ) {
 					//throw new PixyException("Read a null packet. That shouldn't happen...");
