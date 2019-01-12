@@ -87,7 +87,8 @@ public abstract class Module {
     protected <T> Output<T> addOutput (String name, Output<T> output) {
         final OutputProxy<T> proxy = new OutputProxy<>(name, output);
         outputs.add(proxy);
-        //outputsTable.getEntry( proxy.getName() ).setValue( proxy );
+        try{outputsTable.getEntry( proxy.getName() ).setValue( proxy )};
+        catch (IllegalArgumentException e) {}
         return proxy;
     }
 
