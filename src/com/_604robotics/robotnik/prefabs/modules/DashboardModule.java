@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DashboardModule extends Module {
     private enum InputType {
-        BOOLEAN, DOUBLE, INTEGER, STRING, ENUM
+        BOOLEAN, DOUBLE, NUMBER, STRING, ENUM
     }
 
     private final List<Pair<Input, InputType>> inputs = new ArrayList<>();
@@ -33,10 +33,10 @@ public class DashboardModule extends Module {
         return input;
     }
     
-    protected Input<Integer> addDashboardInput (String name, int initialValue) {
-        SmartDashboard.putNumber(name, initialValue);
-        final Input<Integer> input = addInput(name, initialValue);
-        inputs.add(new Pair<>(input, InputType.INTEGER));
+    protected Input<Number> addDashboardInput (String name, Number initialValue) {
+        SmartDashboard.putNumber(name, initialValue.intValue());
+        final Input<Number> input = addInput(name, initialValue);
+        inputs.add(new Pair<>(input, InputType.NUMBER));
         return input;
     }
 
@@ -102,8 +102,8 @@ public class DashboardModule extends Module {
                     case DOUBLE:
                         SmartDashboard.putNumber(input.getKey().getName(), (Double) input.getKey().get());
                         break;
-                    case INTEGER:
-                        SmartDashboard.putNumber(input.getKey().getName(), ((Integer) input.getKey().get()).doubleValue());
+                    case NUMBER:
+                        SmartDashboard.putNumber(input.getKey().getName(), ((Number) input.getKey().get()).doubleValue());
                         break;
                     case STRING:
                         SmartDashboard.putString(input.getKey().getName(), (String) input.getKey().get());

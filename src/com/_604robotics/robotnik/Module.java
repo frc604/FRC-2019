@@ -79,16 +79,14 @@ public abstract class Module {
     protected <T> Input<T> addInput (String name, T defaultValue) {
         final Input<T> input = new Input<>(this, name, defaultValue);
         inputs.add(input);
-        try{inputsTable.getEntry( input.getName() ).setValue( input );}
-        catch (IllegalArgumentException e) {}
+        inputsTable.getEntry( input.getName() ).setValue( input );
         return input;
     }
 
     protected <T> Output<T> addOutput (String name, Output<T> output) {
         final OutputProxy<T> proxy = new OutputProxy<>(name, output);
         outputs.add(proxy);
-        try{outputsTable.getEntry( proxy.getName() ).setValue( proxy )};
-        catch (IllegalArgumentException e) {}
+        outputsTable.getEntry( proxy.getName() ).setValue( proxy );
         return proxy;
     }
 
@@ -125,8 +123,8 @@ public abstract class Module {
 
     void update () {
         for (@SuppressWarnings("rawtypes") Input input : inputs) {
-        	inputsTable.getEntry( input.getName() ).setValue( input.get() );
-        }
+            inputsTable.getEntry( input.getName() ).setValue( input.get() );      
+          }
     }
 
     void execute () {
