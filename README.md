@@ -104,7 +104,7 @@ s. Finally, bring up the command palette(`Command+Shift+P`) and type in `Set VS 
  https://git-scm.com/downloads
  
 2.Run the dowloaded installer
-  (On MacOS douddle clic on the `.pkg` file on the prompt(you make have to go to `Settings -> Secrity & Privacy ->Open prompt at the bottom of page` to open it)
+  (On MacOS douddle click on the `.pkg` file on the prompt(you make have to go to `Settings -> Secrity & Privacy ->Open prompt at the bottom of page` to open it)
 
 Here are the options you should use when setting it up.
 
@@ -128,8 +128,41 @@ Here are the options you should use when setting it up.
   i.Choose to use MinTTY.
   
   j.Then click Install.
+  
+#### MacOs
+  a. Click continue
+  
+  b. Click Install
+  
+  c. Enteryou adminstrator account username and passowrd.
+  
+  d. Choose to keep the package.
+  
+## Robot Code in VSCode
 
+a. To start, make a folder somewhere to store your robot code, then open terminal or the command line and navigate into the folder.
 
+`cd "Destination of Folder`
+
+Ex(Windows). `cd Desktop/FRC_2019`
+
+ex(MacOs). `cd /Desktop/FRC_2019`
+
+b. Now you need to clone the repositry into the folder(like copy and pasting).
+
+`git clone https://github.com/frc604/FRC-2019.git`
+
+c. Now go into Visual Studio COde and click `File -> Open Folder` and click on the folder `FRC-2019` in the folder that you created.
+
+## Pulling Certain Branch
+
+a. `cd` into the the code repo, into the folder you made, then into FRC-2019
+
+`cd "Folder Path/FRC-2019"`
+
+b. Then type `git fetch` -v to list all the possibble branches.
+
+c. Finally type `git checkout "Name of Branch"` to 2switch to that branch.
 
 ## Structure
 The main source code can be found in `src/com/_604robotics/`
