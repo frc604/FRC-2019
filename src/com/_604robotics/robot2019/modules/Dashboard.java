@@ -5,8 +5,8 @@ import com._604robotics.robotnik.Output;
 import com._604robotics.robotnik.prefabs.modules.DashboardModule;
 
 public class Dashboard extends DashboardModule {
-    public final Input<Number> leftDriveClicks = addDashboardInput("leftDriveClicks", (Number)0);
-    public final Input<Number> rightDriveClicks = addDashboardInput("rightDriveClicks", (Number)0);
+    public final Input<Integer> leftDriveClicks = addDashboardInput("leftDriveClicks", 0);
+    public final Input<Integer> rightDriveClicks = addDashboardInput("rightDriveClicks", 0);
 
     public final Input<Double> leftDriveRate = addDashboardInput("leftDriveRate", 0.0);
     public final Input<Double> rightDriveRate = addDashboardInput("rightDriveRate", 0.0);
