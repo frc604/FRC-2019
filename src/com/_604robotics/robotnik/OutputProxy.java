@@ -12,6 +12,8 @@ class OutputProxy<T> implements Output<T> {
 
         this.name = name;
         this.source = source;
+
+        update(); // Otherwise this.value is null
     }
 
 	public String getName () {
@@ -27,4 +29,3 @@ class OutputProxy<T> implements Output<T> {
     synchronized void update () {
         value = source.get();
     }
-}
