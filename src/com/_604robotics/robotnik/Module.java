@@ -129,7 +129,7 @@ public abstract class Module {
     void update () {
         for (@SuppressWarnings("rawtypes") Input input : inputs) {
             inputsTable.getEntry( input.getName() ).setValue( input.get() );      
-          }
+        }
     }
 
     void execute () {
