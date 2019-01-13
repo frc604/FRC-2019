@@ -12,8 +12,10 @@ public abstract class Module {
     private final NetworkTable table;
 
     private final NetworkTable inputsTable;
+    private final TableIndex inputsTableIndex;
 
     private final NetworkTable outputsTable;
+    private final TableIndex outputsTableIndex; // Should be replaced with proper solution
 
     private final NetworkTable activeActionTable;
     private final NetworkTable activeActionInputsTable;
@@ -47,7 +49,10 @@ public abstract class Module {
                 .getSubTable(name);
 
         inputsTable = table.getSubTable("inputs");
+        inputsTableIndex = new TableIndex(table, "inputList");
+
         outputsTable = table.getSubTable("outputs");
+        outputsTableIndex = new TableIndex(table, "outputList");
 
         activeActionTable = table.getSubTable("activeAction");
         activeActionTable.getEntry("name").setString("");
@@ -77,16 +82,16 @@ public abstract class Module {
     }
 
     protected <T> Input<T> addInput (String name, T defaultValue) {
-        final Input<T> input = new Input<>(this, name, defaultValue);
+        final Input<T> input = new Input<T>(this, name, defaultValue);
         inputs.add(input);
-        inputsTable.getEntry( input.getName() ).setValue( input );
+        inputsTableIndex.add("Input", input.getName());
         return input;
     }
 
     protected <T> Output<T> addOutput (String name, Output<T> output) {
-        final OutputProxy<T> proxy = new OutputProxy<>(name, output);
+        final OutputProxy<T> proxy = new OutputProxy<T>(name, output);
         outputs.add(proxy);
-        outputsTable.getEntry( proxy.getName() ).setValue( proxy );
+        outputsTableIndex.add("Output", name);
         return proxy;
     }
 
@@ -123,7 +128,7 @@ public abstract class Module {
 
     void update () {
         for (@SuppressWarnings("rawtypes") Input input : inputs) {
-        	inputsTable.getEntry( input.getName() ).setValue( input.get() );
+            inputsTable.getEntry( input.getName() ).setValue( input.get() );      
         }
     }
 

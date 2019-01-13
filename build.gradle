@@ -9,14 +9,6 @@ plugins {
 def TEAM = 604
 def ROBOT_CLASS = "com._604robotics.robot2019.Robot2019"
 
-// Add common repositories
-// repositories {
-//     maven {
-//         url "https://plugins.gradle.org/m2/"
-//     }
-//     mavenLocal()
-// }
-
 dependencies {
     compile wpi.deps.wpilib()
     compile wpi.deps.vendor.java()

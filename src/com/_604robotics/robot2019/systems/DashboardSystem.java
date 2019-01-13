@@ -23,6 +23,13 @@ public class DashboardSystem extends Coordinator {
         robot.dashboard.totalCurrent.set(robot.powermonitor.totalPortCurrent.get());
         
         robot.powermonitor.initDashboardSendables();
+
+        /* Limelight Testing */
+        robot.dashboard.limelightTarget.set(robot.limelight.limelightHasTargets.get());
+        robot.dashboard.limelightX.set(robot.limelight.limelightX.get());
+        robot.dashboard.limelightY.set(robot.limelight.limelightY.get());
+        robot.dashboard.limelightArea.set(robot.limelight.limelightArea.get());
+        robot.dashboard.limelightSkew.set(robot.limelight.limelightSkew.get());
         
         switch( robot.dashboard.marionetteRecorder.get() ) {
             case MANUAL:

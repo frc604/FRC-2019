@@ -15,5 +15,4 @@ public class Camera extends Module {
         super(Camera.class);
         CameraServer.getInstance().startAutomaticCapture(devName, "/dev/"+devName);
     }
-
 }

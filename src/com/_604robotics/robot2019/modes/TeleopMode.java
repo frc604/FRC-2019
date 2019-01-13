@@ -30,6 +30,7 @@ public class TeleopMode extends Coordinator {
     private final com._604robotics.robot2019.Robot2019 robot;
 
     private final DriveManager driveManager;
+    private final LimelightManager limelightManager;
     private final Logger test = new Logger("Teleop");
 
     public TeleopMode ( com._604robotics.robot2019.Robot2019 robot) {
@@ -61,6 +62,7 @@ public class TeleopMode extends Coordinator {
         this.robot = robot;
 
         driveManager = new DriveManager();
+        limelightManager = new LimelightManager();
     }
 
     private boolean getHoldArmClicks = false;
@@ -222,6 +224,7 @@ public class TeleopMode extends Coordinator {
     
     private void process() {
     	driveManager.run();
+    	limelightManager.run();
     }
     
     private class DriveManager {
@@ -311,6 +314,11 @@ public class TeleopMode extends Coordinator {
                     break;
             }
         }
+    }
+
+    private class LimelightManager {
+        public LimelightManager() { robot.limelight.driver.activate(); }
+        public void run() {}
     }
     
     private enum CurrentDrive {

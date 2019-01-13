@@ -1,6 +1,169 @@
 # FRC-2019
 604 Quixilver's 2019 Robot Code
 
+## Setting up WPILib
+More Instructions(If ones below do not work look at this):https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027503-installing-c-and-java-development-tools-for-frc#windows
+
+Click the link below and dowload the installer for your OS.
+https://github.com/wpilibsuite/allwpilib/releases
+
+1.Follow the instructions for you operating system.
+(You do not need to download the Update Suite)
+  #### Windows
+  a. Unzip the file by clicking Extract All
+  
+  b. Go into the unziped folder and run WPILibInstaller_Windows64-2019.1.1.exe(If it asks if you trst the app, click `More Info` then `Run`
+  
+  c. Install for All Users
+  
+  d. Click Slect/Download VSCode
+  
+  e. Click Download and wait for it to finish
+  
+  f. Make sure all check boxes are checked
+  
+  g. Click Execute Install
+  
+  #### MacOS
+  a. Go to downloads and doubble click on the WPILib_Mac-2019.1.1.tar file.
+ 
+ b. Go to https://code.visualstudio.com and download VSCode(Click Download for Mac)
+ 
+ c. Doubble click on VSCode-darwin-stable.zip(It may automattically exctract and the file will be `Visual Studio Code.app`, you dont have to doubble click this)
+ 
+ d. Drag the `Visual Studio Code.app` into Applications.
+ 
+ e. Open  a new `Terminal` window and type in `mkdir frc2019`(This will make a new folder in your home directory called frc2019)
+ 
+ f. Then type in `cd frc2019` this will run your terminal commands in that folder(directory)
+ 
+ g. Now run all of these commands to copy the files, one at a time.
+ 
+ ```
+   cp -R ~/Downloads/WPILib_Mac-2019.1.1/documentation ~/frc2019
+  
+	cp -R ~/Downloads/WPILib_Mac-2019.1.1/frccode ~/frc2019
+  
+	cp -R ~/Downloads/WPILib_Mac-2019.1.1/installUtils ~/frc2019
+  
+	cp -R ~/Downloads/WPILib_Mac-2019.1.1/jdk ~/frc2019
+  
+	cp -R ~/Downloads/WPILib_Mac-2019.1.1/jdk-11.0.1.jdk ~/frc2019
+  
+	cp -R ~/Downloads/WPILib_Mac-2019.1.1/maven ~/frc2019
+  
+	cp -R ~/Downloads/WPILib_Mac-2019.1.1/roborio ~/frc2019
+  
+	cp -R ~/Downloads/WPILib_Mac-2019.1.1/tools ~/frc2019
+  
+	cp -R ~/Downloads/WPILib_Mac-2019.1.1/utility ~/frc2019
+  
+	cp -R ~/Downloads/WPILib_Mac-2019.1.1/vsCodeExtensions ~/frc2019
+  ```
+  
+  (Run `ls` to make sure all the folders(direcotries) copied over)
+	
+ h. Now run `cd ~/frc2019/tools`
+ 
+ i. Run `python ToolsUpdater.py` which runs the ToolsUpdater script.
+ 
+ j. You can type `ls` into Terminal to make sure it worked(You should see `.py`, `.vbs` and `.jar` files)
+
+ k. Close terminal and launch VSCode from applications.
+ 
+ l. Hold `Command+Shift+P` to bring up possible commands.
+ 
+ m. Type `VSIX` into the prompt, then click `Extensions:Install from VSIX`
+ 
+ n. In the Finder prompt, locate the dropdown menu in the center of the window at the top and select the home icon/emoji.
+ 
+ o. Then open the folder frc2019, then vsCodeExtensions.
+ 
+ p.Select `Cpp.vsix` and then Install.
+ 
+ q. It will take a second, in the bottom right of VSCode you will be prompted to reload, click `Reload Now`.
+ 
+ r. Now repeat steps m-q for all the `.visx` files in theis order.
+ ```
+1. Cpp.vsix
+
+2. JavaLang.vsix
+
+3. JavaDeps.vsix
+
+4. JavaDebug.vsix
+
+5. WPILib.vsix
+```
+s. Finally, bring up the command palette(`Command+Shift+P`) and type in `Set VS Code Java Home to FRC Home`, then run that command by clicking it, Select `global`.
+
+## Git
+
+1. Download git for you operating system
+
+ https://git-scm.com/downloads
+ 
+2.Run the dowloaded installer
+  (On MacOS douddle click on the `.pkg` file on the prompt(you make have to go to `Settings -> Secrity & Privacy ->Open prompt at the bottom of page` to open it)
+
+Here are the options you should use when setting it up.
+
+#### Windows
+  a. First click next to accept the license.
+  
+  b. Click next on the Destination Location.
+  
+  c. Click next on Select Components.
+  
+  d. Click next on Select Start Menu Folder
+  
+  e. Slelect Vim editor for git, then select next.
+  
+  f. Choose Git from the command line and also from 3rd-party software.
+  
+  g. Choose to use the OpenSSl library.
+  
+  h. Choose Checkout Windows-style, commit Unix-style line endings.
+  
+  i.Choose to use MinTTY.
+  
+  j.Then click Install.
+  
+#### MacOs
+  a. Click continue
+  
+  b. Click Install
+  
+  c. Enteryou adminstrator account username and passowrd.
+  
+  d. Choose to keep the package.
+  
+## Robot Code in VSCode
+
+a. To start, make a folder somewhere to store your robot code, then open terminal or the command line and navigate into the folder.
+
+`cd "Destination of Folder`
+
+Ex(Windows). `cd Desktop/FRC_2019`
+
+ex(MacOs). `cd /Desktop/FRC_2019`
+
+b. Now you need to clone the repositry into the folder(like copy and pasting).
+
+`git clone https://github.com/frc604/FRC-2019.git`
+
+c. Now go into Visual Studio COde and click `File -> Open Folder` and click on the folder `FRC-2019` in the folder that you created.
+
+## Pulling Certain Branch
+
+a. `cd` into the the code repo, into the folder you made, then into FRC-2019
+
+`cd "Folder Path/FRC-2019"`
+
+b. Then type `git fetch` -v to list all the possibble branches.
+
+c. Finally type `git checkout "Name of Branch"` to 2switch to that branch.
+
 ## Structure
 The main source code can be found in `src/com/_604robotics/`
 
