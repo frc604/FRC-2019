@@ -77,16 +77,16 @@ public abstract class Module {
     }
 
     protected <T> Input<T> addInput (String name, T defaultValue) {
-        final Input<T> input = new Input<>(this, name, defaultValue);
+        final Input<T> input = new Input<T>(this, name, defaultValue);
         inputs.add(input);
-        inputsTable.getEntry( input.getName() ).setValue( input );
+        (inputsTable.getEntry( input.getName() )).forceSetValue( input.get() );
         return input;
     }
 
     protected <T> Output<T> addOutput (String name, Output<T> output) {
-        final OutputProxy<T> proxy = new OutputProxy<>(name, output);
+        final OutputProxy<T> proxy = new OutputProxy<T>(name, output);
         outputs.add(proxy);
-        outputsTable.getEntry( proxy.getName() ).setValue( proxy );
+        (outputsTable.getEntry( proxy.getName() )).forceSetValue( proxy.get() );
         return proxy;
     }
 
