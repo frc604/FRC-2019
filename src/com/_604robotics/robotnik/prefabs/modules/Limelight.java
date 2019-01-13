@@ -6,7 +6,7 @@ import com._604robotics.robotnik.Module;
 import com._604robotics.robotnik.Output;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.cameraserver.CameraServer;
 
 
 public class Limelight extends Module {
