@@ -5,8 +5,8 @@ class OutputProxy<T> implements Output<T> {
     private final Output<T> source;
     private T value;
 
-    public OutputProxy (String name, Output<T> source) {
-        if (name.contains(",")) {
+    public OutputProxy( String name, Output<T> source ) {
+        if( name.contains(",") ) {
             throw new IllegalArgumentException("Output names may not contain commas");
         }
 
@@ -16,16 +16,17 @@ class OutputProxy<T> implements Output<T> {
         update(); // Otherwise this.value is null
     }
 
-	public String getName () {
+    public String getName() {
         return name;
     }
 
 
     @Override
-    public synchronized T get () {
+    public synchronized T get() {
         return value;
     }
 
-    synchronized void update () {
+    synchronized void update() {
         value = source.get();
     }
+}
