@@ -7,15 +7,7 @@ plugins {
 }
 
 def TEAM = 604
-//def ROBOT_CLASS = "com._604robotics.robot2019.Robot2019"
-def ROBOT_MAIN_CLASS = "com._604robotics.robot2019.Main"
-// Add common repositories
-// repositories {
-//     maven {
-//         url "https://plugins.gradle.org/m2/"
-//     }
-//     mavenLocal()
-// }
+def ROBOT_CLASS = "com._604robotics.robot2019.Robot2019"
 
 dependencies {
     compile wpi.deps.wpilib()
@@ -61,5 +53,5 @@ deploy {
 // Fat Jar with manifest
 jar {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
+    manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_CLASS)
 }

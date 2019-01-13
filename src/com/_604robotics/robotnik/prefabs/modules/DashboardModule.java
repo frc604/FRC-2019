@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DashboardModule extends Module {
     private enum InputType {
-        BOOLEAN, DOUBLE, INTEGER, STRING, ENUM
+        BOOLEAN, DOUBLE, NUMBER, STRING, ENUM
     }
 
     private final List<Pair<Input, InputType>> inputs = new ArrayList<>();
@@ -36,7 +36,7 @@ public class DashboardModule extends Module {
     protected Input<Integer> addDashboardInput (String name, int initialValue) {
         SmartDashboard.putNumber(name, initialValue);
         final Input<Integer> input = addInput(name, initialValue);
-        inputs.add(new Pair<>(input, InputType.INTEGER));
+        inputs.add(new Pair<>(input, InputType.NUMBER));
         return input;
     }
 
@@ -71,14 +71,15 @@ public class DashboardModule extends Module {
 
     protected <E extends Enum<E>> Output<E> addDashboardOutput (String name, E defaultValue, Class<E> klass) {
         final SendableChooser<E> chooser = new SendableChooser<>();
-        //SmartDashboard.putData(name,chooser);
+
         for (E option : EnumSet.allOf(klass)) {
             if (option == defaultValue) {
-                chooser.addDefault(option.toString(), option);
+                chooser.setDefaultOption(option.toString(), option);
             } else {
-                chooser.addObject(option.toString(), option);
+                chooser.addOption(option.toString(), option);
             }
         }
+
         SmartDashboard.putData(name, chooser);
         return addOutput(name, chooser::getSelected);
     }
@@ -102,8 +103,8 @@ public class DashboardModule extends Module {
                     case DOUBLE:
                         SmartDashboard.putNumber(input.getKey().getName(), (Double) input.getKey().get());
                         break;
-                    case INTEGER:
-                        SmartDashboard.putNumber(input.getKey().getName(), ((Integer) input.getKey().get()).doubleValue());
+                    case NUMBER:
+                        SmartDashboard.putNumber(input.getKey().getName(), ((Number) input.getKey().get()).doubleValue());
                         break;
                     case STRING:
                         SmartDashboard.putString(input.getKey().getName(), (String) input.getKey().get());

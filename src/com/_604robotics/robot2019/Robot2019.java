@@ -6,8 +6,14 @@ import com._604robotics.robot2019.modules.*;
 import com._604robotics.robotnik.prefabs.modules.*;
 import com._604robotics.robot2019.systems.*;
 import com._604robotics.robotnik.Robot;
+import edu.wpi.first.wpilibj.RobotBase;
 
 public class Robot2019 extends Robot {
+
+    public static void main( String [] args ) {
+        RobotBase.startRobot(Robot2019::new);
+    }
+
     public final Dashboard dashboard = addModule(new Dashboard());
     public final DashboardSystem dashboardSystem = addSystem(DashboardSystem.class, new DashboardSystem(this));
     public final PowerMonitor powermonitor = addModule(new PowerMonitor(Ports.PDP_MODULE, Ports.COMPRESSOR));

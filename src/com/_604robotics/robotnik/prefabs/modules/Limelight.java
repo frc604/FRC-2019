@@ -8,7 +8,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.cameraserver.CameraServer;
 
-
 public class Limelight extends Module {
 
     private NetworkTable table;
@@ -19,8 +18,8 @@ public class Limelight extends Module {
     public Output<Double> limelightArea;
     public Output<Double> limelightSkew;
 
-    public Input<LEDState> limelightLED;
-    public Input<StreamMode> limelightStreamMode;
+    public Input<Integer> limelightLED; // TODO Find a way to store enum in networktables
+    public Input<Integer> limelightStreamMode; // TODO Find a way to store enum in networktables
     public Input<Integer> limelightPipeline;
     public Input<Boolean> limelightSnapshotEnabled;
 
@@ -48,8 +47,8 @@ public class Limelight extends Module {
         limelightSkew = addOutput("limelightSkew", () -> table.getEntry("ts").getDouble(0));
 
         limelightPipeline = addInput("limelightPipelineInput", 0);
-        limelightLED = addInput("limelightLEDInput", LEDState.CURRENT);
-        limelightStreamMode = addInput("limelightStreamModeInput", StreamMode.STANDARD);
+        limelightLED = addInput("limelightLEDInput", 0);
+        limelightStreamMode = addInput("limelightStreamModeInput", 0);
         limelightSnapshotEnabled = addInput("limelightSnapshotEnabledInput", false);
 
         setDefaultAction(scan);
@@ -72,7 +71,7 @@ public class Limelight extends Module {
             }
 
             if( limelightLED.isFresh() ) {
-                table.getEntry("ledMode").setNumber(limelightLED.get().ordinal());
+                table.getEntry("ledMode").setNumber(limelightLED.get());
             }
 
             if( limelightSnapshotEnabled.isFresh() ) {
@@ -80,14 +79,12 @@ public class Limelight extends Module {
             }
 
             if( limelightStreamMode.isFresh() ) {
-                table.getEntry("stream").setNumber(limelightStreamMode.get().ordinal());
+                table.getEntry("stream").setNumber(limelightStreamMode.get());
             }
         }
     }
 
     private class Driver extends Action {
-        //public static final int IMG_WIDTH = 320;
-        //public static final int IMG_HEIGHT = 240;
 
         public Driver() {
             super(Limelight.this, Driver.class);
@@ -103,7 +100,7 @@ public class Limelight extends Module {
         @Override
         public void run() {
             if( limelightLED.isFresh() ) {
-                table.getEntry("ledMode").setNumber(limelightLED.get().ordinal());
+                table.getEntry("ledMode").setNumber(limelightLED.get());
             }
 
             if( limelightSnapshotEnabled.isFresh() ) {
@@ -111,7 +108,7 @@ public class Limelight extends Module {
             }
 
             if( limelightStreamMode.isFresh() ) {
-                table.getEntry("stream").setNumber(limelightStreamMode.get().ordinal());
+                table.getEntry("stream").setNumber(limelightStreamMode.get());
             }
         }
     }
