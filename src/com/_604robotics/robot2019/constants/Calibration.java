@@ -90,4 +90,6 @@ public class Calibration {
 
     @Untested("Currently matches value in PixyMon")
     public static final int PIXY_MAX_BLOCKS = 20; // May or may not have to match PixyMon settings...
+
+    public static final String LIMELIGHT_URL = "http://10.6.4.101:5801";
 }

@@ -4,6 +4,9 @@ import com._604robotics.robotnik.Action;
 import com._604robotics.robotnik.Input;
 import com._604robotics.robotnik.Module;
 import com._604robotics.robotnik.Output;
+import com._604robotics.robot2019.constants.Calibration;
+import edu.wpi.cscore.HttpCamera;
+import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.cameraserver.CameraServer;
@@ -36,9 +39,22 @@ public class Limelight extends Module {
         PIPSECONDARY
     }
 
+    /**
+     * Creates a new Limelight module with the default NetworkTable name of "limelight"
+     */
     public Limelight() {
+        this("limelight");
+    }
+
+    /**
+     * Creates a Limelight module with a custom NetworkTable table.
+     * Allows for using multiple Limelights on one robot.
+     * The name of the table must be changed in the settings of the Limelight camera too.
+     * @param tableName Name of the table to access the Limelight at
+     */
+    public Limelight(String tableName) {
         super(Limelight.class);
-        this.table = NetworkTableInstance.getDefault().getTable("limelight");
+        this.table = NetworkTableInstance.getDefault().getTable(tableName);
 
         limelightHasTargets = addOutput("limelightHasTargets", () -> table.getEntry("tv").getNumber((Number) 0).intValue() == 1);
         limelightX = addOutput("limelightX", () -> table.getEntry("tx").getDouble(0));
@@ -51,7 +67,7 @@ public class Limelight extends Module {
         limelightStreamMode = addInput("limelightStreamModeInput", 0);
         limelightSnapshotEnabled = addInput("limelightSnapshotEnabledInput", false);
 
-        setDefaultAction(scan);
+        setDefaultAction(driver);
     }
 
     private class Scan extends Action {
@@ -94,7 +110,7 @@ public class Limelight extends Module {
         public void begin() {
             // When swapping to this action, we need to disable vision processing
             table.getEntry("camMode").setNumber(1);
-            CameraServer.getInstance().startAutomaticCapture();
+            CameraServer.getInstance().addCamera(new HttpCamera("limelight", Calibration.LIMELIGHT_URL));
         }
 
         @Override
@@ -110,6 +126,11 @@ public class Limelight extends Module {
             if( limelightStreamMode.isFresh() ) {
                 table.getEntry("stream").setNumber(limelightStreamMode.get());
             }
+        }
+
+        @Override
+        public void end() {
+            CameraServer.getInstance().removeCamera("limelight");
         }
     }
 
