@@ -6,14 +6,16 @@ import com._604robotics.robotnik.Module;
 import com._604robotics.robotnik.Output;
 import com._604robotics.robot2019.constants.Calibration;
 import edu.wpi.cscore.HttpCamera;
-import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.cameraserver.CameraServer;
 
+import static com._604robotics.robot2019.constants.Calibration.*;
+
 public class Limelight extends Module {
 
     private NetworkTable table;
+    private HttpCamera cameraStream;
 
     public Output<Boolean> limelightHasTargets;
     public Output<Double> limelightX;
@@ -67,6 +69,10 @@ public class Limelight extends Module {
         limelightStreamMode = addInput("limelightStreamModeInput", 0);
         limelightSnapshotEnabled = addInput("limelightSnapshotEnabledInput", false);
 
+        cameraStream = new HttpCamera("limelight", Calibration.LIMELIGHT_URL);
+        cameraStream.setFPS(LIMELIGHT_FPS);
+        cameraStream.setResolution(LIMELIGHT_RES_X, LIMELIGHT_RES_Y);
+
         setDefaultAction(driver);
     }
 
@@ -110,7 +116,7 @@ public class Limelight extends Module {
         public void begin() {
             // When swapping to this action, we need to disable vision processing
             table.getEntry("camMode").setNumber(1);
-            CameraServer.getInstance().addCamera(new HttpCamera("limelight", Calibration.LIMELIGHT_URL));
+            CameraServer.getInstance().addCamera(cameraStream);
         }
 
         @Override
