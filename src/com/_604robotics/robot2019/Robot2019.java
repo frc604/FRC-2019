@@ -8,6 +8,8 @@ import com._604robotics.robot2019.systems.*;
 import com._604robotics.robotnik.Robot;
 import edu.wpi.first.wpilibj.RobotBase;
 
+//Shuffelboard-fix
+
 public class Robot2019 extends Robot {
 
     public static void main( String [] args ) {
@@ -27,6 +29,7 @@ public class Robot2019 extends Robot {
     public final Limelight limelight = addModule(new Limelight());
     //public final Pixy pixy = addModule(new Pixy());
 
+    
     public final TeleopMode teleopMode = setTeleopMode(new TeleopMode(this));
     public final AutonomousMode autonomousMode = setAutonomousMode(new AutonomousMode(this));
 }
