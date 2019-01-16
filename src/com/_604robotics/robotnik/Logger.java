@@ -10,10 +10,10 @@ import java.io.StringWriter;
  * Generic logging class that prints to standard output.
  */
 public class Logger {
-    private static SmartTimer bootTimer = new SmartTimer();
+    //private static SmartTimer bootTimer = new SmartTimer();
 
     static {
-        bootTimer.start();
+        //bootTimer.start();
     }
 
     private final String name;
@@ -48,7 +48,7 @@ public class Logger {
     public void log (String level, String message) {
         synchronized(System.out){
             System.out.println(
-                    "* [Boot Time: " + bootTimer.get() +
+                    "* [Boot Time: UNKNOWN" + //bootTimer.get() +
                     "]\t[Match Time: " + DriverStation.getInstance().getMatchTime() +
                     "]\n- [" + level +
                     "]\t[" + name +
