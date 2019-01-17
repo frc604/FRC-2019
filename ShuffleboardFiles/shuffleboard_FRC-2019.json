@@ -1,0 +1,398 @@
+{
+  "tabPane": [
+    {
+      "title": "Main",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "SmartDashboard/",
+      "widgetPane": {
+        "gridSize": 64.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "13,2": {
+            "size": [
+              2,
+              5
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "LimeLight",
+              "Layout/Label position": "TOP",
+              "_children": [
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///robotnik/modules/Dashboard/inputs/Limelight Has Target",
+                  "_title": "Has Target",
+                  "Colors/Color when true": "#FFFF4DFF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///robotnik/modules/Dashboard/inputs/Limelight X Value",
+                  "_title": "X-Value"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///robotnik/modules/Dashboard/inputs/Limelight Y Value",
+                  "_title": "Y-Value"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///robotnik/modules/Dashboard/inputs/Limelight Area",
+                  "_title": "Area"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///robotnik/modules/Dashboard/inputs/Limelight Skew",
+                  "_title": "Skew"
+                }
+              ]
+            }
+          },
+          "11,3": {
+            "size": [
+              2,
+              4
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Acceleration",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///robotnik/modules/Dashboard/inputs/X Acceleration (g)",
+                  "_title": "X Acceleration (g)"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///robotnik/modules/Dashboard/inputs/Y Acceleration (g)",
+                  "_title": "Y Acceleration (g)"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///robotnik/modules/Dashboard/inputs/Z Acceleration (g)",
+                  "_title": "Z Acceleration (g)"
+                }
+              ]
+            }
+          },
+          "11,1": {
+            "size": [
+              4,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/autonMode",
+              "_title": "AutonMode"
+            }
+          },
+          "11,0": {
+            "size": [
+              4,
+              1
+            ],
+            "content": {
+              "_type": "Split Button Chooser",
+              "_source0": "network_table:///SmartDashboard/driveMode",
+              "_title": "Drive Mode"
+            }
+          },
+          "11,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///robotnik/modules/Dashboard/inputs/XboxFlipped",
+              "_title": "XboxFlipped",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "7,0": {
+            "size": [
+              2,
+              3
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Left Drive",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/leftDriveClicks",
+                  "_title": "Left Drive Clicks"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/leftDriveRate",
+                  "_title": "Left Drive Rate"
+                }
+              ]
+            }
+          },
+          "9,0": {
+            "size": [
+              2,
+              3
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Right Drive",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/rightDriveClicks",
+                  "_title": "Right Drive Clicks"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/leftDriveRate",
+                  "_title": "Right Drive Rate"
+                }
+              ]
+            }
+          },
+          "7,3": {
+            "size": [
+              4,
+              4
+            ],
+            "content": {
+              "_type": "PDP",
+              "_source0": "network_table:///SmartDashboard/PDP",
+              "_title": "PDP",
+              "Visuals/Show voltage and current values": true
+            }
+          },
+          "0,0": {
+            "size": [
+              7,
+              4
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_title": "",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": -1,
+              "imageHeight": -1
+            }
+          },
+          "0,4": {
+            "size": [
+              7,
+              2
+            ],
+            "content": {
+              "_type": "Basic FMS Info",
+              "_title": ""
+            }
+          },
+          "5,6": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///robotnik/modules/Limelight/inputs/limelightPipelineInput",
+              "_title": "Pipeline Input"
+            }
+          },
+          "0,6": {
+            "size": [
+              5,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///FMSInfo/IsRedAlliance",
+              "_title": "Alliance",
+              "Colors/Color when true": "#800000FF",
+              "Colors/Color when false": "#0000FFFF"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Marrionette + Testing",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "LiveWindow/",
+      "widgetPane": {
+        "gridSize": 64.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "10,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Split Button Chooser",
+              "_source0": "network_table:///SmartDashboard/marionetteOutput",
+              "_title": "Marionette Output"
+            }
+          },
+          "10,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Split Button Chooser",
+              "_source0": "network_table:///SmartDashboard/marionetteRecorder",
+              "_title": "Marionette Recorder"
+            }
+          },
+          "6,2": {
+            "size": [
+              4,
+              4
+            ],
+            "content": {
+              "_type": "PDP",
+              "_source0": "network_table:///SmartDashboard/PDP",
+              "_title": "SmartDashboard/PDP",
+              "Visuals/Show voltage and current values": true
+            }
+          },
+          "6,0": {
+            "size": [
+              4,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/autonMode",
+              "_title": "Auton Mode"
+            }
+          },
+          "6,1": {
+            "size": [
+              4,
+              1
+            ],
+            "content": {
+              "_type": "Split Button Chooser",
+              "_source0": "network_table:///SmartDashboard/driveMode",
+              "_title": "Drive Mode"
+            }
+          },
+          "12,0": {
+            "size": [
+              3,
+              6
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "List Layout",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/marionetteFile",
+                  "_title": "Marionette File"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Write File: ",
+                  "_title": "Write File"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Primary Read File: ",
+                  "_title": "Primary Read File"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Secondary Read File: ",
+                  "_title": "Secondary Read File"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Manual Primary Read File: ",
+                  "_title": "Manual Primary Read File "
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Manual Secondary Read File: ",
+                  "_title": "Manual Secondary Read File"
+                }
+              ]
+            }
+          },
+          "10,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/filePrefix",
+              "_title": "File Prefix"
+            }
+          },
+          "10,3": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///robotnik/modules/Dashboard/outputs/recordAuton",
+              "_title": "Record Auton"
+            }
+          },
+          "0,4": {
+            "size": [
+              6,
+              2
+            ],
+            "content": {
+              "_type": "Basic FMS Info",
+              "_title": ""
+            }
+          },
+          "0,0": {
+            "size": [
+              6,
+              4
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_title": "",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": -1,
+              "imageHeight": -1
+            }
+          }
+        }
+      }
+    }
+  ],
+  "windowGeometry": {
+    "x": -7.333333492279053,
+    "y": -7.333333492279053,
+    "width": 1294.6666259765625,
+    "height": 704.0
+  }
+}
