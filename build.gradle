@@ -3,19 +3,11 @@ plugins {
     id "java"
     id "eclipse"
     id "idea"
-    id "edu.wpi.first.GradleRIO" version "2019.1.1"
+    id "edu.wpi.first.GradleRIO" version "2019.2.1"
 }
 
 def TEAM = 604
 def ROBOT_CLASS = "com._604robotics.robot2019.Robot2019"
-
-// Add common repositories
-// repositories {
-//     maven {
-//         url "https://plugins.gradle.org/m2/"
-//     }
-//     mavenLocal()
-// }
 
 dependencies {
     compile wpi.deps.wpilib()

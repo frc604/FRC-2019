@@ -18,14 +18,20 @@ public class Dashboard extends DashboardModule {
     public final Input<Double> totalCurrent = addDashboardInput("Current Drawn",0.0);
 
     public final Input<Boolean> XboxFlipped = addDashboardInput("XboxFlipped", false);
+
+    /* Limelight values */
+    public final Input<Boolean> limelightTarget = addDashboardInput("Limelight Has Target", false);
+    public final Input<Double> limelightX = addDashboardInput("Limelight X Value", -1.0);
+    public final Input<Double> limelightY = addDashboardInput("Limelight Y Value", -1.0);
+    public final Input<Double> limelightArea = addDashboardInput("Limelight Area", -1.0);
+    public final Input<Double> limelightSkew = addDashboardInput("Limelight Skew", 0.0);
+
     
     public enum AutonMode {
         OFF,
         // Following are actual strategy selections
 
         // Calibration autons to verify angles and distances
-        ROTATE_LEFT_TEST,
-        ROTATE_RIGHT_TEST,
         FAILSAFE_FORWARD_12,
         FAILSAFE_BACKWARD_12,
 
