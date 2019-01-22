@@ -90,4 +90,10 @@ public class Calibration {
 
     @Untested("Currently matches value in PixyMon")
     public static final int PIXY_MAX_BLOCKS = 20; // May or may not have to match PixyMon settings...
+
+    // :5800 includes framerate and crosshair :5802 does not :5801 is the control interface
+    public static final String LIMELIGHT_URL = "http://10.6.4.101:5802";
+    public static final int LIMELIGHT_FPS = 90; // Default: Uncapped (Normally around 90)
+    public static final int LIMELIGHT_RES_X = 320; // Default: 320
+    public static final int LIMELIGHT_RES_Y = 240; // Default: 240
 }
