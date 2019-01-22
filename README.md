@@ -164,6 +164,7 @@ b. Then type `git fetch` -v to list all the possibble branches.
 
 c. Finally type `git checkout "Name of Branch"` to 2switch to that branch.
 
+
 ## Structure
 The main source code can be found in `src/com/_604robotics/`
 
@@ -198,6 +199,13 @@ Depending on your IDE, the command is (respectively):
 This year's robot code uses [604's modified version of Pathfinder](https://github.com/frc604/Pathfinder), the original version of which can be found [here](https://github.com/JacisNonsense/Pathfinder).
 
 Uses Pixy code adapted from [BHSRobotix/Steamworks2017](https://github.com/BHSRobotix/Steamworks2017)
+
+## Shuffleboard
+1. First locate the FRC Shuffleboard shortcut on the desktop or the `shuffleboard.vbs` file.
+
+2. Next open Shuffleboard and click `File -> Open Layout`
+
+3. In the prompt locate your reposoirity location and select the `shuffleboard_FRC-2019.json` file in the `ShuffleboardFiles` folder.
 
 ## Limelight
 ### Flashing
