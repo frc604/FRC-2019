@@ -261,9 +261,9 @@ public class TeleopMode extends Coordinator {
             gearState.update(driverRightBumper);
             // Will probably be double solenoid but waiting
             if (gearState.isInOnState()) {
-                robot.shifter.highGear.activate();
+                //robot.shifter.highGear.activate();
             } else if (gearState.isInOffState()) {
-                robot.shifter.lowGear.activate();
+                //robot.shifter.lowGear.activate();
             }
             // Flip values if xbox inverted
             inverted.update(driverLeftBumper);
