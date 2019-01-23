@@ -9,6 +9,8 @@ import edu.wpi.cscore.HttpCamera;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 
 import static com._604robotics.robot2019.constants.Calibration.*;
 
@@ -144,5 +146,109 @@ public class Limelight extends Module {
     public final Action driver = new Driver();
 
     // Note: It is possible to use the raw contour data. This is not implemented here.
+
+    public static class HorizontalError implements PIDSource {
+        private Limelight limelight;
+        private double setpoint;
+
+        public HorizontalError( Limelight limelight ) {
+            this(limelight, 0);
+        }
+
+        public HorizontalError( Limelight limelight, double setpoint ) {
+            this.limelight = limelight;
+            this.setpoint = setpoint;
+        }
+
+        public void setSetPoint( double setpoint ) {
+            this.setpoint = setpoint;
+        }
+
+        @Override
+        public void setPIDSourceType( PIDSourceType pidSource ) {
+            if( pidSource != PIDSourceType.kDisplacement ) {
+                throw new IllegalArgumentException("Limelight PID only accepts Displacement source type");
+            }
+
+        }
+
+        @Override
+        public PIDSourceType getPIDSourceType() {
+            return PIDSourceType.kDisplacement;
+        }
+
+        @Override
+        public double pidGet() {
+            return limelight.limelightHasTargets.get() ? limelight.limelightX.get()/27 - setpoint: 0;
+        }
+    }
+
+    public static class VerticalError implements PIDSource {
+        private Limelight limelight;
+        private double setpoint;
+
+        public VerticalError( Limelight limelight ) {
+            this(limelight, 0);
+        }
+
+        public VerticalError( Limelight limelight, double setpoint ) {
+            this.limelight = limelight;
+            this.setpoint = setpoint;
+        }
+
+        public void setSetpoint( double setpoint ) {
+            this.setpoint = setpoint;
+        }
+
+        @Override
+        public void setPIDSourceType( PIDSourceType pidSource ) {
+            if( pidSource != PIDSourceType.kDisplacement ) {
+                throw new IllegalArgumentException("Limelight PID only accepts Displacement source type");
+            }
+
+        }
+
+        @Override
+        public PIDSourceType getPIDSourceType() {
+            return PIDSourceType.kDisplacement;
+        }
+
+        @Override
+        public double pidGet() {
+            return limelight.limelightHasTargets.get() ? limelight.limelightX.get()/20.5 - setpoint: 0;
+        }
+    }
+
+    public static class AreaError implements PIDSource {
+        private Limelight limelight;
+        private double setpoint;
+
+        public AreaError( Limelight limelight, double setpoint ) {
+            this.limelight = limelight;
+            this.setpoint = setpoint;
+        }
+
+        public void setSetpoint( double setpoint ) {
+            this.setpoint = setpoint;
+        }
+
+        @Override
+        public void setPIDSourceType( PIDSourceType pidSource ) {
+            if( pidSource != PIDSourceType.kDisplacement ) {
+                throw new IllegalArgumentException("Limelight PID only accepts Displacement source type");
+            }
+
+        }
+
+        @Override
+        public PIDSourceType getPIDSourceType() {
+            return PIDSourceType.kDisplacement;
+        }
+
+        @Override
+        public double pidGet() {
+            return limelight.limelightHasTargets.get() ? limelight.limelightArea.get() - setpoint : 0;
+        }
+    }
 
 }

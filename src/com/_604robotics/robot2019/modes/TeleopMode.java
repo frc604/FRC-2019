@@ -8,9 +8,16 @@ import com._604robotics.robot2019.constants.Calibration;
 import com._604robotics.robot2019.modules.Drive;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
+import com._604robotics.robotnik.prefabs.controller.ExtendablePIDController;
+import com._604robotics.robotnik.prefabs.devices.wrappers.ArcadeDrivePIDOutput;
 import com._604robotics.robotnik.prefabs.flow.Pulse;
 import com._604robotics.robotnik.prefabs.flow.Toggle;
 import com._604robotics.robotnik.prefabs.inputcontroller.xbox.XboxController;
+import com._604robotics.robotnik.prefabs.modules.Limelight;
+import com._604robotics.robotnik.prefabs.modules.Limelight.HorizontalError;
+import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 
 import java.io.IOException;
 
@@ -30,7 +37,7 @@ public class TeleopMode extends Coordinator {
     private final com._604robotics.robot2019.Robot2019 robot;
 
     private final DriveManager driveManager;
-    private final LimelightManager limelightManager;
+    private final AutoCenterManager autoCenterManager;
     private final Logger test = new Logger("Teleop");
 
     public TeleopMode ( com._604robotics.robot2019.Robot2019 robot) {
@@ -62,7 +69,7 @@ public class TeleopMode extends Coordinator {
         this.robot = robot;
 
         driveManager = new DriveManager();
-        limelightManager = new LimelightManager();
+        autoCenterManager = new AutoCenterManager();
     }
 
     private boolean getHoldArmClicks = false;
@@ -224,7 +231,7 @@ public class TeleopMode extends Coordinator {
     
     private void process() {
     	driveManager.run();
-    	limelightManager.run();
+    	autoCenterManager.run();
     }
     
     private class DriveManager {
@@ -316,10 +323,36 @@ public class TeleopMode extends Coordinator {
         }
     }
 
-    private class LimelightManager {
-        public LimelightManager() { robot.limelight.driver.activate(); }
-        public void run() {}
+    private class AutoCenterManager {
+        private ExtendablePIDController pidController;
+        private PIDOutput rotation;
+
+        public AutoCenterManager() {
+            rotation = new PIDOutput() {
+                @Override
+                public synchronized void pidWrite(double output) {
+                    driveManager.arcade.rotatePower.set(output);
+                }
+            };
+            pidController = new ExtendablePIDController(0, 0, 0, new Limelight.HorizontalError(robot.limelight,0), rotation);
+        }
+
+        public void run() {
+            if(driverX) {
+                if( !robot.limelight.scan.isRunning() ) robot.limelight.scan.activate();
+
+                if( robot.limelight.limelightHasTargets.get() ) {
+//                    pidController.setEnabled(true);
+                    driveManager.arcade.rotatePower.set((robot.limelight.limelightX.get()/27)*50);
+                }
+            } else {
+                // Force driver to hold down X
+                pidController.setEnabled(false);
+            }
+        }
     }
+
+
     
     private enum CurrentDrive {
         IDLE, ARCADE, TANK
