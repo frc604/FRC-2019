@@ -330,6 +330,7 @@ public class TeleopMode extends Coordinator {
         private PIDOutput drive;
 
         public AutoCenterManager() {
+            wasTank = driveManager.currentDrive.equals(driveManager.tank);
             rotation = new PIDOutput() {
                 @Override
                 public synchronized void pidWrite(double output) {
