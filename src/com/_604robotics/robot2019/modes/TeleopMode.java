@@ -352,15 +352,14 @@ public class TeleopMode extends Coordinator {
 
                 if( robot.limelight.limelightHasTargets.get() ) {
                     anglePID.setEnabled(true);
-//                    driveManager.arcade.rotatePower.set(1*(robot.limelight.limelightX.get()/27));
                 }
             } else {
-                // Force driver to hold down X
                 anglePID.setEnabled(false);
             }
 
             if( driverB ) {
-                distPID.setEnabled(true);
+                if( !robot.limelight.scan.isRunning() ) robot.limelight.scan.activate();
+                if( robot.limelight.limelightHasTargets.get() ) distPID.setEnabled(true);
             } else {
                 distPID.setEnabled(false);
             }

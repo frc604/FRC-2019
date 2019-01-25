@@ -25,6 +25,8 @@ public class Limelight extends Module {
     public Output<Double> limelightArea;
     public Output<Double> limelightSkew;
 
+    public Output<Double> limelightDistance;
+
     public Input<Integer> limelightLED; // TODO Find a way to store enum in networktables
     public Input<Integer> limelightStreamMode; // TODO Find a way to store enum in networktables
     public Input<Integer> limelightPipeline;
@@ -65,6 +67,8 @@ public class Limelight extends Module {
         limelightY = addOutput("limelightY", () -> table.getEntry("ty").getDouble(0));
         limelightArea = addOutput("limelightArea", () -> table.getEntry("ta").getDouble(0));
         limelightSkew = addOutput("limelightSkew", () -> table.getEntry("ts").getDouble(0));
+
+        limelightDistance = addOutput("limelightDistance", this::getDistance);
 
         limelightPipeline = addInput("limelightPipelineInput", 0);
         limelightLED = addInput("limelightLEDInput", 0);
@@ -144,6 +148,11 @@ public class Limelight extends Module {
 
     public final Action scan = new Scan();
     public final Action driver = new Driver();
+
+    private double getDistance() {
+        return (Calibration.LIMELIGHT_HEIGHT - Calibration.TARGET_HEIGHT) *
+            Math.tan(this.limelightY.get() + Calibration.LIMELIGHT_ANGLE);
+    }
 
     // Note: It is possible to use the raw contour data. This is not implemented here.
 
@@ -259,8 +268,7 @@ public class Limelight extends Module {
 
         @Override
         public double pidGet() {
-            return (Calibration.LIMELIGHT_HEIGHT - Calibration.TARGET_HEIGHT) *
-                Math.tan(limelight.limelightY.get() + Calibration.LIMELIGHT_ANGLE) - distance;
+            return limelight.limelightDistance.get() - distance;
         }
     }
 

@@ -30,6 +30,7 @@ public class DashboardSystem extends Coordinator {
         robot.dashboard.limelightY.set(robot.limelight.limelightY.get());
         robot.dashboard.limelightArea.set(robot.limelight.limelightArea.get());
         robot.dashboard.limelightSkew.set(robot.limelight.limelightSkew.get());
+        robot.dashboard.limelightDistance.set(robot.limelight.limelightDistance.get());
         
         switch( robot.dashboard.marionetteRecorder.get() ) {
             case MANUAL:

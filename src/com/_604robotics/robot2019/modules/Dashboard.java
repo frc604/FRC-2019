@@ -21,11 +21,11 @@ public class Dashboard extends DashboardModule {
 
     /* Limelight values */
     public final Input<Boolean> limelightTarget = addDashboardInput("Limelight Has Target", false);
-    public final Input<Double> limelightX = addDashboardInput("Limelight X Value", -1.0);
-    public final Input<Double> limelightY = addDashboardInput("Limelight Y Value", -1.0);
-    public final Input<Double> limelightArea = addDashboardInput("Limelight Area", -1.0);
+    public final Input<Double> limelightX = addDashboardInput("Limelight X Value", 0.0);
+    public final Input<Double> limelightY = addDashboardInput("Limelight Y Value", 0.0);
+    public final Input<Double> limelightArea = addDashboardInput("Limelight Area", 0.0);
     public final Input<Double> limelightSkew = addDashboardInput("Limelight Skew", 0.0);
-
+    public final Input<Double> limelightDistance = addDashboardInput("Distance from Limelight", 0.0);
     
     public enum AutonMode {
         OFF,
