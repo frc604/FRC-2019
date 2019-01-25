@@ -133,7 +133,7 @@ public class Drive extends Module {
             robotDrive.arcadeDrive(movePower.get(), rotatePower.get(), squared);
         }
     }
-
+    
     public Drive () {
         super(Drive.class);
         robotDrive.setDeadband(0.04);

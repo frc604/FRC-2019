@@ -324,17 +324,27 @@ public class TeleopMode extends Coordinator {
     }
 
     private class AutoCenterManager {
-        private ExtendablePIDController pidController;
+        private ExtendablePIDController anglePID;
+        private ExtendablePIDController distPID;
         private PIDOutput rotation;
+        private PIDOutput drive;
 
         public AutoCenterManager() {
+            wasTank = driveManager.currentDrive.equals(driveManager.tank);
             rotation = new PIDOutput() {
                 @Override
                 public synchronized void pidWrite(double output) {
                     driveManager.arcade.rotatePower.set(output);
                 }
             };
-            pidController = new ExtendablePIDController(0, 0, 0, new Limelight.HorizontalError(robot.limelight,0), rotation);
+            drive = new PIDOutput() {
+                @Override
+                public synchronized void pidWrite(double output) {
+                    driveManager.arcade.movePower.set(output);
+                }
+            };
+            anglePID = new ExtendablePIDController(1, 0, 0, new Limelight.HorizontalError(robot.limelight,0), rotation);
+            distPID = new ExtendablePIDController(1, 0, 0, new Limelight.DistanceError(robot.limelight, 18), drive);
         }
 
         public void run() {
@@ -342,12 +352,18 @@ public class TeleopMode extends Coordinator {
                 if( !robot.limelight.scan.isRunning() ) robot.limelight.scan.activate();
 
                 if( robot.limelight.limelightHasTargets.get() ) {
-//                    pidController.setEnabled(true);
-                    driveManager.arcade.rotatePower.set((robot.limelight.limelightX.get()/27)*50);
+                    anglePID.setEnabled(true);
+//                    driveManager.arcade.rotatePower.set(1*(robot.limelight.limelightX.get()/27));
                 }
             } else {
                 // Force driver to hold down X
-                pidController.setEnabled(false);
+                anglePID.setEnabled(false);
+            }
+
+            if( driverB ) {
+                distPID.setEnabled(true);
+            } else {
+                distPID.setEnabled(false);
             }
         }
     }

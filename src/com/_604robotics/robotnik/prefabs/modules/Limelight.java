@@ -155,11 +155,20 @@ public class Limelight extends Module {
             this(limelight, 0);
         }
 
+        /**
+         * Creates a new PID representing horizontal angle error of the limelight
+         * @param limelight Limelight object to use
+         * @param setpoint The angle offset to use
+         */
         public HorizontalError( Limelight limelight, double setpoint ) {
             this.limelight = limelight;
             this.setpoint = setpoint;
         }
 
+        /**
+         * Sets the angle offset to use
+         * @param setpoint Angle offset to use
+         */
         public void setSetPoint( double setpoint ) {
             this.setpoint = setpoint;
         }
@@ -169,7 +178,6 @@ public class Limelight extends Module {
             if( pidSource != PIDSourceType.kDisplacement ) {
                 throw new IllegalArgumentException("Limelight PID only accepts Displacement source type");
             }
-
         }
 
         @Override
@@ -179,7 +187,8 @@ public class Limelight extends Module {
 
         @Override
         public double pidGet() {
-            return limelight.limelightHasTargets.get() ? limelight.limelightX.get()/27 - setpoint: 0;
+            // I have been very silly. Limelight calculates angle for you.
+            return limelight.limelightX.get() - setpoint;
         }
     }
 
@@ -215,21 +224,24 @@ public class Limelight extends Module {
 
         @Override
         public double pidGet() {
-            return limelight.limelightHasTargets.get() ? limelight.limelightX.get()/20.5 - setpoint: 0;
+            return limelight.limelightX.get() - setpoint;
         }
     }
 
-    public static class AreaError implements PIDSource {
+    public static class DistanceError implements PIDSource {
         private Limelight limelight;
-        private double setpoint;
+        private double distance;
 
-        public AreaError( Limelight limelight, double setpoint ) {
+        /**
+         * Creates a new PIDSource representing the distance from a calibrated target
+         * using the angle of the limelight relative to the target
+         * @param limelight The limelight object representing the limelight
+         * @param distance Goal distance the limelight should be from the target.
+         *                 If 0, the robot will likely be trying to enter a wall
+         */
+        public DistanceError( Limelight limelight, double distance ) {
             this.limelight = limelight;
-            this.setpoint = setpoint;
-        }
-
-        public void setSetpoint( double setpoint ) {
-            this.setpoint = setpoint;
+            this.distance = distance;
         }
 
         @Override
@@ -247,7 +259,8 @@ public class Limelight extends Module {
 
         @Override
         public double pidGet() {
-            return limelight.limelightHasTargets.get() ? limelight.limelightArea.get() - setpoint : 0;
+            return (Calibration.LIMELIGHT_HEIGHT - Calibration.TARGET_HEIGHT) *
+                Math.tan(limelight.limelightY.get() + Calibration.LIMELIGHT_ANGLE) - distance;
         }
     }
 
