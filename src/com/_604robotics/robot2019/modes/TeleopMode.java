@@ -342,7 +342,7 @@ public class TeleopMode extends Coordinator {
                     driveManager.arcade.movePower.set(output);
                 }
             };
-            anglePID = new ExtendablePIDController(1, 0, 0, new Limelight.HorizontalError(robot.limelight,0), rotation);
+            //anglePID = new ExtendablePIDController(1, 0, 0, new Limelight.HorizontalError(robot.limelight,0), rotation);
             distPID = new ExtendablePIDController(1, 0, 0, new Limelight.DistanceError(robot.limelight, 18), drive);
         }
 
@@ -351,10 +351,13 @@ public class TeleopMode extends Coordinator {
                 if( !robot.limelight.scan.isRunning() ) robot.limelight.scan.activate();
 
                 if( robot.limelight.limelightHasTargets.get() ) {
-                    anglePID.setEnabled(true);
+                    //anglePID.setEnabled(true);
+
+                    //Enable line below for direct motor values
+                    driveManager.arcade.movePower.set(1*(robot.limelight.limelightX.get()/27));
                 }
             } else {
-                anglePID.setEnabled(false);
+                //anglePID.setEnabled(false);
             }
 
             if( driverB ) {
