@@ -79,7 +79,7 @@ public class Limelight extends Module {
         cameraStream.setFPS(LIMELIGHT_FPS);
         cameraStream.setResolution(LIMELIGHT_RES_X, LIMELIGHT_RES_Y);
 
-        setDefaultAction(driver);
+        setDefaultAction(scan);
     }
 
     private class Scan extends Action {

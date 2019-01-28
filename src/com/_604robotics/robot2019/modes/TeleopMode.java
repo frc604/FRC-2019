@@ -230,8 +230,8 @@ public class TeleopMode extends Coordinator {
     }
     
     private void process() {
+        //autoCenterManager.run();
     	driveManager.run();
-    	autoCenterManager.run();
     }
     
     private class DriveManager {
@@ -266,12 +266,19 @@ public class TeleopMode extends Coordinator {
                 //robot.shifter.lowGear.activate();
             }
             // Flip values if xbox inverted
-            inverted.update(driverLeftBumper);
+
+
+            /*inverted.update(driverLeftBumper);
             robot.dashboard.XboxFlipped.set(inverted.isInOnState());
             if (inverted.isInOnState()) {
                 leftY*=-1;
                 rightY*=-1;
+
+    
             }
+
+            */
+            
             // Get Dashboard option for drive
             switch (robot.dashboard.driveMode.get()){
                 case OFF:
@@ -312,6 +319,7 @@ public class TeleopMode extends Coordinator {
                     } else {
                         arcade.rotatePower.set(rightX);
                     }
+                    autoCenterManager.run();
                     arcade.activate();
                     break;
                 case TANK:
@@ -342,8 +350,9 @@ public class TeleopMode extends Coordinator {
                     driveManager.arcade.movePower.set(output);
                 }
             };
-            //anglePID = new ExtendablePIDController(1, 0, 0, new Limelight.HorizontalError(robot.limelight,0), rotation);
-            distPID = new ExtendablePIDController(1, 0, 0, new Limelight.DistanceError(robot.limelight, 18), drive);
+            anglePID = new ExtendablePIDController(0.5, 0, 0, new Limelight.HorizontalError(robot.limelight,0), rotation);
+    
+            distPID = new ExtendablePIDController(0.5, 0, 0, new Limelight.DistanceError(robot.limelight, 18), drive);
         }
 
         public void run() {
@@ -351,21 +360,30 @@ public class TeleopMode extends Coordinator {
                 if( !robot.limelight.scan.isRunning() ) robot.limelight.scan.activate();
 
                 if( robot.limelight.limelightHasTargets.get() ) {
-                    //anglePID.setEnabled(true);
-
-                    //Enable line below for direct motor values
-                    driveManager.arcade.movePower.set(1*(robot.limelight.limelightX.get()/27));
-                }
-            } else {
-                //anglePID.setEnabled(false);
+                        System.out.println("Arcade" + robot.limelight.limelightX.get());
+                        driveManager.arcade.rotatePower.set(robot.limelight.limelightX.get()/20); 
+                         //anglePID.setEnabled(true);
+                } else {
+                anglePID.setEnabled(false);
             }
+        }
 
+            /*
             if( driverB ) {
                 if( !robot.limelight.scan.isRunning() ) robot.limelight.scan.activate();
-                if( robot.limelight.limelightHasTargets.get() ) distPID.setEnabled(true);
+                
+                if( robot.limelight.limelightHasTargets.get() ) {
+                    distPID.setEnabled(true);
+                    //new Limelight.DistanceError(robot.limelight, 18);
+                    //driveManager.arcade.movePower.set(robot.limelight.limelightDistance.get());
+                }
             } else {
                 distPID.setEnabled(false);
             }
+
+            */
+            
+
         }
     }
 
