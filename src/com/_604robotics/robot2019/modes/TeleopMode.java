@@ -9,15 +9,11 @@ import com._604robotics.robot2019.modules.Drive;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
 import com._604robotics.robotnik.prefabs.controller.ExtendablePIDController;
-import com._604robotics.robotnik.prefabs.devices.wrappers.ArcadeDrivePIDOutput;
 import com._604robotics.robotnik.prefabs.flow.Pulse;
 import com._604robotics.robotnik.prefabs.flow.Toggle;
 import com._604robotics.robotnik.prefabs.inputcontroller.xbox.XboxController;
 import com._604robotics.robotnik.prefabs.modules.Limelight;
-import com._604robotics.robotnik.prefabs.modules.Limelight.HorizontalError;
 import edu.wpi.first.wpilibj.PIDOutput;
-import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.PIDSourceType;
 
 import java.io.IOException;
 
@@ -73,48 +69,48 @@ public class TeleopMode extends Coordinator {
     }
 
     private boolean getHoldArmClicks = false;
-    
+
     private double driverLeftJoystickY = 0.0;
     private double driverLeftJoystickX = 0.0;
     private double driverLeftTrigger = 0.0;
-    
+
     private boolean driverLeftJoystickButton = false;
     private boolean driverLeftTriggerButton = false;
     private boolean driverLeftBumper = false;
-    
+
     private double driverRightJoystickY = 0.0;
     private double driverRightJoystickX = 0.0;
     private double driverRightTrigger = 0.0;
-    
+
     private boolean driverRightJoystickButton = false;
     private boolean driverRightTriggerButton = false;
     private boolean driverRightBumper = false;
-    
+
     private boolean driverBack = false;
     private boolean driverStart = false;
     private boolean driverA = false;
     private boolean driverB = false;
     private boolean driverX = false;
     private boolean driverY = false;
-    
+
     private boolean driverDPad = false;
-    
+
     private double manipLeftJoystickY = 0.0;
     private double manipLeftJoystickX = 0.0;
     private double manipLeftTrigger = 0.0;
-    
+
     private boolean manipLeftJoystickButton = false;
     private boolean manipLeftTriggerButton = false;
     private boolean manipLeftBumper = false;
-    
+
     private double manipRightJoystickY = 0.0;
     private double manipRightJoystickX = 0.0;
     private double manipRightTrigger = 0.0;
-    
+
     private boolean manipRightJoystickButton= false;
     private boolean manipRightTriggerButton= false;
     private boolean manipRightBumper= false;
-    
+
     private boolean manipBack= false;
     private boolean manipStart= false;
     private boolean manipA= false;
@@ -143,7 +139,7 @@ public class TeleopMode extends Coordinator {
 
     @Override
     protected boolean run () {
-    	updateControls();
+        updateControls();
         process();
         return true;
     }
@@ -161,13 +157,13 @@ public class TeleopMode extends Coordinator {
                 // filename is prefixed when filename is saved to
                 String fileName = robot.dashboard.marionetteFile.get();
                 switch( robot.dashboard.marionetteRecorder.get() ) {
-                	case MANUAL:
-                		if( Calibration.AUTO_APPEND_TIMESTAMP ) {
-                			fileName = System.currentTimeMillis() + "_" + fileName;
-                		}
-                		break;
-                	default:
-            			break;
+                    case MANUAL:
+                        if( Calibration.AUTO_APPEND_TIMESTAMP ) {
+                            fileName = System.currentTimeMillis() + "_" + fileName;
+                        }
+                        break;
+                    default:
+                        break;
                 }
                 logger.info("Saving Marionette recording to \"" + robot.dashboard.filePrefix.get() + fileName + "\"");
                 oldInputRecorder.getRecording().save("/home/lvuser/" + robot.dashboard.filePrefix.get() + fileName);
@@ -178,62 +174,62 @@ public class TeleopMode extends Coordinator {
     }
 
     private void updateControls() {
-    	driverLeftJoystickY = driver.leftStick.y.get();
+        driverLeftJoystickY = driver.leftStick.y.get();
         driverLeftJoystickX = driver.leftStick.x.get();
         driverLeftTrigger = driver.triggers.left.get();
-        
+
         driverLeftJoystickButton = driver.buttons.leftStick.get();
         driverLeftTriggerButton = driver.buttons.lt.get();
         driverLeftBumper = driver.buttons.lb.get();
-        
+
         driverRightJoystickY = driver.rightStick.y.get();
         driverRightJoystickX = driver.rightStick.x.get();
         driverRightTrigger = driver.triggers.right.get();
-        
+
         driverRightJoystickButton = driver.buttons.rightStick.get();
         driverRightTriggerButton = driver.buttons.rt.get();
         driverRightBumper = driver.buttons.rb.get();
-        
+
         driverBack = driver.buttons.back.get();
         driverStart = driver.buttons.start.get();
         driverA = driver.buttons.a.get();
         driverB = driver.buttons.b.get();
         driverX = driver.buttons.x.get();
         driverY = driver.buttons.y.get();
-        
+
         driverDPad = driver.dpad.pressed.get();
-        
+
         manipLeftJoystickY = manip.leftStick.y.get();
         manipLeftJoystickX = manip.leftStick.x.get();
         manipLeftTrigger = manip.triggers.left.get();
-        
+
         manipLeftJoystickButton = manip.buttons.leftStick.get();
         manipLeftTriggerButton = manip.buttons.lt.get();
         manipLeftBumper = manip.buttons.lb.get();
-        
+
         manipRightJoystickY = manip.rightStick.y.get();
         manipRightJoystickX = manip.rightStick.x.get();
         manipRightTrigger = manip.triggers.right.get();
-        
+
         manipRightJoystickButton = manip.buttons.rightStick.get();
         manipRightTriggerButton = manip.buttons.rt.get();
         manipRightBumper = manip.buttons.rb.get();
-        
+
         manipBack = manip.buttons.back.get();
         manipStart = manip.buttons.start.get();
         manipA = manip.buttons.a.get();
         manipB = manip.buttons.b.get();
         manipX = manip.buttons.x.get();
         manipY = manip.buttons.y.get();
-        
+
         manipDPad = manip.dpad.pressed.get();
     }
-    
+
     private void process() {
-        //autoCenterManager.run();
-    	driveManager.run();
+        autoCenterManager.run();
+        driveManager.run();
     }
-    
+
     private class DriveManager {
         private final Drive.ArcadeDrive arcade;
         private final Drive.TankDrive tank;
@@ -254,31 +250,28 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
-        	double leftY = driver.leftStick.y.get();
-        	double rightY = driver.rightStick.y.get();
-        	double rightX = driver.rightStick.x.get();
+            double leftY = driver.leftStick.y.get();
+            double rightY = driver.rightStick.y.get();
+            double rightX = driver.rightStick.x.get();
+
             // Set gears
             gearState.update(driverRightBumper);
+
             // Will probably be double solenoid but waiting
-            if (gearState.isInOnState()) {
-                //robot.shifter.highGear.activate();
+            /*if (gearState.isInOnState()) {
+                robot.shifter.highGear.activate();
             } else if (gearState.isInOffState()) {
-                //robot.shifter.lowGear.activate();
-            }
+                robot.shifter.lowGear.activate();
+            }*/
+
             // Flip values if xbox inverted
-
-
-            /*inverted.update(driverLeftBumper);
+            inverted.update(driverLeftBumper);
             robot.dashboard.XboxFlipped.set(inverted.isInOnState());
             if (inverted.isInOnState()) {
                 leftY*=-1;
                 rightY*=-1;
-
-    
             }
 
-            */
-            
             // Get Dashboard option for drive
             switch (robot.dashboard.driveMode.get()){
                 case OFF:
@@ -308,25 +301,28 @@ public class TeleopMode extends Coordinator {
             }
 
             // Set appropriate drive mode depending on dashboard option
-            switch (currentDrive) {
-                case IDLE:
-                    idle.activate();
-                    break;
-                case ARCADE:
-                    arcade.movePower.set(leftY);
-                    if( driverLeftJoystickButton ) {
-                        arcade.rotatePower.set(rightX * Calibration.SLOW_ROTATION_MODIFIER);
-                    } else {
-                        arcade.rotatePower.set(rightX);
-                    }
-                    autoCenterManager.run();
-                    arcade.activate();
-                    break;
-                case TANK:
-                    tank.leftPower.set(leftY);
-                    tank.rightPower.set(rightY);
-                    tank.activate();
-                    break;
+            if( autoCenterManager.currentlyTargeting ) {
+                arcade.activate();
+            } else {
+                switch( currentDrive ) {
+                    case IDLE:
+                        idle.activate();
+                        break;
+                    case ARCADE:
+                        arcade.movePower.set(leftY);
+                        if( driverLeftJoystickButton ) {
+                            arcade.rotatePower.set(rightX * Calibration.SLOW_ROTATION_MODIFIER);
+                        } else {
+                            arcade.rotatePower.set(rightX);
+                        }
+                        arcade.activate();
+                        break;
+                    case TANK:
+                        tank.leftPower.set(leftY);
+                        tank.rightPower.set(rightY);
+                        tank.activate();
+                        break;
+                }
             }
         }
     }
@@ -336,8 +332,10 @@ public class TeleopMode extends Coordinator {
         private ExtendablePIDController distPID;
         private PIDOutput rotation;
         private PIDOutput drive;
+        public boolean currentlyTargeting;
 
         public AutoCenterManager() {
+            this.currentlyTargeting = false;
             rotation = new PIDOutput() {
                 @Override
                 public synchronized void pidWrite(double output) {
@@ -351,44 +349,36 @@ public class TeleopMode extends Coordinator {
                 }
             };
             anglePID = new ExtendablePIDController(0.5, 0, 0, new Limelight.HorizontalError(robot.limelight,0), rotation);
-    
+
             distPID = new ExtendablePIDController(0.5, 0, 0, new Limelight.DistanceError(robot.limelight, 18), drive);
         }
 
         public void run() {
-            if(driverX) {
-                if( !robot.limelight.scan.isRunning() ) robot.limelight.scan.activate();
+            if( !robot.limelight.scan.isRunning() ) robot.limelight.scan.activate();
 
-                if( robot.limelight.limelightHasTargets.get() ) {
-                        System.out.println("Arcade" + robot.limelight.limelightX.get());
-                        driveManager.arcade.rotatePower.set(robot.limelight.limelightX.get()/20); 
-                         //anglePID.setEnabled(true);
+            if( robot.limelight.limelightHasTargets.get() ) {
+                if( !anglePID.onTarget() ) {
+                    this.currentlyTargeting = true;
+                    anglePID.setEnabled(true);
+                }
+
+                if( anglePID.onTarget() && !distPID.onTarget() ) {
+                    distPID.setEnabled(true);
                 } else {
-                anglePID.setEnabled(false);
+                    this.end();
+                }
+            } else {
+                this.end();
             }
         }
 
-            /*
-            if( driverB ) {
-                if( !robot.limelight.scan.isRunning() ) robot.limelight.scan.activate();
-                
-                if( robot.limelight.limelightHasTargets.get() ) {
-                    distPID.setEnabled(true);
-                    //new Limelight.DistanceError(robot.limelight, 18);
-                    //driveManager.arcade.movePower.set(robot.limelight.limelightDistance.get());
-                }
-            } else {
-                distPID.setEnabled(false);
-            }
-
-            */
-            
-
+        public void end() {
+            this.currentlyTargeting = false;
+            anglePID.setEnabled(false);
+            distPID.setEnabled(false);
         }
     }
 
-
-    
     private enum CurrentDrive {
         IDLE, ARCADE, TANK
     }
