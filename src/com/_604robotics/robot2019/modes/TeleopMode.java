@@ -226,7 +226,6 @@ public class TeleopMode extends Coordinator {
     }
 
     private void process() {
-        autoCenterManager.run();
         driveManager.run();
     }
 
@@ -236,33 +235,21 @@ public class TeleopMode extends Coordinator {
         private final Drive.Idle idle;
         private CurrentDrive currentDrive;
         private Toggle inverted;
-        private Toggle gearState;
 
         public DriveManager () {
-            idle=robot.drive.new Idle();
-            arcade=robot.drive.new ArcadeDrive();
-            tank=robot.drive.new TankDrive();
+            idle = robot.drive.new Idle();
+            arcade = robot.drive.new ArcadeDrive();
+            tank = robot.drive.new TankDrive();
             // TODO: Expose on dashboard
-            currentDrive=CurrentDrive.ARCADE;
+            currentDrive = CurrentDrive.ARCADE;
             // TODO: Expose on dashboard
-            inverted=new Toggle(false);
-            gearState=new Toggle(false);
+            inverted = new Toggle(false);
         }
 
         public void run() {
             double leftY = driver.leftStick.y.get();
             double rightY = driver.rightStick.y.get();
             double rightX = driver.rightStick.x.get();
-
-            // Set gears
-            gearState.update(driverRightBumper);
-
-            // Will probably be double solenoid but waiting
-            /*if (gearState.isInOnState()) {
-                robot.shifter.highGear.activate();
-            } else if (gearState.isInOffState()) {
-                robot.shifter.lowGear.activate();
-            }*/
 
             // Flip values if xbox inverted
             inverted.update(driverLeftBumper);
@@ -300,10 +287,12 @@ public class TeleopMode extends Coordinator {
                     System.out.println("Current value is:"+robot.dashboard.driveMode.get());
             }
 
-            // Set appropriate drive mode depending on dashboard option
-            if( autoCenterManager.currentlyTargeting ) {
+            if( driverX ) {
+                // Activate Limelight detection
                 arcade.activate();
+                autoCenterManager.run();
             } else {
+                autoCenterManager.end();
                 switch( currentDrive ) {
                     case IDLE:
                         idle.activate();
@@ -332,10 +321,8 @@ public class TeleopMode extends Coordinator {
         private ExtendablePIDController distPID;
         private PIDOutput rotation;
         private PIDOutput drive;
-        public boolean currentlyTargeting;
 
         public AutoCenterManager() {
-            this.currentlyTargeting = false;
             rotation = new PIDOutput() {
                 @Override
                 public synchronized void pidWrite(double output) {
@@ -358,7 +345,6 @@ public class TeleopMode extends Coordinator {
 
             if( robot.limelight.limelightHasTargets.get() ) {
                 if( !anglePID.onTarget() ) {
-                    this.currentlyTargeting = true;
                     anglePID.setEnabled(true);
                 }
 
@@ -373,7 +359,6 @@ public class TeleopMode extends Coordinator {
         }
 
         public void end() {
-            this.currentlyTargeting = false;
             anglePID.setEnabled(false);
             distPID.setEnabled(false);
         }
