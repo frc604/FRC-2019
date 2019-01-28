@@ -1,0 +1,8 @@
+sudo: false
+
+language: java
+
+jdk: openjdk10
+  
+script:
+- ./gradlew build
