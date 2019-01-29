@@ -336,8 +336,9 @@ public class TeleopMode extends Coordinator {
                 }
             };
             anglePID = new ExtendablePIDController(0.5, 0, 0, new Limelight.HorizontalError(robot.limelight,0), rotation);
-
+            anglePID.setAbsoluteTolerance(Calibration.LIMELIGHT_ANGLE_TOLERANCE);
             distPID = new ExtendablePIDController(0.5, 0, 0, new Limelight.DistanceError(robot.limelight, 18), drive);
+            distPID.setAbsoluteTolerance(Calibration.LIMELIGHT_DIST_TOLERANCE);
         }
 
         public void run() {
