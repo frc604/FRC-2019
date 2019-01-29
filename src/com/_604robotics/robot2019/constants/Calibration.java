@@ -103,4 +103,9 @@ public class Calibration {
                                                     // If negative, pointed down, positive is pointed up
     @Unreal("Needs to be measured")
     public static final double TARGET_HEIGHT = 28; // Height of the center of the vision target in inches
+
+    public static final double LIMELIGHT_ANGLE_TOLERANCE = 2;
+    public static final double LIMELIGHT_DIST_TOLERANCE = 1;
+    public static final int LIMELIGHT_DRIVER_PIPE = 9; // The pipeline to use for driver usage, NOT tracking
+    public static final int LIMELIGHT_VISION_PIPE = 0; // Pipeline for vision tracking by default
 }

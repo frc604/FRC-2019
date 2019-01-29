@@ -5,6 +5,7 @@ import com._604robotics.robotnik.Input;
 import com._604robotics.robotnik.Module;
 import com._604robotics.robotnik.Output;
 import com._604robotics.robot2019.constants.Calibration;
+import com.sun.corba.se.impl.orbutil.closure.Constant;
 import edu.wpi.cscore.HttpCamera;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -18,6 +19,7 @@ public class Limelight extends Module {
 
     private NetworkTable table;
     private HttpCamera cameraStream;
+    private int prevPipeline; // The previous vision pipeline in use, for when swapping back after driver mode
 
     public Output<Boolean> limelightHasTargets;
     public Output<Double> limelightX;
@@ -61,6 +63,7 @@ public class Limelight extends Module {
     public Limelight(String tableName) {
         super(Limelight.class);
         this.table = NetworkTableInstance.getDefault().getTable(tableName);
+        this.prevPipeline = Calibration.LIMELIGHT_VISION_PIPE;
 
         limelightHasTargets = addOutput("limelightHasTargets", () -> table.getEntry("tv").getNumber((Number) 0).intValue() == 1);
         limelightX = addOutput("limelightX", () -> table.getEntry("tx").getDouble(0));
@@ -78,6 +81,7 @@ public class Limelight extends Module {
         cameraStream = new HttpCamera("limelight", Calibration.LIMELIGHT_URL);
         cameraStream.setFPS(LIMELIGHT_FPS);
         cameraStream.setResolution(LIMELIGHT_RES_X, LIMELIGHT_RES_Y);
+        CameraServer.getInstance().addCamera(cameraStream);
 
         setDefaultAction(scan);
     }
@@ -89,7 +93,8 @@ public class Limelight extends Module {
 
         @Override
         public void begin() {
-            table.getEntry("camMode").setNumber(0);
+            table.getEntry("camMode").setNumber(0); // Sets threshold
+            limelightPipeline.set(prevPipeline);
         }
 
         @Override
@@ -110,6 +115,11 @@ public class Limelight extends Module {
                 table.getEntry("stream").setNumber(limelightStreamMode.get());
             }
         }
+
+        @Override
+        public void end() {
+            prevPipeline = limelightPipeline.get();
+        }
     }
 
     private class Driver extends Action {
@@ -122,7 +132,7 @@ public class Limelight extends Module {
         public void begin() {
             // When swapping to this action, we need to disable vision processing
             table.getEntry("camMode").setNumber(1);
-            CameraServer.getInstance().addCamera(cameraStream);
+
         }
 
         @Override

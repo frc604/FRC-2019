@@ -3,6 +3,7 @@ package com._604robotics.robot2019.modules;
 import com._604robotics.robotnik.Input;
 import com._604robotics.robotnik.Output;
 import com._604robotics.robotnik.prefabs.modules.DashboardModule;
+import com._604robotics.robotnik.prefabs.modules.Limelight;
 
 public class Dashboard extends DashboardModule {
     public final Input<Integer> leftDriveClicks = addDashboardInput("leftDriveClicks", 0);
@@ -26,6 +27,19 @@ public class Dashboard extends DashboardModule {
     public final Input<Double> limelightArea = addDashboardInput("Limelight Area", 0.0);
     public final Input<Double> limelightSkew = addDashboardInput("Limelight Skew", 0.0);
     public final Input<Double> limelightDistance = addDashboardInput("Distance from Limelight", 0.0);
+
+    /* Limelight Settings */
+    public final Output<Limelight.LEDState> limelightLEDState = addDashboardOutput("LED Mode", Limelight.LEDState.ON, Limelight.LEDState.class);
+    public final Output<Limelight.StreamMode> limelightStreamMode = addDashboardOutput("Stream Mode", Limelight.StreamMode.STANDARD, Limelight.StreamMode.class);
+    public final Output<LimelightMode> limelightVisionMode = addDashboardOutput("Vision Mode", LimelightMode.DRIVER, LimelightMode.class);
+    public final Output<Double> limelightPipeline = addDashboardOutput("Vision Pipeline", 0);
+    public final Output<Boolean> limelightSnapshot = addDashboardOutput("Snapshots", false);
+
+    public enum LimelightMode {
+        // TODO Make a enum populated by class name of actions in module
+        DRIVER,
+        VISION,
+    }
     
     public enum AutonMode {
         OFF,
