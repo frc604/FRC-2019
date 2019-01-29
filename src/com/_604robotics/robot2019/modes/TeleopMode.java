@@ -342,7 +342,7 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
-            if( !robot.limelight.scan.isRunning() ) robot.limelight.scan.activate();
+            robot.limelight.scan.activate();
 
             if( robot.limelight.limelightHasTargets.get() ) {
                 if( !anglePID.onTarget() ) {
@@ -362,6 +362,7 @@ public class TeleopMode extends Coordinator {
         public void end() {
             anglePID.setEnabled(false);
             distPID.setEnabled(false);
+            robot.limelight.driver.activate();
         }
     }
 

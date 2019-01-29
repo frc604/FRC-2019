@@ -83,7 +83,7 @@ public class Limelight extends Module {
         cameraStream.setResolution(LIMELIGHT_RES_X, LIMELIGHT_RES_Y);
         CameraServer.getInstance().addCamera(cameraStream);
 
-        setDefaultAction(scan);
+        setDefaultAction(driver);
     }
 
     private class Scan extends Action {
@@ -132,11 +132,15 @@ public class Limelight extends Module {
         public void begin() {
             // When swapping to this action, we need to disable vision processing
             table.getEntry("camMode").setNumber(1);
-
+            limelightPipeline.set(Calibration.LIMELIGHT_DRIVER_PIPE);
         }
 
         @Override
         public void run() {
+            if( limelightPipeline.isFresh() ) {
+                table.getEntry("pipeline").setNumber(limelightPipeline.get());
+            }
+
             if( limelightLED.isFresh() ) {
                 table.getEntry("ledMode").setNumber(limelightLED.get());
             }
