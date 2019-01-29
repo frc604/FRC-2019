@@ -2,7 +2,7 @@ sudo: false
 
 language: java
 
-jdk: openjdk10
+jdk: openjdk8
 
 install:
 - ./gradlew -version
@@ -12,3 +12,4 @@ install:
   
 script:
 - ./gradlew build
+- ./gradlew check
