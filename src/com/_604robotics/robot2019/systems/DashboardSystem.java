@@ -34,8 +34,12 @@ public class DashboardSystem extends Coordinator {
 
         robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
         robot.limelight.limelightStreamMode.set(robot.dashboard.limelightStreamMode.get().ordinal());
-        robot.limelight.limelightPipeline.set( Math.min(0, Math.max(9, robot.dashboard.limelightPipeline.get().intValue())) );
         robot.limelight.limelightSnapshotEnabled.set(robot.dashboard.limelightSnapshot.get());
+
+        if( robot.limelight.scan.isRunning() ) {
+            robot.limelight.limelightPipeline.set(
+                Math.min(0, Math.max(9, robot.dashboard.limelightPipeline.get().intValue())) );
+        }
 
         switch(robot.dashboard.limelightVisionMode.get()) {
             case DRIVER:
