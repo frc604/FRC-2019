@@ -15,6 +15,11 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 
 import static com._604robotics.robot2019.constants.Calibration.*;
 
+/**
+ * Represents a Limelight vision camera.
+ *
+ * @see <a href="http://docs.limelightvision.io/en/latest/index.html">Official Documentation</a>
+ */
 public class Limelight extends Module {
 
     private NetworkTable table;
@@ -58,9 +63,14 @@ public class Limelight extends Module {
      * Creates a Limelight module with a custom NetworkTable table.
      * Allows for using multiple Limelights on one robot.
      * The name of the table must be changed in the settings of the Limelight camera too.
+     *
+     * WARNING: There is currently a global Calibration value for angle and height of the limelight.
+     * If you are using multiple units, there must be distinct height and angle values for each.
+     *
      * @param tableName Name of the table to access the Limelight at
      */
     public Limelight(String tableName) {
+        // TODO: Pass Height and angle values, instead of grabbing from Calibration to allow for multiple limelights
         super(Limelight.class);
         this.table = NetworkTableInstance.getDefault().getTable(tableName);
         this.prevPipeline = Calibration.LIMELIGHT_VISION_PIPE;
@@ -86,6 +96,11 @@ public class Limelight extends Module {
         setDefaultAction(driver);
     }
 
+    /**
+     * Runs vision targeting on the limelight. This reduces exposure, so that
+     * the target is the only thing that appears. Also changes to the last used pipeline
+     * that was used for scanning.
+     */
     private class Scan extends Action {
         public Scan() {
             super(Limelight.this, Scan.class);
@@ -122,6 +137,11 @@ public class Limelight extends Module {
         }
     }
 
+    /**
+     * Runs driver vision mode on the limelight. This is a custom pipeline, with
+     * increased exposure so that is is possible to actually see things on the stream.
+     * Also stops the limelight from trying to detect objects.
+     */
     private class Driver extends Action {
 
         public Driver() {
@@ -163,6 +183,13 @@ public class Limelight extends Module {
     public final Action scan = new Scan();
     public final Action driver = new Driver();
 
+    /**
+     * Uses trig to find the distance of the limelight to the target.
+     * Requires that the limelight be mounted at an angle relative to the target, the
+     * height of the target, and the height of the limelight is known.
+     *
+     * @return Distance in the same units of the Calibration constants (should be inches)
+     */
     private double getDistance() {
         return (Calibration.LIMELIGHT_HEIGHT - Calibration.TARGET_HEIGHT) *
             Math.tan(this.limelightY.get() + Calibration.LIMELIGHT_ANGLE);
@@ -170,6 +197,10 @@ public class Limelight extends Module {
 
     // Note: It is possible to use the raw contour data. This is not implemented here.
 
+    /**
+     * Represents the horizontal angle error of the robot in degrees.
+     * Has a maximum range of -27 to 27 degrees.
+     */
     public static class HorizontalError implements PIDSource {
         private Limelight limelight;
         private double setpoint;
@@ -215,6 +246,10 @@ public class Limelight extends Module {
         }
     }
 
+    /**
+     * Represents the vertical angle error of the robot in degrees.
+     * Has a maximum range of -20.5 to 20.5 degrees.
+     */
     public static class VerticalError implements PIDSource {
         private Limelight limelight;
         private double setpoint;
@@ -251,6 +286,11 @@ public class Limelight extends Module {
         }
     }
 
+    /**
+     * Represents the distance error of the robot in the same units as
+     * used in the Calibration file (should be inches).
+     * Maximum range depends on the calibration of the Limelight's scanning.
+     */
     public static class DistanceError implements PIDSource {
         private Limelight limelight;
         private double distance;
