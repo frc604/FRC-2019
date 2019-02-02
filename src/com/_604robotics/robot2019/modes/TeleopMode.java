@@ -289,12 +289,26 @@ public class TeleopMode extends Coordinator {
 
             if( driverX ) {
                 // Activate Limelight detection
+				robot.limelight.scan.activate();
+				//robot.dashboard.limelightVisionMode.set(LimelightMode.VISION);
                 arcade.movePower.set(leftY); // Allow driver to control dist from target
                 arcade.activate();
                 autoCenterManager.run();
+				System.out.println("AUTOCENTER");
             } else {
                 autoCenterManager.end();
-                switch( currentDrive ) {
+				
+				switch(robot.dashboard.limelightVisionMode.get()) {
+					case DRIVER:
+						robot.limelight.driver.activate();
+						break;
+					case VISION:
+						robot.limelight.scan.activate();
+						break;
+					default:
+						robot.limelight.scan.activate();
+				
+                } switch( currentDrive ) {
                     case IDLE:
                         idle.activate();
                         break;
@@ -336,16 +350,18 @@ public class TeleopMode extends Coordinator {
                     driveManager.arcade.movePower.set(output);
                 }
             };
-            anglePID = new ExtendablePIDController(0.035, 0, 0.2, new Limelight.HorizontalError(robot.limelight,0), rotation);
+            anglePID = new ExtendablePIDController(-0.02, 0, -0.15, new Limelight.HorizontalError(robot.limelight,0), rotation);
             anglePID.setAbsoluteTolerance(Calibration.LIMELIGHT_ANGLE_TOLERANCE);
             distPID = new ExtendablePIDController(0.5, 0, 0, new Limelight.DistanceError(robot.limelight, 18), drive);
             distPID.setAbsoluteTolerance(Calibration.LIMELIGHT_DIST_TOLERANCE);
         }
 
         public void run() {
-            robot.limelight.scan.activate();
-
+			
+            //robot.limelight.scan.activate();
+			System.out.println("RUNNNNNNNNNNNNNNNNNNNNNNN");
             if( robot.limelight.limelightHasTargets.get() ) {
+				System.out.println("ANGLERPIDDDDD");
                 anglePID.setEnabled(true);
             } else {
                 this.end();
@@ -356,7 +372,7 @@ public class TeleopMode extends Coordinator {
             anglePID.setEnabled(false);
             anglePID.reset();
             distPID.setEnabled(false);
-            robot.limelight.driver.activate();
+            //robot.limelight.driver.activate();
         }
     }
 

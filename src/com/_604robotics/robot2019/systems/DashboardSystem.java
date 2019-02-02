@@ -40,7 +40,8 @@ public class DashboardSystem extends Coordinator {
             robot.limelight.limelightPipeline.set(
                 Math.min(0, Math.max(9, robot.dashboard.limelightPipeline.get().intValue())) );
         }
-
+		
+		/*
         switch(robot.dashboard.limelightVisionMode.get()) {
             case DRIVER:
                 robot.limelight.driver.activate();
@@ -50,7 +51,8 @@ public class DashboardSystem extends Coordinator {
                 break;
             default:
                 robot.limelight.scan.activate();
-        }
+        }*/
+	
         
         switch( robot.dashboard.marionetteRecorder.get() ) {
             case MANUAL:

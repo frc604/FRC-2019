@@ -93,7 +93,7 @@ public class Limelight extends Module {
         cameraStream.setResolution(LIMELIGHT_RES_X, LIMELIGHT_RES_Y);
         CameraServer.getInstance().addCamera(cameraStream);
 
-        setDefaultAction(driver);
+        setDefaultAction(scan);
     }
 
     /**
