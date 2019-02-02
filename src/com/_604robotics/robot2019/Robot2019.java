@@ -21,7 +21,7 @@ public class Robot2019 extends Robot {
     public final PowerMonitor powermonitor = addModule(new PowerMonitor(Ports.PDP_MODULE, Ports.COMPRESSOR));
 
     public final Drive drive = addModule(new Drive());
-    public final Shifter shifter = addModule(new Shifter( Ports.SHIFTER_A, Ports.SHIFTER_B));
+    //public final Shifter shifter = addModule(new Shifter( Ports.SHIFTER_A, Ports.SHIFTER_B));
 
     //public final Camera cameraFront = addModule(new Camera("video0"));
     //public final Camera cameraBack = addModule(new Camera("video1"));

@@ -30,6 +30,16 @@ public class DashboardSystem extends Coordinator {
         robot.dashboard.limelightY.set(robot.limelight.limelightY.get());
         robot.dashboard.limelightArea.set(robot.limelight.limelightArea.get());
         robot.dashboard.limelightSkew.set(robot.limelight.limelightSkew.get());
+        robot.dashboard.limelightDistance.set(robot.limelight.limelightDistance.get());
+
+        robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
+        robot.limelight.limelightStreamMode.set(robot.dashboard.limelightStreamMode.get().ordinal());
+        robot.limelight.limelightSnapshotEnabled.set(robot.dashboard.limelightSnapshot.get());
+
+        if( robot.limelight.scan.isRunning() ) {
+            robot.limelight.limelightPipeline.set(
+                Math.min(0, Math.max(9, robot.dashboard.limelightPipeline.get().intValue())) );
+        }
         
         switch( robot.dashboard.marionetteRecorder.get() ) {
             case MANUAL:
@@ -46,6 +56,8 @@ public class DashboardSystem extends Coordinator {
             default:
                 break;
         }
+
+        // Leave at end of function
         return true;
     }
 }

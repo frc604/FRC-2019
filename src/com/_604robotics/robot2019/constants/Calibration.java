@@ -96,4 +96,16 @@ public class Calibration {
     public static final int LIMELIGHT_FPS = 90; // Default: Uncapped (Normally around 90)
     public static final int LIMELIGHT_RES_X = 320; // Default: 320
     public static final int LIMELIGHT_RES_Y = 240; // Default: 240
+    @Unreal("Needs to be measured")
+    public static final double LIMELIGHT_HEIGHT = 24.5; // Height of limelight from the ground in inches
+    @Unreal("Needs to be measured")
+    public static final double LIMELIGHT_ANGLE = 80; // Angle of the limelight relative to the plane of the robot in degrees
+                                                    // If negative, pointed down, positive is pointed up
+    @Unreal("Needs to be measured")
+    public static final double TARGET_HEIGHT = 28; // Height of the center of the vision target in inches
+
+    public static final double LIMELIGHT_ANGLE_TOLERANCE = 2;
+    public static final double LIMELIGHT_DIST_TOLERANCE = 1;
+    public static final int LIMELIGHT_DRIVER_PIPE = 9; // The pipeline to use for driver usage, NOT tracking
+    public static final int LIMELIGHT_VISION_PIPE = 0; // Pipeline for vision tracking by default
 }
