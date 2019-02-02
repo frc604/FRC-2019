@@ -31,7 +31,6 @@ public class Dashboard extends DashboardModule {
     /* Limelight Settings */
     public final Output<Limelight.LEDState> limelightLEDState = addDashboardOutput("LED Mode", Limelight.LEDState.ON, Limelight.LEDState.class);
     public final Output<Limelight.StreamMode> limelightStreamMode = addDashboardOutput("Stream Mode", Limelight.StreamMode.STANDARD, Limelight.StreamMode.class);
-    public final Output<LimelightMode> limelightVisionMode = addDashboardOutput("Vision Mode", LimelightMode.DRIVER, LimelightMode.class);
     public final Output<Double> limelightPipeline = addDashboardOutput("Vision Pipeline", 0);
     public final Output<Boolean> limelightSnapshot = addDashboardOutput("Snapshots", false);
 
