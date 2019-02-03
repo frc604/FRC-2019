@@ -25,6 +25,7 @@ public class Robot2019 extends Robot {
 
     //public final Camera cameraFront = addModule(new Camera("video0"));
     //public final Camera cameraBack = addModule(new Camera("video1"));
+    public final Intake intake = addModule(new Intake());
 
     public final Limelight limelight = addModule(new Limelight());
     //public final Pixy pixy = addModule(new Pixy());

@@ -324,20 +324,16 @@ public class TeleopMode extends Coordinator {
                 }
             }
             
-            if( driverLeftTrigger != 0.0 ) {
-                Intake.set(driverLeftTrigger);
-            } else if( manipLeftTrigger ) {
-                Intake.set(manipLeftTrigger); 
+            if( driverLeftTrigger != 0.0 || manipLeftTrigger != 0.0 ) {
+                robot.intake.setIntake(driverLeftTrigger);
             } else {
-                Intake.end();
+                robot.intake.end();
             }
 
-            if( driverRightTrigger != 0.0 ) {
-                Intake.set(driverRightTrigger);
-            } else if( manipRightTrigger ) {
-                Intake.set(manipRightTrigger); 
+            if( driverRightTrigger != 0.0 || manipRightTrigger != 0.0 ) {
+                robot.intake.setOuttake(driverRightTrigger);
             } else {
-                Intake.end();
+                robot.intake.end();
             }
         }
     }
