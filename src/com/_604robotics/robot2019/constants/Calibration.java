@@ -51,6 +51,25 @@ public class Calibration {
     @Unreal("Values must be updated when the real robot is designed")
     public static final double DRIVE_MOTOR_RAMP = 4;
 
+    /* Arm Calibration */
+    @Unreal("Values must be updated when robot is designed")
+    public static final class Arm {
+        public static final double LOW_SETPOINT = 0;
+        public static final double STOW_SETPOINT = 0;
+        public static final double OUTPUT_SETPOINT = 0;
+
+        public static final double MIN_ENCODER_VAL = 0;
+        public static final double MAX_ENCODER_VAL = 0;
+
+        public static final double MIN_SPEED = 0;
+        public static final double MAX_SPEED = 1;
+
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kF = 0;
+    }
+
     @Unreal("Values must be updated when the real robot is designed")
     public static final AutonMovement.DriveTrainProperties DRIVE_PROPERTIES
     = new AutonMovement.DriveTrainProperties(490, 26.64, 2.5, 20.767, 8.323);//26.05
