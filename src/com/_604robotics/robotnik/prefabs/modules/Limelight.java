@@ -5,7 +5,6 @@ import com._604robotics.robotnik.Input;
 import com._604robotics.robotnik.Module;
 import com._604robotics.robotnik.Output;
 import com._604robotics.robot2019.constants.Calibration;
-import com.sun.corba.se.impl.orbutil.closure.Constant;
 import edu.wpi.cscore.HttpCamera;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
