@@ -9,6 +9,7 @@ import com._604robotics.robotnik.Output;
 import com._604robotics.robotnik.prefabs.controller.RotatingArmPIDController;
 import com._604robotics.robotnik.prefabs.devices.RedundantEncoder;
 import com._604robotics.robotnik.prefabs.devices.TalonPWMEncoder;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class Arm extends Module {
@@ -26,12 +27,16 @@ public class Arm extends Module {
     public Output<Double> pidError;
     public Output<Double> rightEncoderClicks;
     public Output<Double> leftEncoderClicks;
+    public Output<Double> redundantEncoderClicks;
 
     public Arm() {
         super(Arm.class);
 
         leftMotor = new WPI_TalonSRX(Ports.ARM_LEFT_MOTOR);
         rightMotor = new WPI_TalonSRX(Ports.ARM_RIGHT_MOTOR);
+
+        rightMotor.setInverted(true);
+        rightMotor.set(ControlMode.Follower, Ports.ARM_LEFT_MOTOR);
 
         leftEncoder = new TalonPWMEncoder(leftMotor);
         rightEncoder = new TalonPWMEncoder(rightMotor);
@@ -48,6 +53,7 @@ public class Arm extends Module {
         pidError = addOutput("PID Error", () -> pid.getError());
         rightEncoderClicks = addOutput("Right Encoder Clicks", () -> rightEncoder.getPosition());
         leftEncoderClicks = addOutput("Right Encoder Clicks", () -> leftEncoder.getPosition());
+        redundantEncoderClicks = addOutput("Redundant Encoder Clicks", () -> redundantEncoder.getValue());
 
         this.pid = new RotatingArmPIDController(Calibration.Arm.kP, Calibration.Arm.kI, Calibration.Arm.kD,
             Calibration.Arm.kF, redundantEncoder, leftMotor);

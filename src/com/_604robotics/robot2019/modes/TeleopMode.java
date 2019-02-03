@@ -350,9 +350,20 @@ public class TeleopMode extends Coordinator {
                 // Check thumbsticks
                 if( manipLeftJoystickY != 0 ) {
                     // Set arm rate to joystick
-                    arm.move.
-                    arm.move.activate();
+                    double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
 
+                    // Calculate needed factor for torque
+                    double angle = 2*Math.PI * arm.redundantEncoderClicks.get()/Calibration.Arm.CLICKS_FULL_ROTATION;
+                    angle = Math.cos(angle);
+
+                    if( (motorValue < 0 && arm.redundantEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
+                        (motorValue > 0 && arm.redundantEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
+                        // We need to account for gravity existing
+                        motorValue += Calibration.Arm.kF * angle;
+                    }
+
+                    arm.move.inputPower.set(motorValue);
+                    arm.move.activate();
                 } else {
                     // Hold arm still
                     arm.hold.activate();

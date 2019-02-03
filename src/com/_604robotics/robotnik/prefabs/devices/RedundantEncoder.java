@@ -101,7 +101,6 @@ public class RedundantEncoder implements PIDSource, Encoder {
 
     }
 
-
     private List<Encoder> getCurrentlyTrusted( Map<Encoder, Boolean> encoders) {
         List<Encoder> result = new ArrayList<>();
 
@@ -124,6 +123,10 @@ public class RedundantEncoder implements PIDSource, Encoder {
         }
 
         return true;
+    }
+
+    public List<Encoder> getEncoders() {
+        return new ArrayList<>(encoderStatus.keySet());
     }
 
     @Override
