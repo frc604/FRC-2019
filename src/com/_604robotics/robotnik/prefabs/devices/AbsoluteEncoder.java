@@ -3,7 +3,7 @@ package com._604robotics.robotnik.prefabs.devices;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
-public abstract class AbsoluteEncoder implements PIDSource {
+public abstract class AbsoluteEncoder implements Encoder {
 
     /**
      * Sets the zero of the encoder to its current value.
@@ -39,6 +39,16 @@ public abstract class AbsoluteEncoder implements PIDSource {
      * @return The (zeroed) voltage value of the encoder.
      */
     public abstract double getVoltage();
+
+    /**
+     * Gets the value of the encoder, translating angle to
+     * clicks where 250 clicks equals 360 degrees
+     *
+     * @return the value of {@link AbsoluteEncoder#getAngle()} * 250/360
+     */
+    public double getValue() {
+        return getAngle() * 250 / 360;
+    }
 
     /**
      * Gets the (zeroed) angle of the encoder.

@@ -5,10 +5,12 @@ import com._604robotics.marionette.InputRecorder;
 import com._604robotics.marionette.InputRecording;
 import com._604robotics.marionette.MarionetteJoystick;
 import com._604robotics.robot2019.constants.Calibration;
+import com._604robotics.robot2019.modules.Arm;
 import com._604robotics.robot2019.modules.Drive;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
 import com._604robotics.robotnik.prefabs.controller.ExtendablePIDController;
+import com._604robotics.robotnik.prefabs.controller.RotatingArmPIDController;
 import com._604robotics.robotnik.prefabs.flow.Pulse;
 import com._604robotics.robotnik.prefabs.flow.Toggle;
 import com._604robotics.robotnik.prefabs.inputcontroller.xbox.XboxController;
@@ -33,7 +35,9 @@ public class TeleopMode extends Coordinator {
     private final com._604robotics.robot2019.Robot2019 robot;
 
     private final DriveManager driveManager;
+    private final ArmManager armManager;
     private final AutoCenterManager autoCenterManager;
+
     private final Logger test = new Logger("Teleop");
 
     public TeleopMode ( com._604robotics.robot2019.Robot2019 robot) {
@@ -65,11 +69,11 @@ public class TeleopMode extends Coordinator {
         this.robot = robot;
 
         driveManager = new DriveManager();
+        armManager = new ArmManager();
         autoCenterManager = new AutoCenterManager();
     }
 
-    private boolean getHoldArmClicks = false;
-
+    //<editor-fold desc="Getting Controller Values"
     private double driverLeftJoystickY = 0.0;
     private double driverLeftJoystickX = 0.0;
     private double driverLeftTrigger = 0.0;
@@ -118,6 +122,7 @@ public class TeleopMode extends Coordinator {
     private boolean manipX= false;
     private boolean manipY= false;
     private boolean manipDPad = false;
+    //</editor-fold>
 
     public void startPlayback (InputRecording recording) {
         inputPlayer.startPlayback(recording);
@@ -227,6 +232,7 @@ public class TeleopMode extends Coordinator {
 
     private void process() {
         driveManager.run();
+        armManager.run();
     }
 
     private class DriveManager {
@@ -316,6 +322,54 @@ public class TeleopMode extends Coordinator {
                         break;
                 }
             }
+        }
+    }
+
+    private class ArmManager {
+        private Arm arm;
+
+        public ArmManager() {
+            arm = new Arm();
+        }
+
+        public void run() {
+            // Check setpoints
+            if( manipA ) {
+                // Low position
+                arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
+                arm.setpoint.activate();
+            } else if( manipY ) {
+                // Ball place position
+                arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
+                arm.setpoint.activate();
+            } else if( manipB ) {
+                // Hatch place position (stow)
+                arm.setpoint.setpoint.set(Calibration.Arm.STOW_SETPOINT);
+                arm.setpoint.activate();
+            } else {
+                // Check thumbsticks
+                if( manipLeftJoystickY != 0 ) {
+                    // Set arm rate to joystick
+                    double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
+
+                    // Calculate needed factor for torque
+                    double angle = 2*Math.PI * arm.redundantEncoderClicks.get()/Calibration.Arm.CLICKS_FULL_ROTATION;
+                    angle = Math.cos(angle);
+
+                    if( (motorValue < 0 && arm.redundantEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
+                        (motorValue > 0 && arm.redundantEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
+                        // We need to account for gravity existing
+                        motorValue += Calibration.Arm.kF * angle;
+                    }
+
+                    arm.move.inputPower.set(motorValue);
+                    arm.move.activate();
+                } else {
+                    // Hold arm still
+                    arm.hold.activate();
+                }
+            }
+
         }
     }
 

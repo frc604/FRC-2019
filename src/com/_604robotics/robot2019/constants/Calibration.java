@@ -29,12 +29,12 @@ public class Calibration {
     public static final double SLOW_ROTATION_MODIFIER = 0.66;
 
     @Unreal("Values must be updated when the real robot is designed")
-    public static final double DRIVE_ROTATE_PID_P = 0.003; // 0.003 / 0.005 / 0.01
+    public static final double DRIVE_ROTATE_PID_P = 0.003;
     public static final double DRIVE_ROTATE_PID_I = 0;
     @Unreal("Values must be updated when the real robot is designed")
-    public static final double DRIVE_ROTATE_PID_D = 0.01; // 0.005
+    public static final double DRIVE_ROTATE_PID_D = 0.01;
     @Unreal("Values must be updated when the real robot is designed")
-    public static final double DRIVE_ROTATE_PID_MAX = 0.4;// was 0.5
+    public static final double DRIVE_ROTATE_PID_MAX = 0.4;
     @Unreal("Values must be updated when the real robot is designed")
     public static final double DRIVE_ROTATE_TOLERANCE = 80;
 
@@ -51,11 +51,30 @@ public class Calibration {
     @Unreal("Values must be updated when the real robot is designed")
     public static final double DRIVE_MOTOR_RAMP = 4;
 
+    /* Arm Calibration */
+    @Unreal("Values must be updated when robot is designed")
+    public static final class Arm {
+        public static final double LOW_SETPOINT = 0; // Ready to intake from front
+        public static final double STOW_SETPOINT = 0; // Starting position
+        public static final double OUTPUT_SETPOINT = 0; // Output from front
+        public static final double VERTICAL_POSITION = 0; // The arm is straight up
+
+        public static final double MIN_ENCODER_VAL = 0; // The lowest value the encoder can have
+        public static final double MAX_ENCODER_VAL = 0; // The largest value the encoder can have
+        public static final double CLICKS_FULL_ROTATION = 250; // One rotation of the encoder in clicks
+
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kF = 0;
+
+        public static final double SCALE_JOYSTICK = 0.6; // Multiply the input joystick by this
+    }
+
     @Unreal("Values must be updated when the real robot is designed")
     public static final AutonMovement.DriveTrainProperties DRIVE_PROPERTIES
-    = new AutonMovement.DriveTrainProperties(490, 26.64, 2.5, 20.767, 8.323);//26.05
+    = new AutonMovement.DriveTrainProperties(490, 26.64, 2.5, 20.767, 8.323);
     // second to last = coefficient, second value = offset
-    // Width was 26.7
     static {
         System.out.println("Clicks over inches is "+DRIVE_PROPERTIES.getClicksOverInches());
         System.out.println("Clicks over degrees is "+DRIVE_PROPERTIES.getDegreesOverClicks());
