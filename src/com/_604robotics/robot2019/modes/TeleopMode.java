@@ -333,26 +333,26 @@ public class TeleopMode extends Coordinator {
         private final Intake.Idle idle;
         private final Intake.Speed speed;
 
-        public IntakeManager () {
+        public IntakeManager() {
             idle = robot.intake.new Idle();
             speed = robot.intake.new Speed();
         }
 
-        public void run () {
+        public void run() {
             if( driverLeftTrigger != 0.0 || manipLeftTrigger != 0.0 ) {
                 speed.set(driverLeftTrigger);
             } else {
-                idle.activate();
+                this.end();
             }
 
             if( driverRightTrigger != 0.0 || manipRightTrigger != 0.0 ) {
                 speed.set(driverRightTrigger);
             } else {
-                idle.activate();
+                this.end();
             }
         }
 
-        public void end () {
+        public void end() {
             idle.activate();
         }
 

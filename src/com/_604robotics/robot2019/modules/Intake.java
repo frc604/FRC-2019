@@ -4,7 +4,6 @@ import com._604robotics.robot2019.constants.Ports;
 import com._604robotics.robotnik.Action;
 import com._604robotics.robotnik.Module;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class Intake extends Module {
