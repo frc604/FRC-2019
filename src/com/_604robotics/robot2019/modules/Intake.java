@@ -1,26 +1,38 @@
 package com._604robotics.robot2019.modules;
 
-import com._604robotics.robot2019.constants.Calibration;
 import com._604robotics.robot2019.constants.Ports;
+import com._604robotics.robotnik.Action;
 import com._604robotics.robotnik.Module;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class Intake extends Module {
-    public final TalonSRX intake_motor = new TalonSRX(Ports.INTAKE_MOTOR);
-    public final double default_speed = 0.01;
+    public final WPI_TalonSRX intakeMotor = new WPI_TalonSRX(Ports.INTAKE_MOTOR);
 
-    public void setIntake (double speed) { 
-        intake_motor.set(ControlMode.PercentOutput, speed);       
+    public class Idle extends Action {
+        public Idle () {
+            super(Intake.this, Idle.class);
+        }
+
+        @Override
+        public void run () {
+            intakeMotor.stopMotor();
+        }
     }
 
-    public void setOuttake (double speed) { 
-        intake_motor.set(ControlMode.PercentOutput, -speed);       
-    }
+    public final Action idle = new Idle();
 
-    public void end () {
-        intake_motor.set(ControlMode.PercentOutput, 0.0);    
+    public class Speed extends Action {
+
+        public void set(double speed) {
+            intakeMotor.set(ControlMode.PercentOutput, speed);
+        }
+
+        public Speed() {
+            super(Intake.this, Speed.class);
+        }
+
     }
 
     public Intake() {

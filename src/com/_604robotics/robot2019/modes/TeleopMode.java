@@ -37,6 +37,7 @@ public class TeleopMode extends Coordinator {
 
     private final DriveManager driveManager;
     private final ArmManager armManager;
+    private final IntakeManager intakeManager;
     private final AutoCenterManager autoCenterManager;
 
     private final Logger test = new Logger("Teleop");
@@ -71,6 +72,7 @@ public class TeleopMode extends Coordinator {
 
         driveManager = new DriveManager();
         armManager = new ArmManager();
+        intakeManager = new IntakeManager();
         autoCenterManager = new AutoCenterManager();
     }
 
@@ -234,6 +236,7 @@ public class TeleopMode extends Coordinator {
     private void process() {
         driveManager.run();
         armManager.run();
+        intakeManager.run();
     }
 
     private class DriveManager {
@@ -323,19 +326,37 @@ public class TeleopMode extends Coordinator {
                         break;
                 }
             }
-            
+        }
+    }
+
+    private class IntakeManager {
+        private final Intake.Idle idle;
+        private final Intake.Speed speed;
+
+        public IntakeManager () {
+            idle = robot.intake.new Idle();
+            speed = robot.intake.new Speed();
+        }
+
+        public void run () {
             if( driverLeftTrigger != 0.0 || manipLeftTrigger != 0.0 ) {
-                robot.intake.setIntake(driverLeftTrigger);
+                speed.set(driverLeftTrigger);
             } else {
-                robot.intake.end();
+                idle.activate();
             }
 
             if( driverRightTrigger != 0.0 || manipRightTrigger != 0.0 ) {
-                robot.intake.setOuttake(driverRightTrigger);
+                speed.set(driverRightTrigger);
             } else {
-                robot.intake.end();
+                idle.activate();
             }
         }
+
+        public void end () {
+            idle.activate();
+        }
+
+
     }
 
     private class ArmManager {
