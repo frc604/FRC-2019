@@ -4,7 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
-public class TalonPWMEncoder implements PIDSource {
+public class TalonPWMEncoder implements Encoder {
     // Use TalonSRX because WPI_TalonSRX extends this
     private final TalonSRX talon;
     private PIDSourceType sourceType;
@@ -37,6 +37,10 @@ public class TalonPWMEncoder implements PIDSource {
 
     public void setInverted(boolean inverted) {
         this.inverted = inverted;
+    }
+
+    public double getValue() {
+        return getPosition();
     }
 
     // Use quadrature output for relative and pulse width output for absolute
