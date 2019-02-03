@@ -9,3 +9,4 @@ install: ./gradlew -version
 script:
 - ./gradlew build
 - ./gradlew check
+- ./gradlew simulateExternalJava
