@@ -24,7 +24,6 @@ public class Intake extends Module {
     public final Action idle = new Idle();
 
     public class Speed extends Action {
-
         public void set(double speed) {
             intakeMotor.set(ControlMode.PercentOutput, speed);
         }
@@ -32,7 +31,6 @@ public class Intake extends Module {
         public Speed() {
             super(Intake.this, Speed.class);
         }
-
     }
 
     public Intake() {
