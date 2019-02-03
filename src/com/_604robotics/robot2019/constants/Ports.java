@@ -20,6 +20,9 @@ public class Ports {
     public static final int ARM_LEFT_MOTOR = 5;
     public static final int ARM_RIGHT_MOTOR = 6;
 
+    /* Intake Motor */
+    public static final int INTAKE_MOTOR = 2;
+
     /* Digital Inputs */
     public static final int ENCODER_LEFT_A = 1;
     public static final int ENCODER_LEFT_B = 0;

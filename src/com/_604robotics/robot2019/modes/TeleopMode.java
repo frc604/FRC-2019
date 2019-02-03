@@ -7,6 +7,7 @@ import com._604robotics.marionette.MarionetteJoystick;
 import com._604robotics.robot2019.constants.Calibration;
 import com._604robotics.robot2019.modules.Arm;
 import com._604robotics.robot2019.modules.Drive;
+import com._604robotics.robot2019.modules.Intake;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
 import com._604robotics.robotnik.prefabs.controller.ExtendablePIDController;
@@ -321,6 +322,22 @@ public class TeleopMode extends Coordinator {
                         tank.activate();
                         break;
                 }
+            }
+            
+            if( driverLeftTrigger != 0.0 ) {
+                Intake.set(driverLeftTrigger);
+            } else if( manipLeftTrigger ) {
+                Intake.set(manipLeftTrigger); 
+            } else {
+                Intake.end();
+            }
+
+            if( driverRightTrigger != 0.0 ) {
+                Intake.set(driverRightTrigger);
+            } else if( manipRightTrigger ) {
+                Intake.set(manipRightTrigger); 
+            } else {
+                Intake.end();
             }
         }
     }
