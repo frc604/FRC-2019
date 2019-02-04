@@ -34,5 +34,7 @@ public class Intake extends Module {
 
     public Intake() {
         super(Intake.class);
+
+        setDefaultAction(idle);
     }
 }

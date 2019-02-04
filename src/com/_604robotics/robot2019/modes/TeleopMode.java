@@ -339,24 +339,18 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
-            if( driverLeftTrigger != 0.0 || manipLeftTrigger != 0.0 ) {
-                speed.set(driverLeftTrigger);
+            if( driverLeftTrigger != 0.0 ) {
+                speed.set(driverLeftTrigger); // Intake
+            } else if( driverRightTrigger != 0.0 ){
+                speed.set(-1*driverRightTrigger); // Outtake
+            } else if( manipLeftTrigger != 0.0 ) {
+                speed.set(manipLeftTrigger); // Intake
+            } else if( manipRightTrigger != 0 ) {
+                speed.set(-1*manipRightTrigger); // Outtake
             } else {
-                this.end();
-            }
-
-            if( driverRightTrigger != 0.0 || manipRightTrigger != 0.0 ) {
-                speed.set(driverRightTrigger);
-            } else {
-                this.end();
+                idle.activate();
             }
         }
-
-        public void end() {
-            idle.activate();
-        }
-
-
     }
 
     private class ArmManager {
