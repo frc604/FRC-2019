@@ -292,15 +292,49 @@ public class TeleopMode extends Coordinator {
                     System.out.println("This should never happen!");
                     System.out.println("Current value is:"+robot.dashboard.driveMode.get());
             }
-
-            if( driverX ) {
-                // Activate Limelight detection
+			
+			if( driverRightBumper ){
 				robot.limelight.scan.activate();
-                arcade.movePower.set(leftY); // Allow driver to control dist from target
-                arcade.activate();
-                autoCenterManager.run();
+				arcade.activate();
+
+				if( robot.limelight.limelightHasTargets.get() ){
+					arcade.movePower.set(leftY);
+					autoCenterManager.run();
+				} else {
+					robot.limelight.scan.activate();
+					switch( currentDrive ) {
+                    case IDLE:
+                        idle.activate();
+                        break;
+                    case ARCADE:
+                        arcade.movePower.set(leftY);
+                        if( driverLeftJoystickButton ) {
+                            arcade.rotatePower.set(rightX * Calibration.SLOW_ROTATION_MODIFIER);
+                        } else {
+                            arcade.rotatePower.set(rightX);
+                        }
+                        arcade.activate();
+                        break;
+                    case TANK:
+                        tank.leftPower.set(leftY);
+                        tank.rightPower.set(rightY);
+                        tank.activate();
+                        break;
+					}
+				}
             } else {
                 autoCenterManager.end();
+				
+				switch(robot.dashboard.limelightVisionMode.get()){
+					case DRIVER:
+						robot.limelight.driver.activate();
+						break;
+					case VISION:
+						robot.limelight.scan.activate();
+						break;
+					default:
+					    robot.limelight.scan.activate();
+                }
 
                 switch( currentDrive ) {
                     case IDLE:
@@ -392,7 +426,7 @@ public class TeleopMode extends Coordinator {
                     driveManager.arcade.movePower.set(output);
                 }
             };
-            anglePID = new ExtendablePIDController(-0.02, 0, -0.15, new Limelight.HorizontalError(robot.limelight,0), rotation);
+            anglePID = new ExtendablePIDController(-0.04, 0, -0.15, new Limelight.HorizontalError(robot.limelight,0), rotation);
             anglePID.setAbsoluteTolerance(Calibration.LIMELIGHT_ANGLE_TOLERANCE);
             distPID = new ExtendablePIDController(0.5, 0, 0, new Limelight.DistanceError(robot.limelight, 18), drive);
             distPID.setAbsoluteTolerance(Calibration.LIMELIGHT_DIST_TOLERANCE);
@@ -412,7 +446,7 @@ public class TeleopMode extends Coordinator {
             anglePID.setEnabled(false);
             anglePID.reset();
             distPID.setEnabled(false);
-            robot.limelight.driver.activate();
+            //robot.limelight.driver.activate();
         }
     }
 
