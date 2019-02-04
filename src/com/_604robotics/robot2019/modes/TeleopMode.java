@@ -11,8 +11,6 @@ import com._604robotics.robot2019.modules.Intake;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
 import com._604robotics.robotnik.prefabs.controller.ExtendablePIDController;
-import com._604robotics.robotnik.prefabs.controller.RotatingArmPIDController;
-import com._604robotics.robotnik.prefabs.flow.Pulse;
 import com._604robotics.robotnik.prefabs.flow.Toggle;
 import com._604robotics.robotnik.prefabs.inputcontroller.xbox.XboxController;
 import com._604robotics.robotnik.prefabs.modules.Limelight;
@@ -38,6 +36,7 @@ public class TeleopMode extends Coordinator {
     private final DriveManager driveManager;
     private final ArmManager armManager;
     private final IntakeManager intakeManager;
+    private final HatchManager hatchManager;
     private final AutoCenterManager autoCenterManager;
 
     private final Logger test = new Logger("Teleop");
@@ -73,6 +72,7 @@ public class TeleopMode extends Coordinator {
         driveManager = new DriveManager();
         armManager = new ArmManager();
         intakeManager = new IntakeManager();
+        hatchManager = new HatchManager();
         autoCenterManager = new AutoCenterManager();
     }
 
@@ -237,6 +237,7 @@ public class TeleopMode extends Coordinator {
         driveManager.run();
         armManager.run();
         intakeManager.run();
+        hatchManager.run();
     }
 
     private class DriveManager {
@@ -432,6 +433,40 @@ public class TeleopMode extends Coordinator {
                 }
             }
 
+        }
+    }
+
+    private class HatchManager {
+        private boolean isHeld;
+
+        public HatchManager() {
+            isHeld = true; // Assuming the piston is in the held state to start
+        }
+
+        public void run() {
+            if( manipRightBumper ) {
+                // Invert hatch status
+                if( robot.placer.isHolding.get() ) {
+                    robot.placer.release.activate();
+                } else {
+                    robot.placer.hold.activate();
+                }
+            } else if( robot.placer.aligned.get() ) {
+                // Checks if the two limit switches are pressed, meaning the hatch is ready to deploy
+                if( robot.placer.isHolding.get() ) {
+                    robot.placer.release.activate();
+                } else {
+                    robot.placer.hold.activate();
+                }
+            }
+
+            if( manipX ) {
+                if( robot.slider.isForward.get() ) {
+                    robot.slider.back.activate();
+                } else {
+                    robot.slider.front.activate();
+                }
+            }
         }
     }
 
