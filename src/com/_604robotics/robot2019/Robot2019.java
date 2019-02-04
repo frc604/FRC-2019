@@ -22,7 +22,7 @@ public class Robot2019 extends Robot {
     public final Intake intake = addModule(new Intake());
     public final Arm arm = addModule(new Arm());
     public final HatchSlider slider = addModule(new HatchSlider());
-    public final HatchPlacer placer = addModule(new HatchPlacer());
+    public final Hook hook = addModule(new Hook());
 
     public final Limelight limelight = addModule(new Limelight());
 

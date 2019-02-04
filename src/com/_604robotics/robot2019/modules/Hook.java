@@ -7,18 +7,18 @@ import com._604robotics.robotnik.Output;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
-public class HatchPlacer extends Module {
-    private DoubleSolenoid placer;
+public class Hook extends Module {
+    private DoubleSolenoid hook;
     private DigitalInput leftSwitch;
     private DigitalInput rightSwitch;
 
     public Output<Boolean> isHolding;
     public Output<Boolean> aligned;
 
-    public HatchPlacer() {
-        super(HatchPlacer.class);
+    public Hook() {
+        super(Hook.class);
 
-        placer = new DoubleSolenoid(Ports.HATCH_PLACER_A, Ports.HATCH_PLACER_B);
+        hook = new DoubleSolenoid(Ports.HOOK_A, Ports.HOOK_B);
         leftSwitch = new DigitalInput(Ports.HATCH_LEFT_SWITCH);
         rightSwitch = new DigitalInput(Ports.HATCH_RIGHT_SWITCH);
 
@@ -30,17 +30,17 @@ public class HatchPlacer extends Module {
 
     public class Release extends Action {
         public Release() {
-            super(HatchPlacer.this, Release.class);
+            super(Hook.this, Release.class);
 
-            placer.set(DoubleSolenoid.Value.kForward);
+            hook.set(DoubleSolenoid.Value.kForward);
         }
     }
 
     public class Hold extends Action {
         public Hold() {
-            super(HatchPlacer.this, Hold.class);
+            super(Hook.this, Hold.class);
 
-            placer.set(DoubleSolenoid.Value.kReverse);
+            hook.set(DoubleSolenoid.Value.kReverse);
         }
     }
 

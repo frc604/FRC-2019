@@ -446,17 +446,17 @@ public class TeleopMode extends Coordinator {
         public void run() {
             if( manipRightBumper ) {
                 // Invert hatch status
-                if( robot.placer.isHolding.get() ) {
-                    robot.placer.release.activate();
+                if( robot.hook.isHolding.get() ) {
+                    robot.hook.release.activate();
                 } else {
-                    robot.placer.hold.activate();
+                    robot.hook.hold.activate();
                 }
-            } else if( robot.placer.aligned.get() && useAuto ) {
+            } else if( robot.hook.aligned.get() && useAuto ) {
                 // Checks if the two limit switches are pressed, meaning the hatch is ready to deploy
-                if( robot.placer.isHolding.get() ) {
-                    robot.placer.release.activate();
+                if( robot.hook.isHolding.get() ) {
+                    robot.hook.release.activate();
                 } else {
-                    robot.placer.hold.activate();
+                    robot.hook.hold.activate();
                 }
             }
 
