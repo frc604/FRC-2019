@@ -437,10 +437,10 @@ public class TeleopMode extends Coordinator {
     }
 
     private class HatchManager {
-        private boolean isHeld;
+        boolean useAuto;
 
         public HatchManager() {
-            isHeld = true; // Assuming the piston is in the held state to start
+            useAuto = true; // Assuming the piston is in the held state to start
         }
 
         public void run() {
@@ -451,7 +451,7 @@ public class TeleopMode extends Coordinator {
                 } else {
                     robot.placer.hold.activate();
                 }
-            } else if( robot.placer.aligned.get() ) {
+            } else if( robot.placer.aligned.get() && useAuto ) {
                 // Checks if the two limit switches are pressed, meaning the hatch is ready to deploy
                 if( robot.placer.isHolding.get() ) {
                     robot.placer.release.activate();
@@ -466,6 +466,11 @@ public class TeleopMode extends Coordinator {
                 } else {
                     robot.slider.front.activate();
                 }
+            }
+
+            // Disable autoplacement
+            if( manipStart ) {
+                useAuto = !useAuto;
             }
         }
     }
