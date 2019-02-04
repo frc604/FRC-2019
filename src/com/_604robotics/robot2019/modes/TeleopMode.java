@@ -7,6 +7,7 @@ import com._604robotics.marionette.MarionetteJoystick;
 import com._604robotics.robot2019.constants.Calibration;
 import com._604robotics.robot2019.modules.Arm;
 import com._604robotics.robot2019.modules.Drive;
+import com._604robotics.robot2019.modules.Intake;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
 import com._604robotics.robotnik.prefabs.controller.ExtendablePIDController;
@@ -36,6 +37,7 @@ public class TeleopMode extends Coordinator {
 
     private final DriveManager driveManager;
     private final ArmManager armManager;
+    private final IntakeManager intakeManager;
     private final AutoCenterManager autoCenterManager;
 
     private final Logger test = new Logger("Teleop");
@@ -70,6 +72,7 @@ public class TeleopMode extends Coordinator {
 
         driveManager = new DriveManager();
         armManager = new ArmManager();
+        intakeManager = new IntakeManager();
         autoCenterManager = new AutoCenterManager();
     }
 
@@ -233,6 +236,7 @@ public class TeleopMode extends Coordinator {
     private void process() {
         driveManager.run();
         armManager.run();
+        intakeManager.run();
     }
 
     private class DriveManager {
@@ -355,6 +359,30 @@ public class TeleopMode extends Coordinator {
                         tank.activate();
                         break;
                 }
+            }
+        }
+    }
+
+    private class IntakeManager {
+        private final Intake.Idle idle;
+        private final Intake.Speed speed;
+
+        public IntakeManager() {
+            idle = robot.intake.new Idle();
+            speed = robot.intake.new Speed();
+        }
+
+        public void run() {
+            if( driverLeftTrigger != 0.0 ) {
+                speed.set(driverLeftTrigger); // Intake
+            } else if( driverRightTrigger != 0.0 ){
+                speed.set(-1*driverRightTrigger); // Outtake
+            } else if( manipLeftTrigger != 0.0 ) {
+                speed.set(manipLeftTrigger); // Intake
+            } else if( manipRightTrigger != 0 ) {
+                speed.set(-1*manipRightTrigger); // Outtake
+            } else {
+                idle.activate();
             }
         }
     }
