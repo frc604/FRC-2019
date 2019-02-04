@@ -23,6 +23,16 @@ public class Ports {
     /* Intake Motor */
     public static final int INTAKE_MOTOR = 2;
 
+    /* Hatch Control */
+    public static final int HATCH_PLACER_A = 0;
+    public static final int HATCH_PLACER_B = 0;
+    public static final int HATCH_LEFT_SLIDE_A= 0;
+    public static final int HATCH_LEFT_SLIDE_B = 0;
+    public static final int HATCH_RIGHT_SLIDE_A = 0;
+    public static final int HATCH_RIGHT_SLIDE_B = 0;
+    public static final int HATCH_LEFT_SWITCH = 0;
+    public static final int HATCH_RIGHT_SWITCH = 0;
+
     /* Digital Inputs */
     public static final int ENCODER_LEFT_A = 1;
     public static final int ENCODER_LEFT_B = 0;

@@ -8,8 +8,6 @@ import com._604robotics.robot2019.systems.*;
 import com._604robotics.robotnik.Robot;
 import edu.wpi.first.wpilibj.RobotBase;
 
-//Shuffelboard-fix
-
 public class Robot2019 extends Robot {
 
     public static void main( String [] args ) {
@@ -23,6 +21,8 @@ public class Robot2019 extends Robot {
     public final Drive drive = addModule(new Drive());
     public final Intake intake = addModule(new Intake());
     public final Arm arm = addModule(new Arm());
+    public final HatchSlider slider = addModule(new HatchSlider());
+    public final HatchPlacer placer = addModule(new HatchPlacer());
 
     public final Limelight limelight = addModule(new Limelight());
 
