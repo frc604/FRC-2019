@@ -451,25 +451,10 @@ public class TeleopMode extends Coordinator {
             useAuto.update(manipStart);
             if( useAuto.isInOnState() ) {
                 // Checks if the two limit switches are pressed, meaning the hatch is ready to deploy
-                if( robot.placer.aligned.get() ) {
-                    // WARN may cause an issue where the manip must double tap their remote to activate placer
-                    robot.placer.release.activate();
-                } else {
-                    placerToggle.update(manipRightBumper);
-                    if( placerToggle.isInOnState() ) {
-                        robot.placer.release.activate();
-                    } else if( placerToggle.isInOffState() ) {
-                        robot.placer.hold.activate();
-                    }
-                }
+                placerToggle.update(manipRightBumper || robot.placer.aligned.get());
             } else {
                 // Ignore the limit switches, only use the controller
                 placerToggle.update(manipRightBumper);
-                if( placerToggle.isInOnState() ) {
-                    robot.placer.release.activate();
-                } else if( placerToggle.isInOffState() ) {
-                    robot.placer.hold.activate();
-                }
             }
 
             // Toggle placer state
