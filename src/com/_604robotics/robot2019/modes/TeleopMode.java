@@ -391,7 +391,7 @@ public class TeleopMode extends Coordinator {
         private Arm arm;
 
         public ArmManager() {
-            arm = new Arm();
+            arm = robot.arm;
         }
 
         public void run() {
