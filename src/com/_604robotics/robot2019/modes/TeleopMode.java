@@ -468,6 +468,15 @@ public class TeleopMode extends Coordinator {
                 }
             }
 
+            if( manipLeftBumper ) {
+                if( robot.pusher.PusherExtended.get() ){
+                    robot.pusher.pullBack.activate();
+                } else {
+                    robot.pusher.push.activate();
+                }
+            }
+
+
             // Disable autoplacement
             if( manipStart ) {
                 useAuto = !useAuto;

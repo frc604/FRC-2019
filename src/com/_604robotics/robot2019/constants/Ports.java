@@ -32,6 +32,8 @@ public class Ports {
     public static final int HATCH_RIGHT_SLIDE_B = 0;
     public static final int HATCH_LEFT_SWITCH = 0;
     public static final int HATCH_RIGHT_SWITCH = 0;
+    public static final int HATCH_PUSHER_A = 0;
+    public static final int HATCH_PUSHER_B = 0;
 
     /* Digital Inputs */
     public static final int ENCODER_LEFT_A = 1;
