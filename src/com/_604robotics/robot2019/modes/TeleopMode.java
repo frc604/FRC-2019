@@ -438,12 +438,12 @@ public class TeleopMode extends Coordinator {
 
     private class HatchManager {
         private Toggle useAuto;
-        private Toggle placerToggle;
+        private Toggle hookToggle;
         private Toggle sliderForward;
 
         public HatchManager() {
             useAuto = new Toggle(true);
-            placerToggle = new Toggle(true); // Assuming the piston is in the held state to start
+            hookToggle = new Toggle(true); // Assuming the piston is in the held state to start
             sliderForward = new Toggle(false); // Not extended initially
         }
 
@@ -451,27 +451,31 @@ public class TeleopMode extends Coordinator {
             useAuto.update(manipStart);
             if( useAuto.isInOnState() ) {
                 // Checks if the two limit switches are pressed, meaning the hatch is ready to deploy
-                placerToggle.update(manipRightBumper || robot.placer.aligned.get());
+                hookToggle.update(manipRightBumper || robot.hook.aligned.get());
             } else {
                 // Ignore the limit switches, only use the controller
-                placerToggle.update(manipRightBumper);
+                hookToggle.update(manipRightBumper);
             }
 
             // Toggle placer state
-            if( placerToggle.isInOnState() ) {
-                robot.placer.release.activate();
-            } else if( placerToggle.isInOffState() ) {
-                robot.placer.hold.activate();
+            if( hookToggle.isInOnState() ) {
+                robot.hook.release.activate();
+            } else if( hookToggle.isInOffState() ) {
+                robot.hook.hold.activate();
+            }
+
+            if( manipLeftBumper ) {
+                robot.pusher.push.activate();
+            } else {
+                robot.pusher.pullBack.activate();
             }
 
             // Slide forward and back
             sliderForward.update(manipX);
             if( sliderForward.isInOnState() ) {
                 robot.slider.back.activate();
-                sliderForward.update(false);
             } else if( sliderForward.isInOffState() ) {
                 robot.slider.front.activate();
-                sliderForward.update(true);
             }
         }
     }
