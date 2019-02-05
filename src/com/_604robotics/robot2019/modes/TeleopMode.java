@@ -297,48 +297,48 @@ public class TeleopMode extends Coordinator {
                     System.out.println("This should never happen!");
                     System.out.println("Current value is:"+robot.dashboard.driveMode.get());
             }
-			
-			if( driverRightBumper ){
-				robot.limelight.scan.activate();
-				arcade.activate();
 
-				if( robot.limelight.limelightHasTargets.get() ){
-					arcade.movePower.set(leftY);
-					autoCenterManager.run();
-				} else {
-					robot.limelight.scan.activate();
-					switch( currentDrive ) {
-                    case IDLE:
-                        idle.activate();
-                        break;
-                    case ARCADE:
-                        arcade.movePower.set(leftY);
-                        if( driverLeftJoystickButton ) {
-                            arcade.rotatePower.set(rightX * Calibration.SLOW_ROTATION_MODIFIER);
-                        } else {
-                            arcade.rotatePower.set(rightX);
-                        }
-                        arcade.activate();
-                        break;
-                    case TANK:
-                        tank.leftPower.set(leftY);
-                        tank.rightPower.set(rightY);
-                        tank.activate();
-                        break;
-					}
-				}
+            if( driverRightBumper ){
+                robot.limelight.scan.activate();
+                arcade.activate();
+
+                if( robot.limelight.limelightHasTargets.get() ){
+                    arcade.movePower.set(leftY);
+                    autoCenterManager.run();
+                } else {
+                    robot.limelight.scan.activate();
+                    switch( currentDrive ) {
+                        case IDLE:
+                            idle.activate();
+                            break;
+                        case ARCADE:
+                            arcade.movePower.set(leftY);
+                            if( driverLeftJoystickButton ) {
+                                arcade.rotatePower.set(rightX * Calibration.SLOW_ROTATION_MODIFIER);
+                            } else {
+                                arcade.rotatePower.set(rightX);
+                            }
+                            arcade.activate();
+                            break;
+                        case TANK:
+                            tank.leftPower.set(leftY);
+                            tank.rightPower.set(rightY);
+                            tank.activate();
+                            break;
+                    }
+                }
             } else {
                 autoCenterManager.end();
-				
-				switch(robot.dashboard.limelightVisionMode.get()){
-					case DRIVER:
-						robot.limelight.driver.activate();
-						break;
-					case VISION:
-						robot.limelight.scan.activate();
-						break;
-					default:
-					    robot.limelight.scan.activate();
+
+                switch(robot.dashboard.limelightVisionMode.get()){
+                    case DRIVER:
+                        robot.limelight.driver.activate();
+                        break;
+                    case VISION:
+                        robot.limelight.scan.activate();
+                        break;
+                    default:
+                        robot.limelight.scan.activate();
                 }
 
                 switch( currentDrive ) {
@@ -437,35 +437,31 @@ public class TeleopMode extends Coordinator {
     }
 
     private class HatchManager {
-        boolean useAuto;
+        private Toggle useAuto;
+        private Toggle placerToggle;
+        private Toggle sliderForward;
 
         public HatchManager() {
-            useAuto = true; // Assuming the piston is in the held state to start
+            useAuto = new Toggle(true);
+            placerToggle = new Toggle(true); // Assuming the piston is in the held state to start
+            sliderForward = new Toggle(false); // Not extended initially
         }
 
         public void run() {
-            if( manipRightBumper ) {
-                // Invert hatch status
-                if( robot.hook.isHolding.get() ) {
-                    robot.hook.release.activate();
-                } else {
-                    robot.hook.hold.activate();
-                }
-            } else if( robot.hook.aligned.get() && useAuto ) {
+            useAuto.update(manipStart);
+            if( useAuto.isInOnState() ) {
                 // Checks if the two limit switches are pressed, meaning the hatch is ready to deploy
-                if( robot.hook.isHolding.get() ) {
-                    robot.hook.release.activate();
-                } else {
-                    robot.hook.hold.activate();
-                }
+                placerToggle.update(manipRightBumper || robot.hook.aligned.get());
+            } else {
+                // Ignore the limit switches, only use the controller
+                placerToggle.update(manipRightBumper);
             }
 
-            if( manipX ) {
-                if( robot.slider.isForward.get() ) {
-                    robot.slider.back.activate();
-                } else {
-                    robot.slider.front.activate();
-                }
+            // Toggle placer state
+            if( placerToggle.isInOnState() ) {
+                robot.hook.release.activate();
+            } else if( placerToggle.isInOffState() ) {
+                robot.hook.hold.activate();
             }
 
             if( manipLeftBumper ) {
@@ -476,10 +472,12 @@ public class TeleopMode extends Coordinator {
                 }
             }
 
-
-            // Disable autoplacement
-            if( manipStart ) {
-                useAuto = !useAuto;
+            // Slide forward and back
+            sliderForward.update(manipX);
+            if( sliderForward.isInOnState() ) {
+                robot.slider.back.activate();
+            } else if( sliderForward.isInOffState() ) {
+                robot.slider.front.activate();
             }
         }
     }
@@ -510,7 +508,7 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
-			
+
             robot.limelight.scan.activate();
             if( robot.limelight.limelightHasTargets.get() ) {
                 anglePID.setEnabled(true);
