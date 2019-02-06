@@ -271,6 +271,12 @@ public class TeleopMode extends Coordinator {
                 rightY*=-1;
             }
 
+            if( driverX ) {
+                robot.tilter.tilt.activate();
+            } else {
+                robot.tilter.stow.activate();
+            }
+
             // Get Dashboard option for drive
             switch (robot.dashboard.driveMode.get()){
                 case OFF:
