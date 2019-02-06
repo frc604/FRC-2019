@@ -271,7 +271,7 @@ public class TeleopMode extends Coordinator {
                 rightY*=-1;
             }
 
-            if( driverX ) {
+            if( driverX && driverDPad) {
                 robot.tilter.tilt.activate();
             } else {
                 robot.tilter.stow.activate();
