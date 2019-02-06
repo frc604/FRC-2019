@@ -15,6 +15,7 @@ import com._604robotics.robotnik.prefabs.flow.Toggle;
 import com._604robotics.robotnik.prefabs.inputcontroller.xbox.XboxController;
 import com._604robotics.robotnik.prefabs.modules.Limelight;
 import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.Timer;
 
 import java.io.IOException;
 
@@ -440,11 +441,13 @@ public class TeleopMode extends Coordinator {
         private Toggle useAuto;
         private Toggle hookToggle;
         private Toggle sliderForward;
+        private Timer hatchTime;
 
         public HatchManager() {
             useAuto = new Toggle(true);
             hookToggle = new Toggle(true); // Assuming the piston is in the held state to start
             sliderForward = new Toggle(false); // Not extended initially
+            hatchTime = new Timer();
         }
 
         public void run() {
@@ -460,8 +463,20 @@ public class TeleopMode extends Coordinator {
             // Toggle placer state
             if( hookToggle.isInOnState() ) {
                 robot.hook.release.activate();
+                robot.pusher.push.activate();
+                hatchTime.start();
             } else if( hookToggle.isInOffState() ) {
                 robot.hook.hold.activate();
+                robot.pusher.pullBack.activate();
+                hatchTime.stop();
+                hatchTime.reset();
+            }
+
+            // Check if we need to pull back the pusher
+            if( hatchTime.hasPeriodPassed(Calibration.PUSH_TIME) ) {
+                robot.pusher.pullBack.activate();
+                hatchTime.stop();
+                hatchTime.reset();
             }
 
             if( manipLeftBumper ) {
