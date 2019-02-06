@@ -35,6 +35,10 @@ public class Ports {
     public static final int HATCH_PUSHER_A = 0;
     public static final int HATCH_PUSHER_B = 0;
 
+    /* Tilter Control */
+    public static final int TILT_MOTOR = 0;
+    public static final int TILT_SWITCH = 0;
+
     /* Digital Inputs */
     public static final int ENCODER_LEFT_A = 1;
     public static final int ENCODER_LEFT_B = 0;
