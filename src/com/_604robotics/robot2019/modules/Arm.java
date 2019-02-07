@@ -10,13 +10,13 @@ import com._604robotics.robotnik.prefabs.controller.RotatingArmPIDController;
 import com._604robotics.robotnik.prefabs.devices.RedundantEncoder;
 import com._604robotics.robotnik.prefabs.devices.TalonPWMEncoder;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com._604robotics.robotnik.prefabs.devices.wrappers.TalonCAN_Handler;;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class Arm extends Module {
     private RotatingArmPIDController pid;
 
-    private TalonCAN_Handler leftMotor;
-    private TalonCAN_Handler rightMotor;
+    private WPI_TalonSRX leftMotor;
+    private WPI_TalonSRX rightMotor;
 
     private TalonPWMEncoder leftEncoder;
     private TalonPWMEncoder rightEncoder;
@@ -32,8 +32,8 @@ public class Arm extends Module {
     public Arm() {
         super(Arm.class);
 
-        leftMotor = new TalonCAN_Handler(Ports.ARM_LEFT_MOTOR);
-        rightMotor = new TalonCAN_Handler(Ports.ARM_RIGHT_MOTOR);
+        leftMotor = new WPI_TalonSRX(Ports.ARM_LEFT_MOTOR);
+        rightMotor = new WPI_TalonSRX(Ports.ARM_RIGHT_MOTOR);
 
         rightMotor.setInverted(true);
         rightMotor.set(ControlMode.Follower, Ports.ARM_LEFT_MOTOR);

@@ -4,10 +4,10 @@ import com._604robotics.robot2019.constants.Ports;
 import com._604robotics.robotnik.Action;
 import com._604robotics.robotnik.Module;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com._604robotics.robotnik.prefabs.devices.wrappers.TalonCAN_Handler;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class Intake extends Module {
-    public final TalonCAN_Handler intakeMotor = new TalonCAN_Handler(Ports.INTAKE_MOTOR);
+    public final WPI_TalonSRX intakeMotor = new WPI_TalonSRX(Ports.INTAKE_MOTOR);
 
     public class Idle extends Action {
         public Idle () {
