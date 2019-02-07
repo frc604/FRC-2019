@@ -35,9 +35,9 @@ public class TeleopMode extends Coordinator {
     private final com._604robotics.robot2019.Robot2019 robot;
 
     private final DriveManager driveManager;
-    private final ArmManager armManager;
-    private final IntakeManager intakeManager;
-    private final HatchManager hatchManager;
+    //private final ArmManager armManager;
+    //private final IntakeManager intakeManager;
+    //private final HatchManager hatchManager;
     private final AutoCenterManager autoCenterManager;
 
     private final Logger test = new Logger("Teleop");
@@ -71,9 +71,9 @@ public class TeleopMode extends Coordinator {
         this.robot = robot;
 
         driveManager = new DriveManager();
-        armManager = new ArmManager();
-        intakeManager = new IntakeManager();
-        hatchManager = new HatchManager();
+        //armManager = new ArmManager();
+        //intakeManager = new IntakeManager();
+        //hatchManager = new HatchManager();
         autoCenterManager = new AutoCenterManager();
     }
 
@@ -236,9 +236,9 @@ public class TeleopMode extends Coordinator {
 
     private void process() {
         driveManager.run();
-        armManager.run();
-        intakeManager.run();
-        hatchManager.run();
+        //armManager.run();
+        //intakeManager.run();
+        //hatchManager.run();
     }
 
     private class DriveManager {
@@ -272,9 +272,9 @@ public class TeleopMode extends Coordinator {
             }
 
             if( driverX && driverDPad) {
-                robot.tilter.tilt.activate();
+                //robot.tilter.tilt.activate();
             } else {
-                robot.tilter.stow.activate();
+                //robot.tilter.stow.activate();
             }
 
             // Get Dashboard option for drive
@@ -371,7 +371,7 @@ public class TeleopMode extends Coordinator {
         }
     }
 
-    private class IntakeManager {
+    /*private class IntakeManager {
         private final Intake.Idle idle;
         private final Intake.Speed speed;
 
@@ -393,9 +393,9 @@ public class TeleopMode extends Coordinator {
                 idle.activate();
             }
         }
-    }
+    }*/
 
-    private class ArmManager {
+    /*private class ArmManager {
         private Arm arm;
 
         public ArmManager() {
@@ -441,9 +441,9 @@ public class TeleopMode extends Coordinator {
             }
 
         }
-    }
+    }*/
 
-    private class HatchManager {
+    /*private class HatchManager {
         private Toggle useAuto;
         private Toggle hookToggle;
         private Toggle sliderForward;
@@ -499,7 +499,7 @@ public class TeleopMode extends Coordinator {
                 robot.slider.front.activate();
             }
         }
-    }
+    }*/
 
     private class AutoCenterManager {
         private ExtendablePIDController anglePID;
