@@ -44,6 +44,7 @@ public class Dashboard extends DashboardModule {
     public enum AutonMode {
         OFF,
         // Following are actual strategy selections
+        MANUAL,
 
         // Calibration autons to verify angles and distances
         FAILSAFE_FORWARD_12,
@@ -69,7 +70,7 @@ public class Dashboard extends DashboardModule {
     	MANUAL,
     }
 
-    public final Output<AutonMode> autonMode = addDashboardOutput("autonMode", AutonMode.DEMO_NEW_AUTON, AutonMode.class);
+    public final Output<AutonMode> autonMode = addDashboardOutput("autonMode", AutonMode.MANUAL, AutonMode.class);
     
     public final Output<DriveMode> driveMode = addDashboardOutput("driveMode", DriveMode.DYNAMIC, DriveMode.class);
 
