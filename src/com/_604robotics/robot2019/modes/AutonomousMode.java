@@ -64,7 +64,7 @@ public class AutonomousMode extends Coordinator {
 
 		switch (robot.dashboard.autonMode.get()) {
 			case MANUAL:
-				selectedTeleopMode = robot.teleopMode;
+				selectedModeMacro = robot.teleopMode;
 				break;
 			case FAILSAFE_FORWARD_12:
 				selectedModeMacro = new FallForwardMacro();
@@ -85,21 +85,17 @@ public class AutonomousMode extends Coordinator {
 				break;
 		}
 
-		if (selectedTeleopMode != null) {
-			selectedTeleopMode.start();
-		} else if (selectedModeMacro != null) {
+		if (selectedModeMacro != null) {
 			selectedModeMacro.start();
 		}
 	}
 	@Override
 	public boolean run() {
-		if( selectedTeleopMode == null && selectedModeMacro == null ) {
-			return false;
-		} else if( selectedModeMacro != null ) {
+		if( selectedModeMacro != null ) {
 			return selectedModeMacro.execute();
 		}
 
-		return selectedTeleopMode.execute();
+		return false;
 	}
 
 	@Override
