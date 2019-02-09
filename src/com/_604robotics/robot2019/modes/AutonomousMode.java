@@ -81,6 +81,7 @@ public class AutonomousMode extends Coordinator {
 			case OFF:
 			default:
 				selectedModeMacro = null;
+				selectedTeleopMode = null;
 				break;
 		}
 
@@ -91,12 +92,14 @@ public class AutonomousMode extends Coordinator {
 		}
 	}
 	@Override
-	public boolean run () {
-		if (selectedModeMacro == null) {
-			return selectedTeleopMode.execute();
-		} else if (selectedTeleopMode == null) {
+	public boolean run() {
+		if( selectedTeleopMode == null && selectedModeMacro == null ) {
+			return false;
+		} else if( selectedModeMacro != null ) {
 			return selectedModeMacro.execute();
 		}
+
+		return selectedTeleopMode.execute();
 	}
 
 	@Override
