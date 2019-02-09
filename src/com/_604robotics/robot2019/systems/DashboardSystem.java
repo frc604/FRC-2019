@@ -40,6 +40,9 @@ public class DashboardSystem extends Coordinator {
             robot.limelight.limelightPipeline.set(
                 Math.min(0, Math.max(9, robot.dashboard.limelightPipeline.get().intValue())) );
         }
+		
+		/* Controller Values */
+		robot.dashboard.driverLeftStickY.set(robot.teleopMode.getDriverLeftStickY());
         
         switch( robot.dashboard.marionetteRecorder.get() ) {
             case MANUAL:

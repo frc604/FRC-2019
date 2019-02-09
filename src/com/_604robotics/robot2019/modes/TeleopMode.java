@@ -149,7 +149,9 @@ public class TeleopMode extends Coordinator {
     @Override
     protected boolean run () {
         updateControls();
+		System.out.println( driverLeftJoystickX );
         process();
+		System.out.println("teleopmode is running");
         return true;
     }
 
@@ -236,10 +238,15 @@ public class TeleopMode extends Coordinator {
 
     private void process() {
         driveManager.run();
+		System.out.println("DriveManager running");
         //armManager.run();
         //intakeManager.run();
         //hatchManager.run();
     }
+	
+	public double getDriverLeftStickY() {
+		return driverLeftJoystickY;
+	}
 
     private class DriveManager {
         private final Drive.ArcadeDrive arcade;

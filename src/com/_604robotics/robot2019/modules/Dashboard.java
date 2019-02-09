@@ -34,6 +34,9 @@ public class Dashboard extends DashboardModule {
 	public final Output<LimelightMode> limelightVisionMode = addDashboardOutput("VisionMode", LimelightMode.DRIVER, LimelightMode.class);
     public final Output<Double> limelightPipeline = addDashboardOutput("Vision Pipeline", 0);
     public final Output<Boolean> limelightSnapshot = addDashboardOutput("Snapshots", false);
+	
+	/* Controller Values */
+	public final Input<Double> driverLeftStickY = addDashboardInput("Driver Leftstick Y", 0.0);
 
     public enum LimelightMode {
         // TODO Make a enum populated by class name of actions in module

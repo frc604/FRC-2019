@@ -19,7 +19,7 @@ public class Tilter extends Module {
         super(Tilter.class);
 
         tiltMotor = new WPI_TalonSRX(Ports.TILT_MOTOR);
-        tiltComplete = new DigitalInput(Ports.TILT_SWITCH);
+        //tiltComplete = new DigitalInput(Ports.TILT_SWITCH);
 
         isTilted = addOutput("Tilted", () -> tilt.isRunning());
 

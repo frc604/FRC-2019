@@ -29,9 +29,12 @@ public class AutonomousMode extends Coordinator {
 	private final com._604robotics.robot2019.Robot2019 robot;
 
 	private Coordinator selectedModeMacro;
+	private TeleopMode selectedTeleopMode;
 
 	public String primaryFileName;
 	public String secondaryFileName;
+	
+	private boolean teleop = false;
 
 	public static enum PathFollowSide {
 		LEFT,
@@ -61,37 +64,48 @@ public class AutonomousMode extends Coordinator {
 
 		switch (robot.dashboard.autonMode.get()) {
 			case MANUAL:
-				selectedModeMacro = robot.teleopMode;
+				selectedTeleopMode = robot.teleopMode;
+				teleop = true;
+				break;
 			case FAILSAFE_FORWARD_12:
 				selectedModeMacro = new FallForwardMacro();
+				teleop = false;
 				break;
 			case FAILSAFE_BACKWARD_12:
 				selectedModeMacro = new FallBackMacro();
+				teleop = false;
 				break;
 			case DEMO_NEW_AUTON:
 				selectedModeMacro = new DemoStateMacro();
+				teleop = false;
 				break;
 			case MARIONETTE:
 				selectedModeMacro = marionetteDriver;
+				teleop = false;
 				break;
 			case OFF:
 			default:
 				selectedModeMacro = null;
+				teleop = false;
 				break;
 		}
 
-		if (selectedModeMacro != null) {
+		if (selectedTeleopMode != null) {
+			System.out.println("yall should be seing this");
+			selectedTeleopMode.start();
+		} else if (selectedModeMacro != null) {
 			selectedModeMacro.start();
 		}
 	}
-
 	@Override
 	public boolean run () {
 		if (selectedModeMacro == null) {
 			return false;
+		} else if (selectedTeleopMode == null) {
+			return false;
 		}
-
-		return selectedModeMacro.execute();
+		return selectedTeleopMode.execute();
+		//return selectedModeMacro.execute();
 	}
 
 	@Override
@@ -160,6 +174,7 @@ public class AutonomousMode extends Coordinator {
 
 		@Override
 		protected boolean run () {
+			System.out.println("Executing teleop mode uwu");
 			return robot.teleopMode.execute();
 		}
 
