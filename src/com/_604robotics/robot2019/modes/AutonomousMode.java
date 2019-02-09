@@ -34,7 +34,7 @@ public class AutonomousMode extends Coordinator {
 	public String primaryFileName;
 	public String secondaryFileName;
 	
-	private boolean teleop = false;
+
 
 	public static enum PathFollowSide {
 		LEFT,
@@ -65,33 +65,26 @@ public class AutonomousMode extends Coordinator {
 		switch (robot.dashboard.autonMode.get()) {
 			case MANUAL:
 				selectedTeleopMode = robot.teleopMode;
-				teleop = true;
 				break;
 			case FAILSAFE_FORWARD_12:
 				selectedModeMacro = new FallForwardMacro();
-				teleop = false;
 				break;
 			case FAILSAFE_BACKWARD_12:
 				selectedModeMacro = new FallBackMacro();
-				teleop = false;
 				break;
 			case DEMO_NEW_AUTON:
 				selectedModeMacro = new DemoStateMacro();
-				teleop = false;
 				break;
 			case MARIONETTE:
 				selectedModeMacro = marionetteDriver;
-				teleop = false;
 				break;
 			case OFF:
 			default:
 				selectedModeMacro = null;
-				teleop = false;
 				break;
 		}
 
 		if (selectedTeleopMode != null) {
-			System.out.println("yall should be seing this");
 			selectedTeleopMode.start();
 		} else if (selectedModeMacro != null) {
 			selectedModeMacro.start();
@@ -100,12 +93,10 @@ public class AutonomousMode extends Coordinator {
 	@Override
 	public boolean run () {
 		if (selectedModeMacro == null) {
-			return false;
+			return selectedTeleopMode.execute();
 		} else if (selectedTeleopMode == null) {
-			return false;
+			return selectedModeMacro.execute();
 		}
-		return selectedTeleopMode.execute();
-		//return selectedModeMacro.execute();
 	}
 
 	@Override
