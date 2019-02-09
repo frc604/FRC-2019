@@ -64,6 +64,9 @@ public class AutonomousMode extends Coordinator {
 		}
 
 		switch (robot.dashboard.autonMode.get()) {
+			case MANUAL:
+				selectedModeMacro = robot.teleopMode;
+				break;
 			case FAILSAFE_FORWARD_12:
 				selectedModeMacro = new FallForwardMacro();
 				break;
