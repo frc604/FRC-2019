@@ -37,7 +37,7 @@ public class TeleopMode extends Coordinator {
     private final DriveManager driveManager;
     //private final ArmManager armManager;
     private final IntakeManager intakeManager;
-    private final HatchManager hatchManager;
+    //private final HatchManager hatchManager;
     private final AutoCenterManager autoCenterManager;
 
     private final Logger test = new Logger("Teleop");
@@ -73,7 +73,7 @@ public class TeleopMode extends Coordinator {
         driveManager = new DriveManager();
         //armManager = new ArmManager();
         intakeManager = new IntakeManager();
-        hatchManager = new HatchManager();
+        //hatchManager = new HatchManager();
         autoCenterManager = new AutoCenterManager();
     }
 
@@ -238,7 +238,7 @@ public class TeleopMode extends Coordinator {
         driveManager.run();
         //armManager.run();
         intakeManager.run();
-        hatchManager.run();
+        //hatchManager.run();
     }
 
     private class DriveManager {
@@ -443,7 +443,6 @@ public class TeleopMode extends Coordinator {
         }
     }
 
-	*/
 	
     private class HatchManager {
         private Toggle useAuto;
@@ -501,7 +500,7 @@ public class TeleopMode extends Coordinator {
                 robot.slider.front.activate();
             }
         }
-    }
+    }*/
 
     private class AutoCenterManager {
         private ExtendablePIDController anglePID;
