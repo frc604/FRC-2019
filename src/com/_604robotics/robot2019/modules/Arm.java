@@ -50,7 +50,7 @@ public class Arm extends Module {
 
         holdPoint = addInput("Setpoint", 0.0);
 
-        pidError = addOutput("PID Error", () -> pid.getError());
+		pidError = addOutput("PID Error", () -> pid.getError());
         rightEncoderClicks = addOutput("Right Encoder Clicks", () -> rightEncoder.getPosition());
         leftEncoderClicks = addOutput("Right Encoder Clicks", () -> leftEncoder.getPosition());
         redundantEncoderClicks = addOutput("Redundant Encoder Clicks", () -> redundantEncoder.getValue());
