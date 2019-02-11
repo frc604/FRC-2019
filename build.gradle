@@ -15,7 +15,8 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
     // compile ctre()
-    compile fileTree(include: ['*.jar', 'rio/libpathfinderjava.so'], dir: 'lib')
+    nativeLib files("lib/rio/libpathfinder.so")
+    compile fileTree(include: ['*.jar'], dir: 'lib')
     simulation "edu.wpi.first.halsim:halsim_lowfi:${wpi.wpilibVersion}:${wpi.platforms.desktop}@zip"
 }
 
