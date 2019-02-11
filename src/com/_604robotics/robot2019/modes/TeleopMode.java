@@ -35,9 +35,9 @@ public class TeleopMode extends Coordinator {
     private final com._604robotics.robot2019.Robot2019 robot;
 
     private final DriveManager driveManager;
-    private final ArmManager armManager;
-    private final IntakeManager intakeManager;
-    private final HatchManager hatchManager;
+//    private final ArmManager armManager;
+//    private final IntakeManager intakeManager;
+//    private final HatchManager hatchManager;
     private final AutoCenterManager autoCenterManager;
 
     private final Logger test = new Logger("Teleop");
@@ -71,9 +71,9 @@ public class TeleopMode extends Coordinator {
         this.robot = robot;
 
         driveManager = new DriveManager();
-        armManager = new ArmManager();
-        intakeManager = new IntakeManager();
-        hatchManager = new HatchManager();
+//        armManager = new ArmManager();
+//        intakeManager = new IntakeManager();
+//        hatchManager = new HatchManager();
         autoCenterManager = new AutoCenterManager();
     }
 
@@ -236,9 +236,9 @@ public class TeleopMode extends Coordinator {
 
     private void process() {
         driveManager.run();
-        armManager.run();
-        intakeManager.run();
-        hatchManager.run();
+//        armManager.run();
+//        intakeManager.run();
+//        hatchManager.run();
     }
 
     private class DriveManager {
@@ -271,11 +271,11 @@ public class TeleopMode extends Coordinator {
                 rightY*=-1;
             }
 
-            if( driverX && driverDPad) {
-                robot.tilter.tilt.activate();
-            } else {
-                robot.tilter.stow.activate();
-            }
+//            if( driverX && driverDPad) {
+//                robot.tilter.tilt.activate();
+//            } else {
+//                robot.tilter.stow.activate();
+//            }
 
             // Get Dashboard option for drive
             switch (robot.dashboard.driveMode.get()){
@@ -371,135 +371,135 @@ public class TeleopMode extends Coordinator {
         }
     }
 
-    private class IntakeManager {
-        private final Intake.Idle idle;
-        private final Intake.Speed speed;
+//    private class IntakeManager {
+//        private final Intake.Idle idle;
+//        private final Intake.Speed speed;
+//
+//        public IntakeManager() {
+//            idle = robot.intake.new Idle();
+//            speed = robot.intake.new Speed();
+//        }
+//
+//        public void run() {
+//            if( driverLeftTrigger != 0.0 ) {
+//                speed.set(driverLeftTrigger); // Intake
+//            } else if( driverRightTrigger != 0.0 ){
+//                speed.set(-1*driverRightTrigger); // Outtake
+//            } else if( manipLeftTrigger != 0.0 ) {
+//                speed.set(manipLeftTrigger); // Intake
+//            } else if( manipRightTrigger != 0 ) {
+//                speed.set(-1*manipRightTrigger); // Outtake
+//            } else {
+//                idle.activate();
+//            }
+//        }
+//    }
 
-        public IntakeManager() {
-            idle = robot.intake.new Idle();
-            speed = robot.intake.new Speed();
-        }
+//    private class ArmManager {
+//        private Arm arm;
+//
+//        public ArmManager() {
+//            arm = robot.arm;
+//        }
+//
+//        public void run() {
+//            // Check setpoints
+//            if( manipA ) {
+//                // Low position
+//                arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
+//                arm.setpoint.activate();
+//            } else if( manipY ) {
+//                // Ball place position
+//                arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
+//                arm.setpoint.activate();
+//            } else if( manipB ) {
+//                // Hatch place position (stow)
+//                arm.setpoint.setpoint.set(Calibration.Arm.STOW_SETPOINT);
+//                arm.setpoint.activate();
+//            } else {
+//                // Check thumbsticks
+//                if( manipLeftJoystickY != 0 ) {
+//                    // Set arm rate to joystick
+//                    double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
+//
+//                    // Calculate needed factor for torque
+//                    double angle = 2*Math.PI * arm.redundantEncoderClicks.get()/Calibration.Arm.CLICKS_FULL_ROTATION;
+//                    angle = Math.cos(angle);
+//
+//                    if( (motorValue < 0 && arm.redundantEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
+//                        (motorValue > 0 && arm.redundantEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
+//                        // We need to account for gravity existing
+//                        motorValue += Calibration.Arm.kF * angle;
+//                    }
+//
+//                    arm.move.inputPower.set(motorValue);
+//                    arm.move.activate();
+//                } else {
+//                    // Hold arm still
+//                    arm.hold.activate();
+//                }
+//            }
+//
+//        }
+//    }
 
-        public void run() {
-            if( driverLeftTrigger != 0.0 ) {
-                speed.set(driverLeftTrigger); // Intake
-            } else if( driverRightTrigger != 0.0 ){
-                speed.set(-1*driverRightTrigger); // Outtake
-            } else if( manipLeftTrigger != 0.0 ) {
-                speed.set(manipLeftTrigger); // Intake
-            } else if( manipRightTrigger != 0 ) {
-                speed.set(-1*manipRightTrigger); // Outtake
-            } else {
-                idle.activate();
-            }
-        }
-    }
-
-    private class ArmManager {
-        private Arm arm;
-
-        public ArmManager() {
-            arm = robot.arm;
-        }
-
-        public void run() {
-            // Check setpoints
-            if( manipA ) {
-                // Low position
-                arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
-                arm.setpoint.activate();
-            } else if( manipY ) {
-                // Ball place position
-                arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
-                arm.setpoint.activate();
-            } else if( manipB ) {
-                // Hatch place position (stow)
-                arm.setpoint.setpoint.set(Calibration.Arm.STOW_SETPOINT);
-                arm.setpoint.activate();
-            } else {
-                // Check thumbsticks
-                if( manipLeftJoystickY != 0 ) {
-                    // Set arm rate to joystick
-                    double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
-
-                    // Calculate needed factor for torque
-                    double angle = 2*Math.PI * arm.redundantEncoderClicks.get()/Calibration.Arm.CLICKS_FULL_ROTATION;
-                    angle = Math.cos(angle);
-
-                    if( (motorValue < 0 && arm.redundantEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
-                        (motorValue > 0 && arm.redundantEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
-                        // We need to account for gravity existing
-                        motorValue += Calibration.Arm.kF * angle;
-                    }
-
-                    arm.move.inputPower.set(motorValue);
-                    arm.move.activate();
-                } else {
-                    // Hold arm still
-                    arm.hold.activate();
-                }
-            }
-
-        }
-    }
-
-    private class HatchManager {
-        private Toggle useAuto;
-        private Toggle hookToggle;
-        private Toggle sliderForward;
-        private Timer hatchTime;
-
-        public HatchManager() {
-            useAuto = new Toggle(true);
-            hookToggle = new Toggle(true); // Assuming the piston is in the held state to start
-            sliderForward = new Toggle(false); // Not extended initially
-            hatchTime = new Timer();
-        }
-
-        public void run() {
-            useAuto.update(manipStart);
-            if( useAuto.isInOnState() ) {
-                // Checks if the two limit switches are pressed, meaning the hatch is ready to deploy
-                hookToggle.update(manipRightBumper || robot.hook.aligned.get());
-            } else {
-                // Ignore the limit switches, only use the controller
-                hookToggle.update(manipRightBumper);
-            }
-
-            // Toggle placer state
-            if( hookToggle.isInOnState() ) {
-                robot.hook.release.activate();
-                robot.pusher.push.activate();
-                hatchTime.start();
-            } else if( hookToggle.isInOffState() ) {
-                robot.hook.hold.activate();
-                robot.pusher.pullBack.activate();
-                hatchTime.stop();
-                hatchTime.reset();
-            }
-
-            // Check if we need to pull back the pusher
-            if( hatchTime.hasPeriodPassed(Calibration.PUSH_TIME) ) {
-                robot.pusher.pullBack.activate();
-                hatchTime.stop();
-                hatchTime.reset();
-            }
-
-            if( manipLeftBumper ) {
-                robot.pusher.push.activate();
-            } else {
-                robot.pusher.pullBack.activate();
-            }
-
-            // Slide forward and back
-            sliderForward.update(manipX);
-            if( sliderForward.isInOnState() ) {
-                robot.slider.back.activate();
-            } else if( sliderForward.isInOffState() ) {
-                robot.slider.front.activate();
-            }
-        }
-    }
+//    private class HatchManager {
+//        private Toggle useAuto;
+//        private Toggle hookToggle;
+//        private Toggle sliderForward;
+//        private Timer hatchTime;
+//
+//        public HatchManager() {
+//            useAuto = new Toggle(true);
+//            hookToggle = new Toggle(true); // Assuming the piston is in the held state to start
+//            sliderForward = new Toggle(false); // Not extended initially
+//            hatchTime = new Timer();
+//        }
+//
+//        public void run() {
+//            useAuto.update(manipStart);
+//            if( useAuto.isInOnState() ) {
+//                // Checks if the two limit switches are pressed, meaning the hatch is ready to deploy
+//                hookToggle.update(manipRightBumper || robot.hook.aligned.get());
+//            } else {
+//                // Ignore the limit switches, only use the controller
+//                hookToggle.update(manipRightBumper);
+//            }
+//
+//            // Toggle placer state
+//            if( hookToggle.isInOnState() ) {
+//                robot.hook.release.activate();
+//                robot.pusher.push.activate();
+//                hatchTime.start();
+//            } else if( hookToggle.isInOffState() ) {
+//                robot.hook.hold.activate();
+//                robot.pusher.pullBack.activate();
+//                hatchTime.stop();
+//                hatchTime.reset();
+//            }
+//
+//            // Check if we need to pull back the pusher
+//            if( hatchTime.hasPeriodPassed(Calibration.PUSH_TIME) ) {
+//                robot.pusher.pullBack.activate();
+//                hatchTime.stop();
+//                hatchTime.reset();
+//            }
+//
+//            if( manipLeftBumper ) {
+//                robot.pusher.push.activate();
+//            } else {
+//                robot.pusher.pullBack.activate();
+//            }
+//
+//            // Slide forward and back
+//            sliderForward.update(manipX);
+//            if( sliderForward.isInOnState() ) {
+//                robot.slider.back.activate();
+//            } else if( sliderForward.isInOffState() ) {
+//                robot.slider.front.activate();
+//            }
+//        }
+//    }
 
     private class AutoCenterManager {
         private ExtendablePIDController anglePID;
