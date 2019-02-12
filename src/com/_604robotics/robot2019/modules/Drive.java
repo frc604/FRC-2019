@@ -8,6 +8,7 @@ import com._604robotics.robotnik.Module;
 import com._604robotics.robotnik.Output;
 import com._604robotics.robotnik.prefabs.devices.wrappers.RampMotor;
 
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
@@ -41,15 +42,15 @@ public class Drive extends Module {
     public final Output<Double> xAccel = addOutput("X accel",accel::getX);
     public final Output<Double> yAccel = addOutput("Y accel",accel::getY);
     public final Output<Double> zAccel = addOutput("Z accel",accel::getZ);
-    //private final AnalogGyro horizGyro=new AnalogGyro(Ports.HORIZGYRO);
-    
+    private final AnalogGyro horizGyro = new AnalogGyro(Ports.HORIZGYRO);
+
     public synchronized void resetSensors() {
         encoderLeft.reset();
         encoderRight.reset();
-        //horizGyro.reset();
+        horizGyro.reset();
     }
 
-    //public final Output<Double> gyroAngle = addOutput("gyroAngle",horizGyro::getAngle);
+    public final Output<Double> gyroAngle = addOutput("gyroAngle",horizGyro::getAngle);
     public final Output<Integer> leftClicks = addOutput("leftClicks", encoderLeft::get);
     public final Output<Integer> rightClicks = addOutput("rightClicks", encoderRight::get);
     
@@ -137,7 +138,7 @@ public class Drive extends Module {
     public Drive () {
         super(Drive.class);
         robotDrive.setDeadband(0.04);
-        //horizGyro.calibrate();
+        horizGyro.calibrate();
         setDefaultAction(idle);
     }
 }
