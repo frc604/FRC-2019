@@ -8,11 +8,8 @@ import jaci.pathfinder.Trajectory;
 public class Calibration {
     private Calibration () {}
 
-    @Unreal("Values must be updated when the real robot is designed")
     public static final double TELEOP_DRIVE_DEADBAND = 0.3;
-    @Unreal("Values must be updated when the real robot is designed")
     public static final double TELEOP_MANIP_DEADBAND = 0.2;
-    @Unreal("Values must be updated when the real robot is designed")
     public static final double TELEOP_FACTOR = -1;
 
     @Unreal("Values must be updated when the real robot is designed")
@@ -21,11 +18,8 @@ public class Calibration {
     public static final double DRIVE_MOVE_PID_I = 0;
     @Unreal("Values must be updated when the real robot is designed")
     public static final double DRIVE_MOVE_PID_D = 0.00;
-    @Unreal("Values must be updated when the real robot is designed")
     public static final double DRIVE_MOVE_PID_MAX = 0.85; //0.7
-    @Unreal("Values must be updated when the real robot is designed")
     public static final double DRIVE_MOVE_TOLERANCE = 100;
-    @Unreal("Values must be updated when the real robot is designed")
     public static final double SLOW_ROTATION_MODIFIER = 0.66;
 
     @Unreal("Values must be updated when the real robot is designed")
@@ -33,22 +27,12 @@ public class Calibration {
     public static final double DRIVE_ROTATE_PID_I = 0;
     @Unreal("Values must be updated when the real robot is designed")
     public static final double DRIVE_ROTATE_PID_D = 0.01;
-    @Unreal("Values must be updated when the real robot is designed")
     public static final double DRIVE_ROTATE_PID_MAX = 0.4;
-    @Unreal("Values must be updated when the real robot is designed")
     public static final double DRIVE_ROTATE_TOLERANCE = 80;
 
-    @Unreal("Values must be updated when the real robot is designed")
     public static final double DRIVE_PID_AFTER_TIMING = 0.75;
-    @Unreal("Values must be updated when the real robot is designed")
     public static final double DRIVE_PID_SAMPLE_RATE = 0.01;
 
-    @Unreal("Values must be updated when the real robot is designed")
-    public static final double DRIVE_MOVE_STILL_TARGET = 0;
-    @Unreal("Values must be updated when the real robot is designed")
-    public static final double DRIVE_ROTATE_STILL_TARGET = 0;
-
-    @Unreal("Values must be updated when the real robot is designed")
     public static final double DRIVE_MOTOR_RAMP = 4;
 
     /* Arm Calibration */
