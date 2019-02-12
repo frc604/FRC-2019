@@ -12,11 +12,9 @@ public class Ports {
     
     /* Victor Motors */
     public static final int DRIVE_FRONT_LEFT_MOTOR = 1;
-    public static final int DRIVE_MIDDLE_LEFT_MOTOR = 2;
-    public static final int DRIVE_REAR_LEFT_MOTOR = 3;
-    public static final int DRIVE_FRONT_RIGHT_MOTOR = 4;
-    public static final int DRIVE_MIDDLE_RIGHT_MOTOR = 5;
-    public static final int DRIVE_REAR_RIGHT_MOTOR = 6;
+    public static final int DRIVE_REAR_LEFT_MOTOR = 2;
+    public static final int DRIVE_FRONT_RIGHT_MOTOR = 3;
+    public static final int DRIVE_REAR_RIGHT_MOTOR = 4;
 
     /* Arm Motors */
     public static final int ARM_LEFT_MOTOR = 1;
@@ -50,5 +48,7 @@ public class Ports {
     /* CAN Motors */
     public static final int COMPRESSOR = 9;
     public static final int PDP_MODULE = 15;
-    
+
+    public static final int HORIZGYRO = 0;
+
 }

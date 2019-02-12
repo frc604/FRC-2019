@@ -19,14 +19,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive extends Module {
     private final RampMotor m_frontLeft = new RampMotor(new WPI_VictorSPX(Ports.DRIVE_FRONT_LEFT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
-    private final RampMotor m_middleLeft =  new RampMotor(new WPI_VictorSPX(Ports.DRIVE_MIDDLE_LEFT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
     private final RampMotor m_rearLeft = new RampMotor(new WPI_VictorSPX(Ports.DRIVE_REAR_LEFT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
-    private final SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontLeft, m_middleLeft, m_rearLeft);
+    private final SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontLeft, m_rearLeft);
 
     private final RampMotor m_frontRight = new RampMotor(new WPI_VictorSPX(Ports.DRIVE_FRONT_RIGHT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
-    private final RampMotor m_middleRight =  new RampMotor(new WPI_VictorSPX(Ports.DRIVE_MIDDLE_RIGHT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
     private final RampMotor m_rearRight = new RampMotor(new WPI_VictorSPX(Ports.DRIVE_REAR_RIGHT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
-    private final SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontRight, m_middleRight, m_rearRight);
+    private final SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontRight, m_rearRight);
 
     DifferentialDrive robotDrive = new DifferentialDrive(m_left, m_right);
 
@@ -44,15 +42,15 @@ public class Drive extends Module {
     public final Output<Double> xAccel = addOutput("X accel",accel::getX);
     public final Output<Double> yAccel = addOutput("Y accel",accel::getY);
     public final Output<Double> zAccel = addOutput("Z accel",accel::getZ);
-    //private final AnalogGyro horizGyro=new AnalogGyro(Ports.HORIZGYRO);
+    private final AnalogGyro horizGyro=new AnalogGyro(Ports.HORIZGYRO);
     
     public synchronized void resetSensors() {
         encoderLeft.reset();
         encoderRight.reset();
-        //horizGyro.reset();
+        horizGyro.reset();
     }
 
-    //public final Output<Double> gyroAngle = addOutput("gyroAngle",horizGyro::getAngle);
+    public final Output<Double> gyroAngle = addOutput("gyroAngle",horizGyro::getAngle);
     public final Output<Integer> leftClicks = addOutput("leftClicks", encoderLeft::get);
     public final Output<Integer> rightClicks = addOutput("rightClicks", encoderRight::get);
     
@@ -140,7 +138,7 @@ public class Drive extends Module {
     public Drive () {
         super(Drive.class);
         robotDrive.setDeadband(0.04);
-        //horizGyro.calibrate();
+        horizGyro.calibrate();
         setDefaultAction(idle);
     }
 }
