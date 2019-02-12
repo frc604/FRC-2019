@@ -423,11 +423,11 @@ public class TeleopMode extends Coordinator {
                     double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
 
                     // Calculate needed factor for torque
-                    double angle = 2*Math.PI * arm.redundantEncoderClicks.get()/Calibration.Arm.CLICKS_FULL_ROTATION;
+                    double angle = 2*Math.PI * arm.leftEncoderClicks.get()/Calibration.Arm.CLICKS_FULL_ROTATION;
                     angle = Math.cos(angle);
 
-                    if( (motorValue < 0 && arm.redundantEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
-                        (motorValue > 0 && arm.redundantEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
+                    if( (motorValue < 0 && arm.leftEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
+                        (motorValue > 0 && arm.leftEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
                         // We need to account for gravity existing
                         motorValue += Calibration.Arm.kF * angle;
                     }

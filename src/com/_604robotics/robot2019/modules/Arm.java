@@ -56,7 +56,7 @@ public class Arm extends Module {
         redundantEncoderClicks = addOutput("Redundant Encoder Clicks", () -> redundantEncoder.getValue());
 
         this.pid = new RotatingArmPIDController(Calibration.Arm.kP, Calibration.Arm.kI, Calibration.Arm.kD,
-            Calibration.Arm.kF, redundantEncoder, leftMotor);
+            Calibration.Arm.kF, leftEncoder, leftMotor);
 
         setDefaultAction(hold);
     }
