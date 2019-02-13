@@ -37,7 +37,7 @@ public class TeleopMode extends Coordinator {
     private final DriveManager driveManager;
     private final ArmManager armManager;
     private final IntakeManager intakeManager;
-    private final HatchManager hatchManager;
+    //private final HatchManager hatchManager;
     private final AutoCenterManager autoCenterManager;
 
     private final Logger test = new Logger("Teleop");
@@ -73,7 +73,7 @@ public class TeleopMode extends Coordinator {
         driveManager = new DriveManager();
         armManager = new ArmManager();
         intakeManager = new IntakeManager();
-        hatchManager = new HatchManager();
+        //hatchManager = new HatchManager();
         autoCenterManager = new AutoCenterManager();
     }
 
@@ -238,7 +238,7 @@ public class TeleopMode extends Coordinator {
         driveManager.run();
         armManager.run();
         intakeManager.run();
-        hatchManager.run();
+        //hatchManager.run();
     }
 
     private class DriveManager {
@@ -271,11 +271,13 @@ public class TeleopMode extends Coordinator {
                 rightY*=-1;
             }
 
+            /*
             if( driverX && driverDPad) {
                 robot.tilter.tilt.activate();
             } else {
                 robot.tilter.stow.activate();
             }
+            */
 
             // Get Dashboard option for drive
             switch (robot.dashboard.driveMode.get()){
@@ -404,45 +406,49 @@ public class TeleopMode extends Coordinator {
 
         public void run() {
             // Check setpoints
-            if( manipA ) {
-                // Low position
-                arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
-                arm.setpoint.activate();
-            } else if( manipY ) {
-                // Ball place position
-                arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
-                arm.setpoint.activate();
-            } else if( manipB ) {
-                // Hatch place position (stow)
-                arm.setpoint.setpoint.set(Calibration.Arm.STOW_SETPOINT);
-                arm.setpoint.activate();
+            if ( robot.dashboard.ManualArm.get() ){
+                arm.move.inputPower.set(manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK);
             } else {
-                // Check thumbsticks
-                if( manipLeftJoystickY != 0 ) {
-                    // Set arm rate to joystick
-                    double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
-
-                    // Calculate needed factor for torque
-                    double angle = 2*Math.PI * arm.leftEncoderClicks.get()/Calibration.Arm.CLICKS_FULL_ROTATION;
-                    angle = Math.cos(angle);
-
-                    if( (motorValue < 0 && arm.leftEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
-                        (motorValue > 0 && arm.leftEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
-                        // We need to account for gravity existing
-                        motorValue += Calibration.Arm.kF * angle;
-                    }
-
-                    arm.move.inputPower.set(motorValue);
-                    arm.move.activate();
+                if( manipA ) {
+                    // Low position
+                    arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
+                    arm.setpoint.activate();
+                } else if( manipY ) {
+                    // Ball place position
+                    arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
+                    arm.setpoint.activate();
+                } else if( manipB ) {
+                    // Hatch place position (stow)
+                    arm.setpoint.setpoint.set(Calibration.Arm.STOW_SETPOINT);
+                    arm.setpoint.activate();
                 } else {
-                    // Hold arm still
-                    arm.hold.activate();
+                    // Check thumbsticks
+                    if( manipLeftJoystickY != 0 ) {
+                        // Set arm rate to joystick
+                        double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
+
+                        // Calculate needed factor for torque
+                        double angle = 2*Math.PI * arm.leftEncoderClicks.get()/Calibration.Arm.CLICKS_FULL_ROTATION;
+                        angle = Math.cos(angle);
+
+                        if( (motorValue < 0 && arm.leftEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
+                            (motorValue > 0 && arm.leftEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
+                            // We need to account for gravity existing
+                            motorValue += Calibration.Arm.kF * angle;
+                        }
+
+                        arm.move.inputPower.set(motorValue);
+                        arm.move.activate();
+                    } else {
+                        // Hold arm still
+                        arm.hold.activate();
+                    }
                 }
             }
-
         }
     }
 
+    /*
     private class HatchManager {
         private Toggle useAuto;
         private Toggle hookToggle;
@@ -500,6 +506,7 @@ public class TeleopMode extends Coordinator {
             }
         }
     }
+    */
 
     private class AutoCenterManager {
         private ExtendablePIDController anglePID;

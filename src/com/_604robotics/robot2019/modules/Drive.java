@@ -11,7 +11,6 @@ import com._604robotics.robotnik.prefabs.devices.wrappers.RampMotor;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PWMVictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -31,6 +30,7 @@ public class Drive extends Module {
     DifferentialDrive robotDrive = new DifferentialDrive(m_left, m_right);
 
     // Reversed from previously due to new mountings
+    /*
     private final Encoder encoderLeft = new Encoder(Ports.ENCODER_LEFT_A,
             Ports.ENCODER_LEFT_B,
             false,
@@ -39,7 +39,8 @@ public class Drive extends Module {
             Ports.ENCODER_RIGHT_B,
             true,
             CounterBase.EncodingType.k4X);
-    
+    */
+
     private final BuiltInAccelerometer accel = new BuiltInAccelerometer();
     public final Output<Double> xAccel = addOutput("X accel",accel::getX);
     public final Output<Double> yAccel = addOutput("Y accel",accel::getY);
@@ -47,17 +48,20 @@ public class Drive extends Module {
     //private final AnalogGyro horizGyro=new AnalogGyro(Ports.HORIZGYRO);
     
     public synchronized void resetSensors() {
-        encoderLeft.reset();
-        encoderRight.reset();
+        //encoderLeft.reset();
+        //encoderRight.reset();
         //horizGyro.reset();
     }
 
     //public final Output<Double> gyroAngle = addOutput("gyroAngle",horizGyro::getAngle);
-    public final Output<Integer> leftClicks = addOutput("leftClicks", encoderLeft::get);
-    public final Output<Integer> rightClicks = addOutput("rightClicks", encoderRight::get);
     
-    public final Output<Double> leftClickRate = addOutput("leftClickRate", encoderLeft::getRate);
-    public final Output<Double> rightClickRate = addOutput("rightClickRate", encoderRight::getRate);
+    
+    public final Output<Integer> leftClicks = addOutput("leftClicks", () -> 0);
+    public final Output<Integer> rightClicks = addOutput("rightClicks", () -> 0);
+    
+    public final Output<Double> leftClickRate = addOutput("leftClickRate", () -> 0.0);
+    public final Output<Double> rightClickRate = addOutput("rightClickRate", () -> 0.0);
+
 
     public class Idle extends Action {
         public Idle () {

@@ -52,7 +52,7 @@ public class Calibration {
         public static final double kD = 0;
         public static final double kF = 0;
 
-        public static final double SCALE_JOYSTICK = 0.6; // Multiply the input joystick by this
+        public static final double SCALE_JOYSTICK = 0.5; // Multiply the input joystick by this
     }
 
     public static final double PUSH_TIME = 2000;

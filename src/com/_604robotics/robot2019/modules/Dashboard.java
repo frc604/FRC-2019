@@ -70,6 +70,8 @@ public class Dashboard extends DashboardModule {
     	MANUAL,
     }
 
+    public final Output<Boolean> ManualArm = addDashboardOutput("Manual Arm Control", false);
+    
     public final Output<AutonMode> autonMode = addDashboardOutput("autonMode", AutonMode.MANUAL, AutonMode.class);
     
     public final Output<DriveMode> driveMode = addDashboardOutput("driveMode", DriveMode.DYNAMIC, DriveMode.class);

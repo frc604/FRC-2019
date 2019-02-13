@@ -9,6 +9,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 public class Intake extends Module {
     public final WPI_TalonSRX intakeMotor = new WPI_TalonSRX(Ports.INTAKE_MOTOR);
 
+    //Redundancy
+    //public final WPI_TalonSRX intakeMotor = new WPI_TalonSRX(1);
+
     public class Idle extends Action {
         public Idle () {
             super(Intake.this, Idle.class);

@@ -19,13 +19,15 @@ public class Ports {
     public static final int DRIVE_REAR_RIGHT_MOTOR = 6;
 
     /* Arm Motors */
-    public static final int ARM_LEFT_MOTOR = 1;
-    public static final int ARM_RIGHT_MOTOR = 2;
+    public static final int ARM_LEFT_MOTOR = 2;
+    public static final int ARM_RIGHT_MOTOR = 3;
 
     /* Intake Motor */
-    public static final int INTAKE_MOTOR = 3;
+    public static final int INTAKE_MOTOR = 1;
 
     /* Hatch Control */
+    
+    /*
     public static final int HOOK_A = 0;
     public static final int HOOK_B = 0;
     public static final int HATCH_LEFT_SLIDE_A= 0;
@@ -36,10 +38,15 @@ public class Ports {
     public static final int HATCH_RIGHT_SWITCH = 0;
     public static final int HATCH_PUSHER_A = 0;
     public static final int HATCH_PUSHER_B = 0;
+    */
+    
 
     /* Tilter Control */
+
+    /*
     public static final int TILT_MOTOR = 15;
     public static final int TILT_SWITCH = 9;
+    */
 
     /* Digital Inputs */
     public static final int ENCODER_LEFT_A = 1;

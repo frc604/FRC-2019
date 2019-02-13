@@ -10,6 +10,7 @@ import com._604robotics.robotnik.prefabs.controller.RotatingArmPIDController;
 import com._604robotics.robotnik.prefabs.devices.RedundantEncoder;
 import com._604robotics.robotnik.prefabs.devices.TalonPWMEncoder;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class Arm extends Module {
@@ -19,8 +20,6 @@ public class Arm extends Module {
     private WPI_TalonSRX rightMotor;
 
     private TalonPWMEncoder leftEncoder;
-    private TalonPWMEncoder rightEncoder;
-    private RedundantEncoder redundantEncoder;
 
     private Input<Double> holdPoint;
 
@@ -35,30 +34,27 @@ public class Arm extends Module {
         leftMotor = new WPI_TalonSRX(Ports.ARM_LEFT_MOTOR);
         rightMotor = new WPI_TalonSRX(Ports.ARM_RIGHT_MOTOR);
 
-        rightMotor.setInverted(true);
-        rightMotor.set(ControlMode.Follower, Ports.ARM_LEFT_MOTOR);
+        //For redundency try this.
+        //leftMotor = new WPI_TalonSRX(2);
+        //rightMotor = new WPI_TalonSRX(3);
+
+        rightMotor.follow(leftMotor);
+        rightMotor.setInverted(InvertType.FollowMaster);
+        //rightMotor.set(ControlMode.Follower, Ports.ARM_LEFT_MOTOR);
 
         leftEncoder = new TalonPWMEncoder(leftMotor);
-        rightEncoder = new TalonPWMEncoder(rightMotor);
 
         leftEncoder.zero();
-        rightEncoder.zero();
-
-        redundantEncoder = new RedundantEncoder(leftEncoder, rightEncoder);
-        redundantEncoder.setMinimum(Calibration.Arm.MIN_ENCODER_VAL);
-        redundantEncoder.setMaximum(Calibration.Arm.MAX_ENCODER_VAL);
 
         holdPoint = addInput("Setpoint", 0.0);
 
 		pidError = addOutput("PID Error", () -> pid.getError());
-        rightEncoderClicks = addOutput("Right Encoder Clicks", () -> rightEncoder.getPosition());
         leftEncoderClicks = addOutput("Right Encoder Clicks", () -> leftEncoder.getPosition());
-        redundantEncoderClicks = addOutput("Redundant Encoder Clicks", () -> redundantEncoder.getValue());
 
         this.pid = new RotatingArmPIDController(Calibration.Arm.kP, Calibration.Arm.kI, Calibration.Arm.kD,
             Calibration.Arm.kF, leftEncoder, leftMotor);
 
-        setDefaultAction(hold);
+        setDefaultAction(move);
     }
 
     public class Hold extends Action {
@@ -89,11 +85,14 @@ public class Arm extends Module {
 
         public Move() {
             super(Arm.this, Move.class);
+
+            //Try commenting out v
             inputPower = addInput("Input Power", 0.0, true);
         }
 
         @Override
         public void run() {
+            //Try commenting out v
             setpoint.setpoint.set(leftEncoderClicks.get());
 
             leftMotor.set(inputPower.get());
