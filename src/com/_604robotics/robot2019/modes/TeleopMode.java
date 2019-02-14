@@ -36,8 +36,8 @@ public class TeleopMode extends Coordinator {
 
     private final DriveManager driveManager;
     private final ArmManager armManager;
-    private final IntakeManager intakeManager;
-    private final HatchManager hatchManager;
+    //private final IntakeManager intakeManager;
+    //private final HatchManager hatchManager;
     private final AutoCenterManager autoCenterManager;
 
     private final Logger test = new Logger("Teleop");
@@ -72,8 +72,8 @@ public class TeleopMode extends Coordinator {
 
         driveManager = new DriveManager();
         armManager = new ArmManager();
-        intakeManager = new IntakeManager();
-        hatchManager = new HatchManager();
+        //intakeManager = new IntakeManager();
+        //hatchManager = new HatchManager();
         autoCenterManager = new AutoCenterManager();
     }
 
@@ -237,8 +237,8 @@ public class TeleopMode extends Coordinator {
     private void process() {
         driveManager.run();
         armManager.run();
-        intakeManager.run();
-        hatchManager.run();
+        //intakeManager.run();
+        //hatchManager.run();
     }
 
     private class DriveManager {
@@ -259,9 +259,9 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
-            double leftY = driver.leftStick.y.get();
-            double rightY = driver.rightStick.y.get();
-            double rightX = driver.rightStick.x.get();
+            double leftY = (driver.leftStick.y.get()/2);
+            double rightY = (driver.rightStick.y.get()/2);
+            double rightX = (driver.rightStick.x.get()/2);
 
             // Flip values if xbox inverted
             inverted.update(driverLeftBumper);
@@ -370,7 +370,8 @@ public class TeleopMode extends Coordinator {
             }
         }
     }
-
+	
+	/*
     private class IntakeManager {
         private final Intake.Idle idle;
         private final Intake.Speed speed;
@@ -393,8 +394,8 @@ public class TeleopMode extends Coordinator {
                 idle.activate();
             }
         }
-    }
-
+    }*/
+	
     private class ArmManager {
         private Arm arm;
 
@@ -403,16 +404,18 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
+		
+			/*
             // Check setpoints
-            if( manipA ) {
+            if( 1 == 2 ) {
                 // Low position
                 arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
                 arm.setpoint.activate();
-            } else if( manipY ) {
+            } else if( 0 ) {
                 // Ball place position
                 arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
                 arm.setpoint.activate();
-            } else if( manipB ) {
+            } else if( 0 ) {
                 // Hatch place position (stow)
                 arm.setpoint.setpoint.set(Calibration.Arm.STOW_SETPOINT);
                 arm.setpoint.activate();
@@ -425,9 +428,10 @@ public class TeleopMode extends Coordinator {
                     // Calculate needed factor for torque
                     double angle = 2*Math.PI * arm.leftEncoderClicks.get()/Calibration.Arm.CLICKS_FULL_ROTATION;
                     angle = Math.cos(angle);
+							
+                    if( (motorValue < 0 && arm.redundantEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
+                        (motorValue > 0 && arm.redundantEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
 
-                    if( (motorValue < 0 && arm.leftEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
-                        (motorValue > 0 && arm.leftEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
                         // We need to account for gravity existing
                         motorValue += Calibration.Arm.kF * angle;
                     }
@@ -438,11 +442,19 @@ public class TeleopMode extends Coordinator {
                     // Hold arm still
                     arm.hold.activate();
                 }
+				*/
+				
+				
+				arm.move.inputPower.set(manipLeftJoystickX/2);
+				arm.move.activate();
+				if ( manipBack ){
+					//arm.hold.activate();
+				}
             }
 
         }
-    }
 
+	/*
     private class HatchManager {
         private Toggle useAuto;
         private Toggle hookToggle;
@@ -499,7 +511,7 @@ public class TeleopMode extends Coordinator {
                 robot.slider.front.activate();
             }
         }
-    }
+    }*/
 
     private class AutoCenterManager {
         private ExtendablePIDController anglePID;
@@ -547,4 +559,4 @@ public class TeleopMode extends Coordinator {
     private enum CurrentDrive {
         IDLE, ARCADE, TANK
     }
-}
+}	

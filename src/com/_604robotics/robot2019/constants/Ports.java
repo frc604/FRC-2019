@@ -19,11 +19,11 @@ public class Ports {
     public static final int DRIVE_REAR_RIGHT_MOTOR = 6;
 
     /* Arm Motors */
-    public static final int ARM_LEFT_MOTOR = 1;
-    public static final int ARM_RIGHT_MOTOR = 2;
+    public static final int ARM_LEFT_MOTOR = 2;
+    public static final int ARM_RIGHT_MOTOR = 3;
 
     /* Intake Motor */
-    public static final int INTAKE_MOTOR = 3;
+    public static final int INTAKE_MOTOR = 1;
 
     /* Hatch Control */
     public static final int HOOK_A = 0;

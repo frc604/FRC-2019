@@ -20,9 +20,9 @@ public class DashboardSystem extends Coordinator {
         robot.dashboard.yAccel.set(robot.drive.yAccel.get());
         robot.dashboard.zAccel.set(robot.drive.zAccel.get());
 
-        robot.dashboard.totalCurrent.set(robot.powermonitor.totalPortCurrent.get());
+        //robot.dashboard.totalCurrent.set(robot.powermonitor.totalPortCurrent.get());
         
-        robot.powermonitor.initDashboardSendables();
+        //robot.powermonitor.initDashboardSendables();
 
         /* Limelight Testing */
         robot.dashboard.limelightTarget.set(robot.limelight.limelightHasTargets.get());
