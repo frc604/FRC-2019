@@ -35,8 +35,8 @@ public class TeleopMode extends Coordinator {
     private final com._604robotics.robot2019.Robot2019 robot;
 
     private final DriveManager driveManager;
-    //private final ArmManager armManager;
-    private final IntakeManager intakeManager;
+    private final ArmManager armManager;
+    //private final IntakeManager intakeManager;
     //private final HatchManager hatchManager;
     private final AutoCenterManager autoCenterManager;
 
@@ -71,8 +71,8 @@ public class TeleopMode extends Coordinator {
         this.robot = robot;
 
         driveManager = new DriveManager();
-        //armManager = new ArmManager();
-        intakeManager = new IntakeManager();
+        armManager = new ArmManager();
+        //intakeManager = new IntakeManager();
         //hatchManager = new HatchManager();
         autoCenterManager = new AutoCenterManager();
     }
@@ -236,8 +236,8 @@ public class TeleopMode extends Coordinator {
 
     private void process() {
         driveManager.run();
-        //armManager.run();
-        intakeManager.run();
+        armManager.run();
+        //intakeManager.run();
         //hatchManager.run();
     }
 
@@ -371,7 +371,7 @@ public class TeleopMode extends Coordinator {
         }
     }
 	
-	
+	/*
     private class IntakeManager {
         private final Intake.Idle idle;
         private final Intake.Speed speed;
@@ -394,7 +394,7 @@ public class TeleopMode extends Coordinator {
                 idle.activate();
             }
         }
-    }
+    }*/
 	
     private class ArmManager {
         private Arm arm;

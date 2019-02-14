@@ -23,7 +23,7 @@ public class Ports {
     public static final int ARM_RIGHT_MOTOR = 3;
 
     /* Intake Motor */
-    public static final int INTAKE_MOTOR = 132;
+    public static final int INTAKE_MOTOR = 1;
 
     /* Hatch Control */
     public static final int HOOK_A = 0;
