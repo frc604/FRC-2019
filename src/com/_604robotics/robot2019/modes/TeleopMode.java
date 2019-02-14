@@ -37,7 +37,7 @@ public class TeleopMode extends Coordinator {
     private final DriveManager driveManager;
     private final ArmManager armManager;
     //private final IntakeManager intakeManager;
-    //private final HatchManager hatchManager;
+    private final HatchManager hatchManager;
     private final AutoCenterManager autoCenterManager;
 
     private final Logger test = new Logger("Teleop");
@@ -73,7 +73,7 @@ public class TeleopMode extends Coordinator {
         driveManager = new DriveManager();
         armManager = new ArmManager();
         //intakeManager = new IntakeManager();
-        //hatchManager = new HatchManager();
+        hatchManager = new HatchManager();
         autoCenterManager = new AutoCenterManager();
     }
 
@@ -238,7 +238,7 @@ public class TeleopMode extends Coordinator {
         driveManager.run();
         armManager.run();
         //intakeManager.run();
-        //hatchManager.run();
+        hatchManager.run();
     }
 
     private class DriveManager {
@@ -442,19 +442,19 @@ public class TeleopMode extends Coordinator {
                     // Hold arm still
                     arm.hold.activate();
                 }
-				*/
+				
 				
 				
 				arm.move.inputPower.set(manipLeftJoystickX/2);
 				arm.move.activate();
 				if ( manipBack ){
 					//arm.hold.activate();
-				}
+				}*/
             }
 
         }
 
-	/*
+	
     private class HatchManager {
         private Toggle useAuto;
         private Toggle hookToggle;
@@ -481,37 +481,39 @@ public class TeleopMode extends Coordinator {
             // Toggle placer state
             if( hookToggle.isInOnState() ) {
                 robot.hook.release.activate();
-                robot.pusher.push.activate();
+                //robot.pusher.push.activate();
                 hatchTime.start();
             } else if( hookToggle.isInOffState() ) {
                 robot.hook.hold.activate();
-                robot.pusher.pullBack.activate();
+                //robot.pusher.pullBack.activate();
                 hatchTime.stop();
                 hatchTime.reset();
             }
 
             // Check if we need to pull back the pusher
             if( hatchTime.hasPeriodPassed(Calibration.PUSH_TIME) ) {
-                robot.pusher.pullBack.activate();
+                //robot.pusher.pullBack.activate();
                 hatchTime.stop();
                 hatchTime.reset();
             }
 
             if( manipLeftBumper ) {
-                robot.pusher.push.activate();
+                //robot.pusher.push.activate();
             } else {
-                robot.pusher.pullBack.activate();
+                //robot.pusher.pullBack.activate();
             }
 
             // Slide forward and back
             sliderForward.update(manipX);
+			System.out.println("CHECKING MANIPX");
             if( sliderForward.isInOnState() ) {
+							System.out.println("SLIDING BACK");
                 robot.slider.back.activate();
             } else if( sliderForward.isInOffState() ) {
                 robot.slider.front.activate();
             }
         }
-    }*/
+    }
 
     private class AutoCenterManager {
         private ExtendablePIDController anglePID;
