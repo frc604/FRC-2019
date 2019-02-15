@@ -1,4 +1,4 @@
-/*package com._604robotics.robot2019.modules;
+package com._604robotics.robot2019.modules;
 
 import com._604robotics.robot2019.constants.Ports;
 import com._604robotics.robotnik.Action;
@@ -12,12 +12,12 @@ public class HatchPusher extends Module {
 
     DoubleSolenoid pusher = new DoubleSolenoid(Ports.HATCH_PUSHER_A, Ports.HATCH_PUSHER_B);
     
-    public Output<Boolean> PusherExtended;
+    public Output<Boolean> pusherExtended;
 
     public HatchPusher() {
         super(HatchPusher.class);
 
-        PusherExtended = addOutput("Pusher", () -> push.isRunning());
+        pusherExtended = addOutput("Pusher", () -> push.isRunning());
 
         setDefaultAction(pullBack);
     }
@@ -51,4 +51,4 @@ public class HatchPusher extends Module {
     public Push push = new Push();
     public PullBack pullBack = new PullBack();
 
-}*/
+}

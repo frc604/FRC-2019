@@ -5,6 +5,7 @@ import com._604robotics.robotnik.Action;
 import com._604robotics.robotnik.Module;
 import com._604robotics.robotnik.Output;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class HatchSlider extends Module {
     /*
@@ -34,7 +35,7 @@ public class HatchSlider extends Module {
 
         @Override
         public void run() {
-            left.set(DoubleSolenoid.Value.kReverse);
+            left.set(Value.kReverse);
         }
     }
 
@@ -45,7 +46,7 @@ public class HatchSlider extends Module {
 
         @Override
         public void run() {
-            left.set(DoubleSolenoid.Value.kForward);
+            left.set(Value.kForward);
         }
     }
 

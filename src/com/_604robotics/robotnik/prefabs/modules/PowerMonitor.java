@@ -64,12 +64,12 @@ public class PowerMonitor extends Module {
         compressor = new Compressor(compressorID);
         // Set up outputs
         compCurrent = addOutput("Compressor Current", () -> compressor.getCompressorCurrent());
-        totalPortCurrent=addOutput("Total Port Current", () -> panel.getTotalCurrent());
-        totalCurrent=addOutput("Total Current", () -> panel.getTotalCurrent()+compressor.getCompressorCurrent());
-        batteryVoltage=addOutput("Battery Voltage", () -> panel.getVoltage());
+        totalPortCurrent=addOutput("Total Port Current", () -> /*panel.getTotalCurrent()*/ -1.0);
+        totalCurrent=addOutput("Total Current", () -> /*panel.getTotalCurrent()+compressor.getCompressorCurrent()*/ -1.0);
+        batteryVoltage=addOutput("Battery Voltage", () -> /*panel.getVoltage()*/ -1.0);
         for (int port=0;port<NUM_CURRENT_PORTS;port++) {
             int proxy=port;
-            Output<Double> tempOutput = addOutput("Port "+port+" Current", () -> panel.getCurrent(proxy));
+            Output<Double> tempOutput = addOutput("Port "+port+" Current", () -> /*panel.getCurrent(proxy)*/ -1.0);
             currents[proxy]=tempOutput;
         }
         for (Output<Double> test:currents) {
@@ -97,8 +97,8 @@ public class PowerMonitor extends Module {
         }
         if (voltageTimer.isRunning()) {
             if ((voltageTimer.get()%0.5)<0.05 && (voltageTimer.get()>0.44)) {
-                theLogger.log("WARN", "Low voltage of "+batteryVoltage.get()+"V!");
-                theLogger.log("WARN", "Voltage drop has continued for "+voltageTimer.get()+" seconds.");
+                //theLogger.log("WARN", "Low voltage of "+batteryVoltage.get()+"V!");
+                //theLogger.log("WARN", "Voltage drop has continued for "+voltageTimer.get()+" seconds.");
             }
         }
         for (int i=0;i<NUM_CURRENT_PORTS;i++) {

@@ -22,29 +22,36 @@ public class Hook extends Module {
         hook = new DoubleSolenoid(Ports.HOOK_A, Ports.HOOK_B);
         //leftSwitch = new DigitalInput(Ports.HATCH_LEFT_SWITCH);
         //rightSwitch = new DigitalInput(Ports.HATCH_RIGHT_SWITCH);
-
-        isHolding = addOutput("Holding", () -> /*hold.isRunning()*/ false);
-        aligned = addOutput("Hatch Aligned", () -> false /*leftSwitch.get() && rightSwitch.get()*/);
 		
 		release = new Release();
 		hold = new Hold();
 
+        isHolding = addOutput("Holding", () -> hold.isRunning());
+        aligned = addOutput("Hatch Aligned", () -> false /*leftSwitch.get() && rightSwitch.get()*/);
+		
         setDefaultAction(hold); // TODO make dashboard value
     }
 
     public class Release extends Action {
         public Release() {
             super(Hook.this, Release.class);
-            hook.set(Value.kForward);
         }
+		
+		@Override
+		public void run() {
+			hook.set(Value.kForward);
+		}
     }
 
     public class Hold extends Action {
         public Hold() {
             super(Hook.this, Hold.class);
-
-            hook.set(Value.kReverse);
         }
+		
+		@Override
+		public void run() {
+			hook.set(Value.kReverse);
+		}
     }
 
     public Release release;

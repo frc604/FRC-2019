@@ -26,7 +26,7 @@ public class Robot2019 extends Robot {
 
     public final HatchSlider slider = addModule(new HatchSlider());
     public final Hook hook = addModule(new Hook());
-    //public final HatchPusher pusher = addModule(new HatchPusher());
+    public final HatchPusher pusher = addModule(new HatchPusher());
 
     public final Limelight limelight = addModule(new Limelight());
 

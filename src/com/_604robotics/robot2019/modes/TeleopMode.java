@@ -405,7 +405,7 @@ public class TeleopMode extends Coordinator {
 
         public void run() {
 		
-			/*
+			
             // Check setpoints
             if( 1 == 2 ) {
                 // Low position
@@ -421,7 +421,7 @@ public class TeleopMode extends Coordinator {
                 arm.setpoint.activate();
             } else {
                 // Check thumbsticks
-                if( manipLeftJoystickY != 0 ) {
+                /*if( manipLeftJoystickY != 0 ) {
                     // Set arm rate to joystick
                     double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
 
@@ -441,7 +441,7 @@ public class TeleopMode extends Coordinator {
                 } else {
                     // Hold arm still
                     arm.hold.activate();
-                }
+                }*/
 				
 				
 				
@@ -449,7 +449,7 @@ public class TeleopMode extends Coordinator {
 				arm.move.activate();
 				if ( manipBack ){
 					//arm.hold.activate();
-				}*/
+				}
             }
 
         }
@@ -460,12 +460,16 @@ public class TeleopMode extends Coordinator {
         private Toggle hookToggle;
         private Toggle sliderForward;
         private Timer hatchTime;
+		
+		private double start;
 
         public HatchManager() {
             useAuto = new Toggle(true);
             hookToggle = new Toggle(true); // Assuming the piston is in the held state to start
-            sliderForward = new Toggle(false); // Not extended initially
+            sliderForward = new Toggle(true); // Not extended initially
             hatchTime = new Timer();
+			
+			start = System.currentTimeMillis();
         }
 
         public void run() {
@@ -481,33 +485,34 @@ public class TeleopMode extends Coordinator {
             // Toggle placer state
             if( hookToggle.isInOnState() ) {
                 robot.hook.release.activate();
-                //robot.pusher.push.activate();
+                robot.pusher.push.activate();
                 hatchTime.start();
             } else if( hookToggle.isInOffState() ) {
                 robot.hook.hold.activate();
-                //robot.pusher.pullBack.activate();
+                robot.pusher.pullBack.activate();
+				start = System.currentTimeMillis();
                 hatchTime.stop();
                 hatchTime.reset();
             }
 
             // Check if we need to pull back the pusher
             if( hatchTime.hasPeriodPassed(Calibration.PUSH_TIME) ) {
-                //robot.pusher.pullBack.activate();
+			//if( System.currentTimeMillis() - start > Calibration.PUSH_TIME && hookToggle.isInOnState() ) {
+				System.out.println("AUTO PUSHER PULLBACK ACTIVATED");
+                robot.pusher.pullBack.activate();
                 hatchTime.stop();
                 hatchTime.reset();
             }
 
             if( manipLeftBumper ) {
-                //robot.pusher.push.activate();
+                robot.pusher.push.activate();
             } else {
-                //robot.pusher.pullBack.activate();
+                robot.pusher.pullBack.activate();
             }
 
             // Slide forward and back
             sliderForward.update(manipX);
-			System.out.println("CHECKING MANIPX");
             if( sliderForward.isInOnState() ) {
-							System.out.println("SLIDING BACK");
                 robot.slider.back.activate();
             } else if( sliderForward.isInOffState() ) {
                 robot.slider.front.activate();

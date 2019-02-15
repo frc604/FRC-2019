@@ -33,8 +33,8 @@ public class Ports {
 
     public static final int HATCH_LEFT_SWITCH = 0;
     public static final int HATCH_RIGHT_SWITCH = 0;
-    public static final int HATCH_PUSHER_A = 0;
-    public static final int HATCH_PUSHER_B = 0;
+    public static final int HATCH_PUSHER_A = 2;
+    public static final int HATCH_PUSHER_B = 6;
 
     /* Tilter Control */
     public static final int TILT_MOTOR = 15;
@@ -47,7 +47,7 @@ public class Ports {
     public static final int ENCODER_RIGHT_B = 3;
     
     /* CAN Motors */
-    public static final int COMPRESSOR = 9;
+    public static final int COMPRESSOR = 0; // AKA PCM
     public static final int PDP_MODULE = 1;
     
 }
