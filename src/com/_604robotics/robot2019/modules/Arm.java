@@ -19,7 +19,6 @@ public class Arm extends Module {
     private WPI_TalonSRX rightMotor;
 
     private TalonPWMEncoder leftEncoder;
-    private TalonPWMEncoder rightEncoder;
     private RedundantEncoder redundantEncoder;
 
     private Input<Double> holdPoint;
@@ -37,30 +36,27 @@ public class Arm extends Module {
 
         rightMotor.setInverted(true);
         rightMotor.set(ControlMode.Follower, Ports.ARM_LEFT_MOTOR);
-		/*
+	
         leftEncoder = new TalonPWMEncoder(leftMotor);
-        rightEncoder = new TalonPWMEncoder(rightMotor);
 
         leftEncoder.zero();
-        rightEncoder.zero();
-*/
         //redundantEncoder = new RedundantEncoder(leftEncoder, rightEncoder);
         //redundantEncoder.setMinimum(Calibration.Arm.MIN_ENCODER_VAL);
         //redundantEncoder.setMaximum(Calibration.Arm.MAX_ENCODER_VAL);
 
-        //holdPoint = addInput("Setpoint", 0.0);
+        holdPoint = addInput("Setpoint", 0.0);
 
-		//pidError = addOutput("PID Error", () -> pid.getError());
+		pidError = addOutput("PID Error", () -> pid.getError());
         //rightEncoderClicks = addOutput("Right Encoder Clicks", () -> rightEncoder.getPosition());
-        //leftEncoderClicks = addOutput("Right Encoder Clicks", () -> leftEncoder.getPosition());
+        leftEncoderClicks = addOutput("Right Encoder Clicks", () -> leftEncoder.getPosition());
         //redundantEncoderClicks = addOutput("Redundant Encoder Clicks", () -> redundantEncoder.getValue());
 
-        //this.pid = new RotatingArmPIDController(Calibration.Arm.kP, Calibration.Arm.kI, Calibration.Arm.kD,
-         //   Calibration.Arm.kF, redundantEncoder, leftMotor);
+        this.pid = new RotatingArmPIDController(Calibration.Arm.kP, Calibration.Arm.kI, Calibration.Arm.kD,
+            Calibration.Arm.kF, redundantEncoder, leftMotor);
 
         setDefaultAction(move);
     }
-/*
+
     public class Hold extends Action {
 
         public Hold() {
@@ -70,12 +66,12 @@ public class Arm extends Module {
 
         @Override
         public void begin() {
-            //pid.setEnabled(true);
+            pid.setEnabled(true);
         }
 
         @Override
         public void run() {
-            //pid.setSetpoint(holdPoint.get());
+            pid.setSetpoint(holdPoint.get());
         }
 
         @Override
@@ -83,7 +79,7 @@ public class Arm extends Module {
             pid.setEnabled(false);
         }
     }
-*/
+
     public class Move extends Action {
         public Input<Double> inputPower;
 
@@ -94,12 +90,10 @@ public class Arm extends Module {
 
         @Override
         public void run() {
-            //setpoint.setpoint.set(0);
-
             leftMotor.set(inputPower.get());
         }
     }
-/*
+
     public class Setpoint extends Action {
         public Input<Double> setpoint;
 
@@ -120,11 +114,11 @@ public class Arm extends Module {
 
         @Override
         public void end() {
-            //pid.setEnabled(false);
+            pid.setEnabled(false);
         }
     }
-*/
-    //public Hold hold = new Hold();
+
+    public Hold hold = new Hold();
     public Move move = new Move();
-    //public Setpoint setpoint = new Setpoint();
+    public Setpoint setpoint = new Setpoint();
 }

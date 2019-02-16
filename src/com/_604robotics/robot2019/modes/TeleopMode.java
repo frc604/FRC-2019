@@ -403,25 +403,23 @@ public class TeleopMode extends Coordinator {
             arm = robot.arm;
         }
 
-        public void run() {
-		
-			
+        public void run() {	
             // Check setpoints
-            if( 1 == 2 ) {
+            if( manipA ) {
                 // Low position
                 arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
                 arm.setpoint.activate();
-            } else if( 0 ) {
+            } else if( manipB ) {
                 // Ball place position
                 arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
                 arm.setpoint.activate();
-            } else if( 0 ) {
+            } else if( manipY ) {
                 // Hatch place position (stow)
                 arm.setpoint.setpoint.set(Calibration.Arm.STOW_SETPOINT);
                 arm.setpoint.activate();
             } else {
                 // Check thumbsticks
-                /*if( manipLeftJoystickY != 0 ) {
+                if( manipLeftJoystickY != 0 ) {
                     // Set arm rate to joystick
                     double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
 
@@ -441,20 +439,17 @@ public class TeleopMode extends Coordinator {
                 } else {
                     // Hold arm still
                     arm.hold.activate();
-                }*/
-				
-				
-				
-				arm.move.inputPower.set(manipLeftJoystickX/2);
-				arm.move.activate();
+                }
+
 				if ( manipBack ){
-					//arm.hold.activate();
+					arm.hold.activate();
 				}
             }
 
         }
 
-	
+    }
+
     private class HatchManager {
         private Toggle useAuto;
         private Toggle hookToggle;
@@ -566,4 +561,5 @@ public class TeleopMode extends Coordinator {
     private enum CurrentDrive {
         IDLE, ARCADE, TANK
     }
-}	
+}
+	
