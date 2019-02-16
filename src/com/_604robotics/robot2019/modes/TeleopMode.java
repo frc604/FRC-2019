@@ -458,7 +458,7 @@ public class TeleopMode extends Coordinator {
 
         public HatchManager() {
             useAuto = new Toggle(true);
-            hookToggle = new Toggle(true); // Assuming the piston is in the held state to start
+            hookToggle = new Toggle(false); // Assuming the piston is in the held state to start
             sliderForward = new Toggle(true); // Not extended initially
             hatchTime = new Timer();
 			
@@ -469,7 +469,7 @@ public class TeleopMode extends Coordinator {
             useAuto.update(manipStart);
             if( useAuto.isInOnState() ) {
                 // Checks if the two limit switches are pressed, meaning the hatch is ready to deploy
-                hookToggle.update(driverA || robot.hook.aligned.get());
+                hookToggle.update(driverA/* || robot.hook.aligned.get()*/);
             } else {
                 // Ignore the limit switches, only use the controller
                 hookToggle.update( driverA );
@@ -478,14 +478,16 @@ public class TeleopMode extends Coordinator {
             // Toggle placer state
             if( hookToggle.isInOnState() ) {
                 robot.hook.release.activate();
+				//hatchTime.start();
                 robot.pusher.push.activate();
-                hatchTime.start();
+				System.out.println("HOOOOKSDAOKDFSOKOKDFIJ");
+                //hatchTime.start();
             } else if( hookToggle.isInOffState() ) {
                 robot.hook.hold.activate();
                 robot.pusher.pullBack.activate();
-				start = System.currentTimeMillis();
-                hatchTime.stop();
-                hatchTime.reset();
+				//start = System.currentTimeMillis();
+                //hatchTime.stop();
+                //hatchTime.reset();
             }
 
             // Check if we need to pull back the pusher
@@ -532,7 +534,7 @@ public class TeleopMode extends Coordinator {
                     driveManager.arcade.movePower.set(output);
                 }
             };
-            anglePID = new ExtendablePIDController(-0.04, 0, -0.15, new Limelight.HorizontalError(robot.limelight,0), rotation);
+            anglePID = new ExtendablePIDController(-0.025, 0, -0.06, new Limelight.HorizontalError(robot.limelight,0), rotation, 0.025);
             anglePID.setAbsoluteTolerance(Calibration.LIMELIGHT_ANGLE_TOLERANCE);
             distPID = new ExtendablePIDController(0.5, 0, 0, new Limelight.DistanceError(robot.limelight, 18), drive);
             distPID.setAbsoluteTolerance(Calibration.LIMELIGHT_DIST_TOLERANCE);

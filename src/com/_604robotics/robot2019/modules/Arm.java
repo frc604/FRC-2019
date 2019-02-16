@@ -37,8 +37,8 @@ public class Arm extends Module {
         rightMotor.setInverted(true);
         rightMotor.set(ControlMode.Follower, Ports.ARM_LEFT_MOTOR);
 	
-        leftEncoder = new TalonPWMEncoder(leftMotor);
-		leftEncoder.setInverted(true);
+        leftEncoder = new TalonPWMEncoder(rightMotor);
+		leftEncoder.setInverted(false);
 
         leftEncoder.zero();
         //redundantEncoder = new RedundantEncoder(leftEncoder, rightEncoder);
@@ -48,7 +48,7 @@ public class Arm extends Module {
         holdPoint = addInput("Setpoint", 0.0);
 
         //rightEncoderClicks = addOutput("Right Encoder Clicks", () -> rightEncoder.getPosition());
-        leftEncoderClicks = addOutput("Right Encoder Clicks", () -> leftEncoder.getPosition());
+        leftEncoderClicks = addOutput("Left Encoder Clicks", () -> leftEncoder.getPosition());
         //redundantEncoderClicks = addOutput("Redundant Encoder Clicks", () -> redundantEncoder.getValue());
 
         this.pid = new RotatingArmPIDController(Calibration.Arm.kP, Calibration.Arm.kI, Calibration.Arm.kD,
