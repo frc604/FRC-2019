@@ -24,6 +24,7 @@ public class Intake extends Module {
 
     public class Speed extends Action {
         public void set(double speed) {
+			System.out.println("SPEEDDD333333");
             intakeMotor.set(ControlMode.PercentOutput, speed);
         }
 

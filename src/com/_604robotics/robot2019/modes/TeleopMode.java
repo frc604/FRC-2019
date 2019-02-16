@@ -36,7 +36,7 @@ public class TeleopMode extends Coordinator {
 
     private final DriveManager driveManager;
     private final ArmManager armManager;
-    //private final IntakeManager intakeManager;
+    private final IntakeManager intakeManager;
     private final HatchManager hatchManager;
     private final AutoCenterManager autoCenterManager;
 
@@ -72,7 +72,7 @@ public class TeleopMode extends Coordinator {
 
         driveManager = new DriveManager();
         armManager = new ArmManager();
-        //intakeManager = new IntakeManager();
+        intakeManager = new IntakeManager();
         hatchManager = new HatchManager();
         autoCenterManager = new AutoCenterManager();
     }
@@ -237,7 +237,7 @@ public class TeleopMode extends Coordinator {
     private void process() {
         driveManager.run();
         armManager.run();
-        //intakeManager.run();
+        intakeManager.run();
         hatchManager.run();
     }
 
@@ -259,9 +259,9 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
-            double leftY = (driver.leftStick.y.get()/2);
-            double rightY = (driver.rightStick.y.get()/2);
-            double rightX = (driver.rightStick.x.get()/2);
+            double leftY = (driver.leftStick.y.get());
+            double rightY = (driver.rightStick.y.get());
+            double rightX = (driver.rightStick.x.get());
 
             // Flip values if xbox inverted
             inverted.update(driverLeftBumper);
@@ -371,7 +371,7 @@ public class TeleopMode extends Coordinator {
         }
     }
 	
-	/*
+	
     private class IntakeManager {
         private final Intake.Idle idle;
         private final Intake.Speed speed;
@@ -383,18 +383,16 @@ public class TeleopMode extends Coordinator {
 
         public void run() {
             if( driverLeftTrigger != 0.0 ) {
-                speed.set(driverLeftTrigger); // Intake
+				System.out.println("SPEEDDD");
+                speed.set(1); // Intake
+				System.out.println(driverLeftTrigger);
             } else if( driverRightTrigger != 0.0 ){
-                speed.set(-1*driverRightTrigger); // Outtake
-            } else if( manipLeftTrigger != 0.0 ) {
-                speed.set(manipLeftTrigger); // Intake
-            } else if( manipRightTrigger != 0 ) {
-                speed.set(-1*manipRightTrigger); // Outtake
+                speed.set(-1); // Outtake
             } else {
-                idle.activate();
+                //idle.activate();
             }
         }
-    }*/
+    }
 	
     private class ArmManager {
         private Arm arm;
@@ -415,7 +413,7 @@ public class TeleopMode extends Coordinator {
                 arm.setpoint.activate();
             } else if( manipY ) {
                 // Hatch place position (stow)
-                arm.setpoint.setpoint.set(Calibration.Arm.STOW_SETPOINT);
+                arm.setpoint.setpoint.set(Calibration.Arm.VERTICAL_POSITION);
                 arm.setpoint.activate();
             } else {
                 // Check thumbsticks
@@ -427,8 +425,8 @@ public class TeleopMode extends Coordinator {
                     double angle = 2*Math.PI * arm.leftEncoderClicks.get()/Calibration.Arm.CLICKS_FULL_ROTATION;
                     angle = Math.cos(angle);
 							
-                    if( (motorValue < 0 && arm.redundantEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
-                        (motorValue > 0 && arm.redundantEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
+                    if( (motorValue < 0 && arm.leftEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
+                        (motorValue > 0 && arm.leftEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
 
                         // We need to account for gravity existing
                         motorValue += Calibration.Arm.kF * angle;
@@ -471,10 +469,10 @@ public class TeleopMode extends Coordinator {
             useAuto.update(manipStart);
             if( useAuto.isInOnState() ) {
                 // Checks if the two limit switches are pressed, meaning the hatch is ready to deploy
-                hookToggle.update(manipRightBumper || robot.hook.aligned.get());
+                hookToggle.update(driverA || robot.hook.aligned.get());
             } else {
                 // Ignore the limit switches, only use the controller
-                hookToggle.update(manipRightBumper);
+                hookToggle.update( driverA );
             }
 
             // Toggle placer state
@@ -499,14 +497,14 @@ public class TeleopMode extends Coordinator {
                 hatchTime.reset();
             }
 
-            if( manipLeftBumper ) {
-                robot.pusher.push.activate();
-            } else {
+            if( driverX ) {
                 robot.pusher.pullBack.activate();
+            } else {
+                robot.pusher.push.activate();
             }
 
             // Slide forward and back
-            sliderForward.update(manipX);
+            sliderForward.update(driverY);
             if( sliderForward.isInOnState() ) {
                 robot.slider.back.activate();
             } else if( sliderForward.isInOffState() ) {

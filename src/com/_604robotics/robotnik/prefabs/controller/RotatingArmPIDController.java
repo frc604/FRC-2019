@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.PIDSource;
  * Zero is assumed to be horizontal. Users are responsible for properly zeroing the PIDSource beforehand.
  */
 public class RotatingArmPIDController extends ClampedIntegralPIDController {
-    private double encoderPeriod = 360;
+    private double encoderPeriod = 10240;
 
     public RotatingArmPIDController(double Kp, double Ki, double Kd, PIDSource source, PIDOutput output) {
         super(Kp, Ki, Kd, source, output);

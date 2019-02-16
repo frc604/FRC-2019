@@ -38,19 +38,20 @@ public class Calibration {
     /* Arm Calibration */
     @Unreal("Values must be updated when robot is designed")
     public static final class Arm {
-        public static final double LOW_SETPOINT = 0; // Ready to intake from front
-        public static final double STOW_SETPOINT = 0; // Starting position
-        public static final double OUTPUT_SETPOINT = 0; // Output from front
-        public static final double VERTICAL_POSITION = 0; // The arm is straight up
+        public static final double LOW_SETPOINT = 6000; // Ready to intake from front
+        public static final double STOW_SETPOINT = 10; // Starting position
+        public static final double OUTPUT_SETPOINT = 1000; // Output from front
+        public static final double VERTICAL_POSITION = 2327; // The arm is straight up
 
         public static final double MIN_ENCODER_VAL = 0; // The lowest value the encoder can have
         public static final double MAX_ENCODER_VAL = 0; // The largest value the encoder can have
-        public static final double CLICKS_FULL_ROTATION = 250; // One rotation of the encoder in clicks
+        public static final double CLICKS_FULL_ROTATION = 10240; // One rotation of the encoder in clicks
 
-        public static final double kP = 0;
+        public static final double kP = -0.0004;
         public static final double kI = 0;
-        public static final double kD = 0;
-        public static final double kF = 0;
+        public static final double kD = -0.00025;
+        public static final double kF = -0.06;
+		//-0.05
 
         public static final double SCALE_JOYSTICK = 0.6; // Multiply the input joystick by this
     }
