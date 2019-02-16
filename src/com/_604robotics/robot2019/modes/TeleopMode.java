@@ -384,12 +384,12 @@ public class TeleopMode extends Coordinator {
         public void run() {
             if( driverLeftTrigger != 0.0 ) {
 				System.out.println("SPEEDDD");
-                speed.set(1); // Intake
+                speed.set(driverLeftTrigger); // Intake
 				System.out.println(driverLeftTrigger);
             } else if( driverRightTrigger != 0.0 ){
-                speed.set(-1); // Outtake
+                speed.set(driverLeftTrigger); // Outtake
             } else {
-                //idle.activate();
+                idle.activate();
             }
         }
     }
@@ -534,7 +534,7 @@ public class TeleopMode extends Coordinator {
                     driveManager.arcade.movePower.set(output);
                 }
             };
-            anglePID = new ExtendablePIDController(-0.025, 0, -0.06, new Limelight.HorizontalError(robot.limelight,0), rotation, 0.025);
+            anglePID = new ExtendablePIDController(-0.032, 0, -0.3, new Limelight.HorizontalError(robot.limelight,0), rotation, 0.025);
             anglePID.setAbsoluteTolerance(Calibration.LIMELIGHT_ANGLE_TOLERANCE);
             distPID = new ExtendablePIDController(0.5, 0, 0, new Limelight.DistanceError(robot.limelight, 18), drive);
             distPID.setAbsoluteTolerance(Calibration.LIMELIGHT_DIST_TOLERANCE);
@@ -545,6 +545,7 @@ public class TeleopMode extends Coordinator {
             robot.limelight.scan.activate();
             if( robot.limelight.limelightHasTargets.get() ) {
                 anglePID.setEnabled(true);
+				System.out.println(anglePID.get());
             } else {
                 this.end();
             }

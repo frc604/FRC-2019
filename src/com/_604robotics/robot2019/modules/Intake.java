@@ -4,10 +4,10 @@ import com._604robotics.robot2019.constants.Ports;
 import com._604robotics.robotnik.Action;
 import com._604robotics.robotnik.Module;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 public class Intake extends Module {
-    public final WPI_TalonSRX intakeMotor = new WPI_TalonSRX(Ports.INTAKE_MOTOR);
+    public final WPI_VictorSPX intakeMotor = new WPI_VictorSPX(Ports.INTAKE_MOTOR);
 
     public class Idle extends Action {
         public Idle () {
@@ -32,10 +32,12 @@ public class Intake extends Module {
             super(Intake.this, Speed.class);
         }
     }
+	
+	public final Action speed = new Speed();
 
     public Intake() {
         super(Intake.class);
 
-        setDefaultAction(idle);
+        setDefaultAction(speed);
     }
 }
