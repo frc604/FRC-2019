@@ -57,6 +57,7 @@ public class Calibration {
     }
 
     public static final double PUSH_TIME = 2000;
+    public static final double HOOK_TIME = 2000;
 
     @Unreal("Values must be updated when the real robot is designed")
     public static final AutonMovement.DriveTrainProperties DRIVE_PROPERTIES

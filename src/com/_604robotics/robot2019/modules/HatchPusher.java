@@ -30,7 +30,7 @@ public class HatchPusher extends Module {
 
         @Override
         public void run() {
-            pusher.set(Value.kForward);
+            pusher.set(Value.kReverse);
         }
 
 
@@ -44,7 +44,7 @@ public class HatchPusher extends Module {
 
         @Override
         public void run() {
-            pusher.set(Value.kReverse);
+            pusher.set(Value.kForward);
         }
     }
 

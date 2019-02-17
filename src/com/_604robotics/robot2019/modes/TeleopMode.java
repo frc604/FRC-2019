@@ -402,46 +402,48 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {	
-            // Check setpoints
-            if( manipA ) {
-                // Low position
-                arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
-                arm.setpoint.activate();
-            } else if( manipB ) {
-                // Ball place position
-                arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
-                arm.setpoint.activate();
-            } else if( manipY ) {
-                // Hatch place position (stow)
-                arm.setpoint.setpoint.set(Calibration.Arm.VERTICAL_POSITION);
-                arm.setpoint.activate();
-            } else {
-                // Check thumbsticks
-                if( manipLeftJoystickY != 0 ) {
-                    // Set arm rate to joystick
-                    double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
+            if ( !robot.slider.isForward.get() ) {
+                // Check setpoints
+                if( manipA ) {
+                    // Low position
+                    arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
+                    arm.setpoint.activate();
+                } else if( manipB ) {
+                    // Ball place position
+                    arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
+                    arm.setpoint.activate();
+                } else if( manipY ) {
+                    // Hatch place position (stow)
+                    arm.setpoint.setpoint.set(Calibration.Arm.VERTICAL_POSITION);
+                    arm.setpoint.activate();
+                } else {
+                    // Check thumbsticks
+                    if( manipLeftJoystickY != 0 ) {
+                        // Set arm rate to joystick
+                        double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
 
-                    // Calculate needed factor for torque
-                    double angle = 2*Math.PI * arm.leftEncoderClicks.get()/Calibration.Arm.CLICKS_FULL_ROTATION;
-                    angle = Math.cos(angle);
-							
-                    if( (motorValue < 0 && arm.leftEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
-                        (motorValue > 0 && arm.leftEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
+                        // Calculate needed factor for torque
+                        double angle = 2*Math.PI * arm.leftEncoderClicks.get()/Calibration.Arm.CLICKS_FULL_ROTATION;
+                        angle = Math.cos(angle);
+                                
+                        if( (motorValue < 0 && arm.leftEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
+                            (motorValue > 0 && arm.leftEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
 
-                        // We need to account for gravity existing
-                        motorValue += Calibration.Arm.kF * angle;
+                            // We need to account for gravity existing
+                            motorValue += Calibration.Arm.kF * angle;
+                        }
+
+                        arm.move.inputPower.set(motorValue);
+                        arm.move.activate();
+                    } else {
+                        // Hold arm still
+                        arm.hold.activate();
                     }
 
-                    arm.move.inputPower.set(motorValue);
-                    arm.move.activate();
-                } else {
-                    // Hold arm still
-                    arm.hold.activate();
+                    if ( manipBack ){
+                        arm.hold.activate();
+                    }
                 }
-
-				if ( manipBack ){
-					arm.hold.activate();
-				}
             }
 
         }
@@ -453,6 +455,7 @@ public class TeleopMode extends Coordinator {
         private Toggle hookToggle;
         private Toggle sliderForward;
         private Timer hatchTime;
+        private Timer pushTime;
 		
 		private double start;
 
@@ -461,21 +464,67 @@ public class TeleopMode extends Coordinator {
             hookToggle = new Toggle(false); // Assuming the piston is in the held state to start
             sliderForward = new Toggle(true); // Not extended initially
             hatchTime = new Timer();
+            pushTime = new Timer();
 			
 			start = System.currentTimeMillis();
         }
 
         public void run() {
-            useAuto.update(manipStart);
-            if( useAuto.isInOnState() ) {
-                // Checks if the two limit switches are pressed, meaning the hatch is ready to deploy
-                hookToggle.update(driverA/* || robot.hook.aligned.get()*/);
-            } else {
-                // Ignore the limit switches, only use the controller
-                hookToggle.update( driverA );
+            hookToggle.update( driverA );
+
+            if ( hookToggle.isInOffState() ) {
+                robot.hook.hold.activate();
+
+            } else if ( hookToggle.isInOnState() ) {
+                robot.hook.release.activate();
+
             }
 
-            // Toggle placer state
+            if( driverX && !robot.hook.isHolding.get() ) {
+                robot.pusher.push.activate();
+            } else {
+                robot.pusher.pullBack.activate();
+            }
+
+            sliderForward.update(driverY);
+
+            if( sliderForward.isInOnState() ) {
+                robot.slider.back.activate();
+
+            } else if( sliderForward.isInOffState() ) {
+                robot.slider.front.activate();
+
+            }
+
+            useAuto.update(((driverB && sliderForward.isInOffState()) || (driverB && hookToggle.isInOnState())));
+            
+            if ( useAuto.isInOnState() ) {
+                robot.slider.front.activate();
+                hatchTime.start();
+            } else if ( useAuto.isInOffState() ) {
+                robot.slider.back.activate();
+                robot.pusher.pullBack.activate();
+                hatchTime.stop();
+                hatchTime.reset();
+                pushTime.stop();
+                pushTime.reset();
+            }
+
+            if ( hatchTime.hasPeriodPassed(Calibration.HOOK_TIME) ) {
+                robot.hook.release.activate();
+                hatchTime.stop();
+                hatchTime.reset();
+                pushTime.start();
+            }
+
+            if ( pushTime.hasPeriodPassed(Calibration.PUSH_TIME) ) {
+                robot.pusher.push.activate();
+                pushTime.stop();
+                pushTime.reset();
+            }
+            
+
+           /*  // Toggle placer state
             if( hookToggle.isInOnState() ) {
                 robot.hook.release.activate();
 				//hatchTime.start();
@@ -511,7 +560,7 @@ public class TeleopMode extends Coordinator {
                 robot.slider.back.activate();
             } else if( sliderForward.isInOffState() ) {
                 robot.slider.front.activate();
-            }
+            } */
         }
     }
 
