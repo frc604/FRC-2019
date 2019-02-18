@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj.PIDSource;
  * Zero is assumed to be horizontal. Users are responsible for properly zeroing the PIDSource beforehand.
  */
 public class RotatingArmPIDController extends ClampedIntegralPIDController {
-    private double encoderPeriod = 10240;
+    private double encoderPeriod = 360;
+    private double zeroOffset = 0;
 
     public RotatingArmPIDController(double Kp, double Ki, double Kd, PIDSource source, PIDOutput output) {
         super(Kp, Ki, Kd, source, output);
@@ -38,6 +39,10 @@ public class RotatingArmPIDController extends ClampedIntegralPIDController {
         this.encoderPeriod = encoderPeriod;
     }
 
+    public void setFeedforwardZeroOffset(double zeroOffset) {
+        this.zeroOffset = zeroOffset;
+    }
+
     @Override
     public synchronized void setContinuous(boolean continuous) {
         super.setContinuous(continuous);
@@ -50,10 +55,10 @@ public class RotatingArmPIDController extends ClampedIntegralPIDController {
 
     /**
      * <p>Overriden feed forward part of PIDController.</p>
-     * 
+     *
      * This is a physically based model which multiplies feed forward coefficient by cosine.
      * The feedforward calculates the expected torque needed to hold an arm steady, scaled to motor power.
-     * 
+     *
      *  @return the feed forward value
      */
     @Override
@@ -63,7 +68,7 @@ public class RotatingArmPIDController extends ClampedIntegralPIDController {
         double fValue;
         m_thisMutex.lock();
         try {
-            angle = m_pidInput.pidGet();
+            angle = m_pidInput.pidGet() - zeroOffset;
             fValue = getF();
         } finally {
             m_thisMutex.unlock();

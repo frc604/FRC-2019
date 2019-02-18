@@ -371,8 +371,8 @@ public class TeleopMode extends Coordinator {
             }
         }
     }
-	
-	
+
+
     private class IntakeManager {
         private final Intake.Idle idle;
         private final Intake.Speed speed;
@@ -394,7 +394,7 @@ public class TeleopMode extends Coordinator {
             }
         }
     }
-	
+
     private class ArmManager {
         private Arm arm;
 
@@ -402,7 +402,7 @@ public class TeleopMode extends Coordinator {
             arm = robot.arm;
         }
 
-        public void run() {	
+        public void run() {
             if ( !robot.slider.isForward.get() ) {
                 // Check setpoints
                 if( manipA ) {
@@ -424,9 +424,9 @@ public class TeleopMode extends Coordinator {
                         double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
 
                         // Calculate needed factor for torque
-                        double angle = 2*Math.PI * arm.leftEncoderClicks.get()/Calibration.Arm.CLICKS_FULL_ROTATION;
+                        double angle = 2*Math.PI * (arm.leftEncoderClicks.get() - Calibration.Arm.HORIZONTAL_POSITION) / Calibration.Arm.CLICKS_FULL_ROTATION;
                         angle = Math.cos(angle);
-                                
+
                         if( (motorValue < 0 && arm.leftEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
                             (motorValue > 0 && arm.leftEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
 
@@ -457,7 +457,7 @@ public class TeleopMode extends Coordinator {
         private Toggle sliderForward;
         private SmartTimer hatchTime;
 		private int autoState = 0;
-		
+
 		private double start;
 
         public HatchManager() {
@@ -465,7 +465,7 @@ public class TeleopMode extends Coordinator {
             hookToggle = new Toggle(false); // Assuming the piston is in the held state to start
             sliderForward = new Toggle(false); // Not extended initially
             hatchTime = new SmartTimer();
-            			
+
 			start = System.currentTimeMillis();
         }
 
@@ -511,7 +511,7 @@ public class TeleopMode extends Coordinator {
                     }
                     break;
 
-                case ( 1 ): 
+                case ( 1 ):
                     hookToggle.update(!hookToggle.isInOnState());
                     hatchTime.startIfNotRunning();
                     System.out.println("Case1");
@@ -534,14 +534,14 @@ public class TeleopMode extends Coordinator {
                         hatchTime.stopAndReset();
                         System.out.println("END auto");
                         autoState++;
-                        
+
                     }
                     break;
                 case ( 4 ):
                     autoState = 0;
                     break;
-            }			
-			
+            }
+
         }
     }
 
@@ -600,4 +600,4 @@ public class TeleopMode extends Coordinator {
         IDLE, ARCADE, TANK
     }
 }
-	
+
