@@ -32,7 +32,7 @@ public class DashboardSystem extends Coordinator {
         robot.dashboard.limelightSkew.set(robot.limelight.limelightSkew.get());
         robot.dashboard.limelightDistance.set(robot.limelight.limelightDistance.get());
 
-        robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
+        //robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
         robot.limelight.limelightStreamMode.set(robot.dashboard.limelightStreamMode.get().ordinal());
         robot.limelight.limelightSnapshotEnabled.set(robot.dashboard.limelightSnapshot.get());
 

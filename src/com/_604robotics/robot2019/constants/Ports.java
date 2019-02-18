@@ -24,12 +24,13 @@ public class Ports {
 
     /* Intake Motor */
     public static final int INTAKE_MOTOR = 11;
+    public static final int INTAKE_LIMIT = 4;
 
     /* Hatch Control */
     public static final int HOOK_A = 0;
     public static final int HOOK_B = 4;
-    public static final int HATCH_LEFT_SLIDE_A= 1;
-    public static final int HATCH_LEFT_SLIDE_B = 5;
+    public static final int HATCH_LEFT_SLIDE_A= 5;
+    public static final int HATCH_LEFT_SLIDE_B = 1;
 
     public static final int HATCH_LEFT_SWITCH = 0;
     public static final int HATCH_RIGHT_SWITCH = 0;

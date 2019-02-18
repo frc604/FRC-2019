@@ -383,12 +383,12 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
-            if( driverLeftTrigger != 0.0 ) {
+            if( driverLeftTrigger != 0.0 && speed.getState() ) {
 				System.out.println("SPEEDDD");
-                speed.set(driverLeftTrigger); // Intake
+                speed.set(-driverLeftTrigger); // Intake
 				System.out.println(driverLeftTrigger);
             } else if( driverRightTrigger != 0.0 ){
-                speed.set(driverLeftTrigger); // Outtake
+                speed.set(driverRightTrigger); // Outtake
             } else {
                 idle.activate();
             }
@@ -490,13 +490,19 @@ public class TeleopMode extends Coordinator {
 
             if( sliderForward.isInOnState() ) {
                 robot.slider.front.activate();
-                robot.limelight.limelightLED.set(0);
+                System.out.println("<<<<<<<<<<<<<<<<<<<slider on");
+                robot.limelight.limelightLED.set(1);
+                System.out.println(robot.limelight.limelightLED.get() + " LIMMMMELIGHT");
 
             } else if( sliderForward.isInOffState() ) {
                 robot.slider.back.activate();
-                robot.limelight.limelightLED.set(3);
+                System.out.println(">>>>>>>>>>>>>>slider off");
+                robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
+                System.out.println(robot.limelight.limelightLED.get() + " LIMMMMELIGHT");
 
             }
+
+
 
             switch (autoState) {
                 case( 0 ):
@@ -514,7 +520,7 @@ public class TeleopMode extends Coordinator {
 
                 case ( 2 ):
                     if( hatchTime.hasPeriodPassed(Calibration.HOOK_TIME) ) {
-                        sliderForward.update(!sliderForward.isInOffState());
+                        sliderForward.update(sliderForward.isInOffState());
                         hatchTime.stopAndReset();
                         hatchTime.startIfNotRunning();
                         System.out.println("Case2");
@@ -524,7 +530,7 @@ public class TeleopMode extends Coordinator {
 
                 case( 3 ):
                     if( hatchTime.hasPeriodPassed(Calibration.PUSH_TIME) ) {
-                        sliderForward.update(!sliderForward.isInOnState());
+                        sliderForward.update(sliderForward.isInOnState());
                         hatchTime.stopAndReset();
                         System.out.println("END auto");
                         autoState++;

@@ -38,10 +38,10 @@ public class Calibration {
     /* Arm Calibration */
     @Unreal("Values must be updated when robot is designed")
     public static final class Arm {
-        public static final double LOW_SETPOINT = 6000; // Ready to intake from front
-        public static final double STOW_SETPOINT = 10; // Starting position
-        public static final double OUTPUT_SETPOINT = 1000; // Output from front
-        public static final double VERTICAL_POSITION = 2327; // The arm is straight up
+        public static final double LOW_SETPOINT = 4170; // Ready to intake from front
+        public static final double STOW_SETPOINT = 0; // Starting position
+        public static final double OUTPUT_SETPOINT = 1730; // Output from front
+        public static final double VERTICAL_POSITION = 508; // The arm is straight up
 
         public static final double MIN_ENCODER_VAL = 0; // The lowest value the encoder can have
         public static final double MAX_ENCODER_VAL = 0; // The largest value the encoder can have
