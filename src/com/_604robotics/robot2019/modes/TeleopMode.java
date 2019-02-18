@@ -456,7 +456,6 @@ public class TeleopMode extends Coordinator {
         private Toggle hookToggle;
         private Toggle sliderForward;
         private SmartTimer hatchTime;
-        private SmartTimer pushTime;
 		private int autoState = 0;
 		
 		private double start;
@@ -466,8 +465,7 @@ public class TeleopMode extends Coordinator {
             hookToggle = new Toggle(false); // Assuming the piston is in the held state to start
             sliderForward = new Toggle(false); // Not extended initially
             hatchTime = new SmartTimer();
-            pushTime = new SmartTimer();
-			
+            			
 			start = System.currentTimeMillis();
         }
 
@@ -491,10 +489,12 @@ public class TeleopMode extends Coordinator {
             sliderForward.update(driverY);
 
             if( sliderForward.isInOnState() ) {
-                robot.slider.back.activate();
+                robot.slider.front.activate();
+                robot.limelight.limelightLED.set(0);
 
             } else if( sliderForward.isInOffState() ) {
-                robot.slider.front.activate();
+                robot.slider.back.activate();
+                robot.limelight.limelightLED.set(3);
 
             }
 

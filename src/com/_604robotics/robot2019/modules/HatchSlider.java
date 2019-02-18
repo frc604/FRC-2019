@@ -25,7 +25,7 @@ public class HatchSlider extends Module {
 
         isForward = addOutput("Forward", () -> front.isRunning());
 
-        setDefaultAction(front);
+        setDefaultAction(back);
     }
 
     public class Back extends Action {
