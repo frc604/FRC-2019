@@ -55,6 +55,7 @@ public class Arm extends Module {
             Calibration.Arm.kF, leftEncoder, leftMotor);
 
         pid.setEncoderPeriod(Calibration.Arm.CLICKS_FULL_ROTATION);
+        pid.setFeedforwardZeroOffset(Calibration.Arm.HORIZONTAL_POSITION);
         pid.setOutputRange(-0.25,0.25);
         pidError = addOutput("PID Error", () -> this.pid.getError());
 

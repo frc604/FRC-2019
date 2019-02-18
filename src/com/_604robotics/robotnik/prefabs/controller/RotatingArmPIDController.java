@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.PIDSource;
  */
 public class RotatingArmPIDController extends ClampedIntegralPIDController {
     private double encoderPeriod = 360;
+    private double zeroOffset = 0;
 
     public RotatingArmPIDController(double Kp, double Ki, double Kd, PIDSource source, PIDOutput output) {
         super(Kp, Ki, Kd, source, output);
@@ -38,6 +39,10 @@ public class RotatingArmPIDController extends ClampedIntegralPIDController {
         this.encoderPeriod = encoderPeriod;
     }
 
+    public void setFeedforwardZeroOffset(double zeroOffset) {
+        this.zeroOffset = zeroOffset;
+    }
+
     @Override
     public synchronized void setContinuous(boolean continuous) {
         super.setContinuous(continuous);
@@ -63,7 +68,7 @@ public class RotatingArmPIDController extends ClampedIntegralPIDController {
         double fValue;
         m_thisMutex.lock();
         try {
-            angle = m_pidInput.pidGet();
+            angle = m_pidInput.pidGet() - zeroOffset;
             fValue = getF();
         } finally {
             m_thisMutex.unlock();
