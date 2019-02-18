@@ -79,6 +79,10 @@ public class PowerMonitor extends Module {
         }
     }
     
+    public void stopCompressor() {
+        compressor.stop();
+    }
+
     public void initDashboardSendables() {
         SmartDashboard.putData("PDP", panel);
     }

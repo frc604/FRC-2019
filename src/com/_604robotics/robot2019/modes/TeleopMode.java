@@ -278,6 +278,7 @@ public class TeleopMode extends Coordinator {
             }
 
             if( driverStart && driverDPad) {
+                robot.powermonitor.stopCompressor();
                 if ( robot.slider.isForward.get() )
                     hatchManager.sliderForward.update(true);
                 robot.arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
