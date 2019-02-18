@@ -127,12 +127,6 @@ public class Arm extends Module {
         leftEncoder.zero();
     }
 
-    public boolean isInRange(double min, double max) {
-        if( leftEncoder.getPosition() >= min && leftEncoder.getPosition() <= max ) {
-            return true;
-        }
-        return false;
-    }
 
     public Hold hold = new Hold();
     public Move move = new Move();

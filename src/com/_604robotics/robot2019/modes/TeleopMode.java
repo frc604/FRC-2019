@@ -393,12 +393,12 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
-            if( driverLeftTrigger != 0.0/* && !speed.getState() */) {
+            if( driverLeftTrigger != 0.0 && !speed.getState()) {
                 speed.set(-driverLeftTrigger); // Intake
 				System.out.println(driverLeftTrigger);
             } else if( driverRightTrigger != 0.0 ){
                 speed.set(driverRightTrigger); // Outtake
-            } else if( manipRightTrigger != 0.0/* && !speed.getState() */) {
+            } else if( manipRightTrigger != 0.0 && !speed.getState()) {
                 speed.set( -manipRightTrigger);
             } else if( manipLeftTrigger != 0.0 ) {
                 speed.set( manipLeftTrigger);
@@ -463,6 +463,8 @@ public class TeleopMode extends Coordinator {
                         arm.hold.activate();
                     }
                 }
+            } else {
+                arm.hold.activate();
             }
 
         }
@@ -491,8 +493,8 @@ public class TeleopMode extends Coordinator {
 
             if( driverA ) {
                 hookToggle.update(driverA);
-            } else if ( manipRightBumper ){
-                hookToggle.update( manipRightBumper );
+            } else if ( manipLeftBumper ){
+                hookToggle.update( manipLeftBumper );
             } else {
                 hookToggle.update(false);
             }
@@ -505,25 +507,25 @@ public class TeleopMode extends Coordinator {
 
             }
 
-            if( driverY ) {
-                sliderForward.update( driverY );
-            } else if( manipRightBumper ) {
-                sliderForward.update( manipRightBumper);
-            } else {
-                sliderForward.update(false);
-            }
 
-            if( sliderForward.isInOnState()) {
-                if( !robot.arm.isInRange(0, Calibration.Arm.OUTPUT_SETPOINT)) {
-                    robot.slider.front.activate();
-                    robot.limelight.limelightLED.set(1);
+            if(robot.arm.leftEncoderClicks.get() <= 1560) {
+                if( driverY ) {
+                    sliderForward.update( driverY );
+                } else if( manipRightBumper ) {
+                    sliderForward.update( manipRightBumper);
+                } else {
+                    sliderForward.update(false);
                 }
-            } else if( sliderForward.isInOffState() ) {
-                robot.slider.back.activate();
-                robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
 
+                if( sliderForward.isInOnState()) {
+                        robot.slider.front.activate();
+                        robot.limelight.limelightLED.set(1);
+                } else if( sliderForward.isInOffState() ) {
+                    robot.slider.back.activate();
+                    robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
+
+                }
             }
-
 
 
             switch (autoState) {
