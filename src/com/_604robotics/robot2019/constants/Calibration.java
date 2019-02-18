@@ -56,8 +56,8 @@ public class Calibration {
         public static final double SCALE_JOYSTICK = 0.6; // Multiply the input joystick by this
     }
 
-    public static final double PUSH_TIME = 2000;
-    public static final double HOOK_TIME = 2000;
+    public static final double PUSH_TIME = 1;
+    public static final double HOOK_TIME = 1;
 
     @Unreal("Values must be updated when the real robot is designed")
     public static final AutonMovement.DriveTrainProperties DRIVE_PROPERTIES
@@ -111,7 +111,7 @@ public class Calibration {
     @Unreal("Needs to be measured")
     public static final double TARGET_HEIGHT = 28; // Height of the center of the vision target in inches
 
-    public static final double LIMELIGHT_ANGLE_TOLERANCE = 0.05;
+    public static final double LIMELIGHT_ANGLE_TOLERANCE = 0.005;
     public static final double LIMELIGHT_DIST_TOLERANCE = 1;
     public static final int LIMELIGHT_DRIVER_PIPE = 9; // The pipeline to use for driver usage, NOT tracking
     public static final int LIMELIGHT_VISION_PIPE = 0; // Pipeline for vision tracking by default

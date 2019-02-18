@@ -16,6 +16,7 @@ import com._604robotics.robotnik.prefabs.inputcontroller.xbox.XboxController;
 import com._604robotics.robotnik.prefabs.modules.Limelight;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.Timer;
+import com._604robotics.robotnik.prefabs.flow.SmartTimer;
 
 import java.io.IOException;
 
@@ -454,17 +455,18 @@ public class TeleopMode extends Coordinator {
         private Toggle useAuto;
         private Toggle hookToggle;
         private Toggle sliderForward;
-        private Timer hatchTime;
-        private Timer pushTime;
+        private SmartTimer hatchTime;
+        private SmartTimer pushTime;
+		private int autoState = 0;
 		
 		private double start;
 
         public HatchManager() {
-            useAuto = new Toggle(true);
+            useAuto = new Toggle(false);
             hookToggle = new Toggle(false); // Assuming the piston is in the held state to start
-            sliderForward = new Toggle(true); // Not extended initially
-            hatchTime = new Timer();
-            pushTime = new Timer();
+            sliderForward = new Toggle(false); // Not extended initially
+            hatchTime = new SmartTimer();
+            pushTime = new SmartTimer();
 			
 			start = System.currentTimeMillis();
         }
@@ -496,71 +498,44 @@ public class TeleopMode extends Coordinator {
 
             }
 
-            useAuto.update(((driverB && sliderForward.isInOffState()) || (driverB && hookToggle.isInOnState())));
-            
-            if ( useAuto.isInOnState() ) {
-                robot.slider.front.activate();
-                hatchTime.start();
-            } else if ( useAuto.isInOffState() ) {
-                robot.slider.back.activate();
-                robot.pusher.pullBack.activate();
-                hatchTime.stop();
-                hatchTime.reset();
-                pushTime.stop();
-                pushTime.reset();
-            }
+            switch (autoState) {
+                case( 0 ):
+                    if ( driverB ){
+                        autoState++;
+                    }
+                    break;
 
-            if ( hatchTime.hasPeriodPassed(Calibration.HOOK_TIME) ) {
-                robot.hook.release.activate();
-                hatchTime.stop();
-                hatchTime.reset();
-                pushTime.start();
-            }
+                case ( 1 ): 
+                    hookToggle.update(!hookToggle.isInOnState());
+                    hatchTime.startIfNotRunning();
+                    System.out.println("Case1");
+                    autoState++;
+                    break;
 
-            if ( pushTime.hasPeriodPassed(Calibration.PUSH_TIME) ) {
-                robot.pusher.push.activate();
-                pushTime.stop();
-                pushTime.reset();
-            }
-            
+                case ( 2 ):
+                    if( hatchTime.hasPeriodPassed(Calibration.HOOK_TIME) ) {
+                        sliderForward.update(!sliderForward.isInOffState());
+                        hatchTime.stopAndReset();
+                        hatchTime.startIfNotRunning();
+                        System.out.println("Case2");
+                        autoState++;
+                    }
+                    break;
 
-           /*  // Toggle placer state
-            if( hookToggle.isInOnState() ) {
-                robot.hook.release.activate();
-				//hatchTime.start();
-                robot.pusher.push.activate();
-				System.out.println("HOOOOKSDAOKDFSOKOKDFIJ");
-                //hatchTime.start();
-            } else if( hookToggle.isInOffState() ) {
-                robot.hook.hold.activate();
-                robot.pusher.pullBack.activate();
-				//start = System.currentTimeMillis();
-                //hatchTime.stop();
-                //hatchTime.reset();
-            }
-
-            // Check if we need to pull back the pusher
-            if( hatchTime.hasPeriodPassed(Calibration.PUSH_TIME) ) {
-			//if( System.currentTimeMillis() - start > Calibration.PUSH_TIME && hookToggle.isInOnState() ) {
-				System.out.println("AUTO PUSHER PULLBACK ACTIVATED");
-                robot.pusher.pullBack.activate();
-                hatchTime.stop();
-                hatchTime.reset();
-            }
-
-            if( driverX ) {
-                robot.pusher.pullBack.activate();
-            } else {
-                robot.pusher.push.activate();
-            }
-
-            // Slide forward and back
-            sliderForward.update(driverY);
-            if( sliderForward.isInOnState() ) {
-                robot.slider.back.activate();
-            } else if( sliderForward.isInOffState() ) {
-                robot.slider.front.activate();
-            } */
+                case( 3 ):
+                    if( hatchTime.hasPeriodPassed(Calibration.PUSH_TIME) ) {
+                        sliderForward.update(!sliderForward.isInOnState());
+                        hatchTime.stopAndReset();
+                        System.out.println("END auto");
+                        autoState++;
+                        
+                    }
+                    break;
+                case ( 4 ):
+                    autoState = 0;
+                    break;
+            }			
+			
         }
     }
 
@@ -574,6 +549,11 @@ public class TeleopMode extends Coordinator {
             rotation = new PIDOutput() {
                 @Override
                 public synchronized void pidWrite(double output) {
+                    if( output >= 0.5 ) {
+                        output = 0.5;
+                    } else if( output <= -0.5 ) {
+                        output = -0.5;
+                    }
                     driveManager.arcade.rotatePower.set(output);
                 }
             };
@@ -583,8 +563,10 @@ public class TeleopMode extends Coordinator {
                     driveManager.arcade.movePower.set(output);
                 }
             };
-            anglePID = new ExtendablePIDController(-0.032, 0, -0.3, new Limelight.HorizontalError(robot.limelight,0), rotation, 0.025);
+            anglePID = new ExtendablePIDController(-0.05, 0, -0.3, new Limelight.HorizontalError(robot.limelight,0), rotation, 0.025);
             anglePID.setAbsoluteTolerance(Calibration.LIMELIGHT_ANGLE_TOLERANCE);
+            //anglePID.setOutputRange(-1, 0.5);
+            System.out.println(anglePID.get());
             distPID = new ExtendablePIDController(0.5, 0, 0, new Limelight.DistanceError(robot.limelight, 18), drive);
             distPID.setAbsoluteTolerance(Calibration.LIMELIGHT_DIST_TOLERANCE);
         }
