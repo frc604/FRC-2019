@@ -417,11 +417,11 @@ public class TeleopMode extends Coordinator {
 
             if ( !robot.slider.isForward.get() ) {
                 // Check setpoints
-                if( manipA ) {
+                if( manipB ) {
                     // Low position
                     arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
                     arm.setpoint.activate();
-                } else if( manipB ) {
+                } else if( manipA ) {
                     // Ball place position
                     arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
                     arm.setpoint.activate();
@@ -482,6 +482,7 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
+
             if( driverA ) {
                 hookToggle.update(driverA);
             } else if( manipRightTriggerButton ) {
@@ -502,7 +503,7 @@ public class TeleopMode extends Coordinator {
                 sliderForward.update(manipRightBumper);
             }
 
-            if( sliderForward.isInOnState() ) {
+            if( sliderForward.isInOnState()) {
                 robot.slider.front.activate();
                 System.out.println("<<<<<<<<<<<<<<<<<<<slider on");
                 robot.limelight.limelightLED.set(1);
@@ -520,7 +521,7 @@ public class TeleopMode extends Coordinator {
 
             switch (autoState) {
                 case( 0 ):
-                    if ( driverB ){
+                    if ( driverB || manipX ){
                         autoState++;
                     }
                     break;
