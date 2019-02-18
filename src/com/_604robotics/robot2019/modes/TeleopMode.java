@@ -277,8 +277,13 @@ public class TeleopMode extends Coordinator {
                 rightY*=-1;
             }
 
-            if( driverX && driverDPad) {
-                robot.tilter.tilt.activate();
+            if( driverStart && driverDPad) {
+                if ( robot.slider.isForward.get() )
+                    hatchManager.sliderForward.update(true);
+                robot.arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
+                robot.arm.setpoint.activate();
+                if (robot.arm.pidError.get() >=-20 && robot.arm.pidError.get() <= 20)
+                     robot.tilter.tilt.activate();
             } else {
                 robot.tilter.stow.activate();
             }
@@ -466,7 +471,7 @@ public class TeleopMode extends Coordinator {
     private class HatchManager {
         private Toggle useAuto;
         private Toggle hookToggle;
-        private Toggle sliderForward;
+        protected Toggle sliderForward;
         private SmartTimer hatchTime;
 		private int autoState = 0;
 
