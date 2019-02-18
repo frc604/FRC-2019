@@ -19,6 +19,7 @@ public class Arm extends Module {
     private WPI_TalonSRX rightMotor;
 
     private TalonPWMEncoder leftEncoder;
+    private TalonPWMEncoder rightEncoder;
     private RedundantEncoder redundantEncoder;
 
     private Input<Double> holdPoint;
@@ -37,17 +38,18 @@ public class Arm extends Module {
         rightMotor.setInverted(true);
         rightMotor.set(ControlMode.Follower, Ports.ARM_LEFT_MOTOR);
 
-        leftEncoder = new TalonPWMEncoder(rightMotor);
-		leftEncoder.setInverted(false);
+        leftEncoder = new TalonPWMEncoder(leftMotor);
+        leftEncoder.setInverted(false);
+        rightEncoder = new TalonPWMEncoder(rightMotor)
 
         leftEncoder.zero();
-        //redundantEncoder = new RedundantEncoder(leftEncoder, rightEncoder);
-        //redundantEncoder.setMinimum(Calibration.Arm.MIN_ENCODER_VAL);
-        //redundantEncoder.setMaximum(Calibration.Arm.MAX_ENCODER_VAL);
+        /*redundantEncoder = new RedundantEncoder(leftEncoder, rightEncoder);
+        redundantEncoder.setMinimum(Calibration.Arm.MIN_ENCODER_VAL);
+        redundantEncoder.setMaximum(Calibration.Arm.MAX_ENCODER_VAL);*/
 
         holdPoint = addInput("Setpoint", 10.0);
 
-        //rightEncoderClicks = addOutput("Right Encoder Clicks", () -> rightEncoder.getPosition());
+        rightEncoderClicks = addOutput("Right Encoder Clicks", () -> rightEncoder.getPosition());
         leftEncoderClicks = addOutput("Left Encoder Clicks", () -> leftEncoder.getPosition());
         //redundantEncoderClicks = addOutput("Redundant Encoder Clicks", () -> redundantEncoder.getValue());
 
