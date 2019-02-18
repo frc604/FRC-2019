@@ -44,7 +44,7 @@ public class Calibration {
         public static final double STOW_SETPOINT = 0; // Starting position
         public static final double OUTPUT_SETPOINT = 1730; // Output from front
         public static final double VERTICAL_POSITION = 508; // The arm is straight up
-        public static final double HORIZONTAL_POSITION = VERTICAL_POSITION + CLICKS_FULL_ROTATION / 4; // The arm is horizontally forward
+        public static final double HORIZONTAL_POSITION = 0; // The arm is horizontally forward
 
         public static final double MIN_ENCODER_VAL = 0; // The lowest value the encoder can have
         public static final double MAX_ENCODER_VAL = 0; // The largest value the encoder can have

@@ -470,7 +470,11 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
-            hookToggle.update( driverA );
+            if( driverA ) {
+                hookToggle.update(driverA);
+            } else if( manipRightTriggerButton ) {
+                hookToggle.update(manipRightTriggerButton);
+            }
 
             if ( hookToggle.isInOffState() ) {
                 robot.hook.hold.activate();
@@ -480,13 +484,11 @@ public class TeleopMode extends Coordinator {
 
             }
 
-            if( driverX && !robot.hook.isHolding.get() ) {
-                robot.pusher.push.activate();
-            } else {
-                robot.pusher.pullBack.activate();
+            if( driverY ) {
+                sliderForward.update(driverA);
+            } else if( manipRightBumper ) {
+                sliderForward.update(manipRightBumper);
             }
-
-            sliderForward.update(driverY);
 
             if( sliderForward.isInOnState() ) {
                 robot.slider.front.activate();
