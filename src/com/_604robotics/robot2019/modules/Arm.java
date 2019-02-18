@@ -40,7 +40,7 @@ public class Arm extends Module {
 
         leftEncoder = new TalonPWMEncoder(leftMotor);
         leftEncoder.setInverted(false);
-        rightEncoder = new TalonPWMEncoder(rightMotor)
+        rightEncoder = new TalonPWMEncoder(rightMotor);
 
         leftEncoder.zero();
         /*redundantEncoder = new RedundantEncoder(leftEncoder, rightEncoder);

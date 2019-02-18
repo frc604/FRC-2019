@@ -1,5 +1,6 @@
 package com._604robotics.robotnik.prefabs.devices;
 
+import com._604robotics.robot2019.constants.Calibration;
 import com._604robotics.robotnik.utils.Pair;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
@@ -17,7 +18,7 @@ import java.util.*;
  */
 public class RedundantEncoder implements PIDSource, Encoder {
     // NOTE Assumes encoders where 250 clicks is one rotation
-    private static final double LARGE_CLICK_DIFF = 250; // One rotation difference
+    private static final double LARGE_CLICK_DIFF = Calibration.Arm.CLICKS_FULL_ROTATION; // One rotation difference
 
     // Maybe just use a boolean?
     private Pair<Boolean, Double> maxClicks;
