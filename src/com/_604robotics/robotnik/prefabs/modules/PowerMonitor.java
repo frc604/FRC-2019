@@ -79,8 +79,13 @@ public class PowerMonitor extends Module {
         }
     }
     
-    public void stopCompressor() {
-        compressor.stop();
+    public void updateCompressor(boolean state) {
+        if( state ){
+            compressor.start();
+        } else {
+            compressor.stop();
+
+        }
     }
 
     public void initDashboardSendables() {

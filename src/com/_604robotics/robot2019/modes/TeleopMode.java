@@ -278,14 +278,19 @@ public class TeleopMode extends Coordinator {
             }
 
             if( driverStart && driverDPad) {
-                robot.powermonitor.stopCompressor();
-                if ( robot.slider.isForward.get() )
+                robot.powermonitor.updateCompressor(false);
+                if ( robot.slider.isForward.get() ) {
                     hatchManager.sliderForward.update(true);
+                }
+                System.out.println("ARMM");
+                armManager.disableArm = true;
                 robot.arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
                 robot.arm.setpoint.activate();
                 if (robot.arm.pidError.get() >=-20 && robot.arm.pidError.get() <= 20)
                      robot.tilter.tilt.activate();
             } else {
+                armManager.disableArm = false;
+                robot.powermonitor.updateCompressor(true);
                 robot.tilter.stow.activate();
             }
 
@@ -412,9 +417,11 @@ public class TeleopMode extends Coordinator {
 
     private class ArmManager {
         private Arm arm;
+        protected boolean disableArm;
 
         public ArmManager() {
             arm = robot.arm;
+            disableArm = false;
         }
 
         public void run() {
@@ -422,50 +429,52 @@ public class TeleopMode extends Coordinator {
                 arm.resetEncoder();
             }
 
-            if ( !robot.slider.isForward.get() ) {
-                // Check setpoints
-                if( manipA ) {
-                    // Low position
-                    arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
-                    arm.setpoint.activate();
-                } else if( manipB ) {
-                    // Ball place position
-                    arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
-                    arm.setpoint.activate();
-                } else if( manipY ) {
-                    // Vertical position
-                    arm.setpoint.setpoint.set(Calibration.Arm.VERTICAL_POSITION);
-                    arm.setpoint.activate();
-                } else {
-                    // Check thumbsticks
-                    if( manipLeftJoystickY != 0 ) {
-                        // Set arm rate to joystick
-                        double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
+            if ( !disableArm ) {
+                if ( !robot.slider.isForward.get() ) {
+                    // Check setpoints
+                    if( manipA ) {
+                        // Low position
+                        arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
+                        arm.setpoint.activate();
+                    } else if( manipB ) {
+                        // Ball place position
+                        arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
+                        arm.setpoint.activate();
+                    } else if( manipY ) {
+                        // Vertical position
+                        arm.setpoint.setpoint.set(Calibration.Arm.VERTICAL_POSITION);
+                        arm.setpoint.activate();
+                    } else {
+                        // Check thumbsticks
+                        if( manipLeftJoystickY != 0 ) {
+                            // Set arm rate to joystick
+                            double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
 
-                        // Calculate needed factor for torque
-                        double angle = 2*Math.PI * (arm.leftEncoderClicks.get() - Calibration.Arm.HORIZONTAL_POSITION) / Calibration.Arm.CLICKS_FULL_ROTATION;
-                        angle = Math.cos(angle);
+                            // Calculate needed factor for torque
+                            double angle = 2*Math.PI * (arm.leftEncoderClicks.get() - Calibration.Arm.HORIZONTAL_POSITION) / Calibration.Arm.CLICKS_FULL_ROTATION;
+                            angle = Math.cos(angle);
 
-                        if( (motorValue < 0 && arm.leftEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
-                            (motorValue > 0 && arm.leftEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
+                            if( (motorValue < 0 && arm.leftEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
+                                (motorValue > 0 && arm.leftEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
 
-                            // We need to account for gravity existing
-                            motorValue += Calibration.Arm.kF * angle;
+                                // We need to account for gravity existing
+                                motorValue += Calibration.Arm.kF * angle;
+                            }
+
+                            arm.move.inputPower.set(motorValue);
+                            arm.move.activate();
+                        } else {
+                            // Hold arm still
+                            arm.hold.activate();
                         }
 
-                        arm.move.inputPower.set(motorValue);
-                        arm.move.activate();
-                    } else {
-                        // Hold arm still
-                        arm.hold.activate();
+                        if ( manipBack ){
+                            arm.hold.activate();
+                        }
                     }
-
-                    if ( manipBack ){
-                        arm.hold.activate();
-                    }
+                } else {
+                    arm.hold.activate();
                 }
-            } else {
-                arm.hold.activate();
             }
 
         }
