@@ -388,12 +388,12 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
-            if( driverLeftTrigger != 0.0 && speed.getState() ) {
+            if( driverLeftTrigger != 0.0 && !speed.getState() ) {
                 speed.set(-driverLeftTrigger); // Intake
 				System.out.println(driverLeftTrigger);
             } else if( driverRightTrigger != 0.0 ){
                 speed.set(driverRightTrigger); // Outtake
-            } else if( manipRightTrigger != 0.0 && speed.getState() ) {
+            } else if( manipRightTrigger != 0.0 && !speed.getState() ) {
                 speed.set( -manipRightTrigger);
             } else if( manipLeftTrigger != 0.0 ) {
                 speed.set( manipLeftTrigger);
@@ -417,11 +417,11 @@ public class TeleopMode extends Coordinator {
 
             if ( !robot.slider.isForward.get() ) {
                 // Check setpoints
-                if( manipB ) {
+                if( manipA ) {
                     // Low position
                     arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
                     arm.setpoint.activate();
-                } else if( manipA ) {
+                } else if( manipB ) {
                     // Ball place position
                     arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
                     arm.setpoint.activate();
@@ -485,8 +485,10 @@ public class TeleopMode extends Coordinator {
 
             if( driverA ) {
                 hookToggle.update(driverA);
-            } else if( manipRightTriggerButton ) {
-                hookToggle.update(manipRightTriggerButton);
+            } else if ( manipRightBumper ){
+                hookToggle.update( manipRightBumper );
+            } else {
+                hookToggle.update(false);
             }
 
             if ( hookToggle.isInOffState() ) {
@@ -498,9 +500,12 @@ public class TeleopMode extends Coordinator {
             }
 
             if( driverY ) {
-                sliderForward.update(driverA);
+                sliderForward.update( driverY );
+                System.out.println("update druver");
             } else if( manipRightBumper ) {
-                sliderForward.update(manipRightBumper);
+                sliderForward.update( manipRightBumper);
+            } else {
+                sliderForward.update(false);
             }
 
             if( sliderForward.isInOnState()) {

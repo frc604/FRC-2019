@@ -45,7 +45,7 @@ public class Arm extends Module {
         //redundantEncoder.setMinimum(Calibration.Arm.MIN_ENCODER_VAL);
         //redundantEncoder.setMaximum(Calibration.Arm.MAX_ENCODER_VAL);
 
-        holdPoint = addInput("Setpoint", 0.0);
+        holdPoint = addInput("Setpoint", 10.0);
 
         //rightEncoderClicks = addOutput("Right Encoder Clicks", () -> rightEncoder.getPosition());
         leftEncoderClicks = addOutput("Left Encoder Clicks", () -> leftEncoder.getPosition());
@@ -56,7 +56,7 @@ public class Arm extends Module {
 
         pid.setEncoderPeriod(Calibration.Arm.CLICKS_FULL_ROTATION);
         pid.setFeedforwardZeroOffset(Calibration.Arm.HORIZONTAL_POSITION);
-        pid.setOutputRange(-0.25,0.25);
+        pid.setOutputRange(-0.45,0.4);
         pidError = addOutput("PID Error", () -> this.pid.getError());
 
         setDefaultAction(move);
@@ -66,7 +66,7 @@ public class Arm extends Module {
 
         public Hold() {
             super(Arm.this, Hold.class);
-            holdPoint = addInput("Hold Point", 0.0, true);
+            holdPoint = addInput("Hold Point", 100.0, true);
         }
 
         @Override
