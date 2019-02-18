@@ -260,11 +260,16 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
-            double leftY = (driver.leftStick.y.get());
-            double rightY = (driver.rightStick.y.get());
-            double rightX = (driver.rightStick.x.get());
 
-            // Flip values if xbox inverted
+            if (driverLeftTriggerButton) {
+                double leftY = (driver.leftStick.y.get()/2);
+                double rightY = (driver.rightStick.y.get()/2);
+                double rightX = (driver.rightStick.x.get()/2);
+            }
+
+            double leftY = driver.leftStick.y.get();
+            double rightY = driver.rightStick.y.get();
+            double rightX = driver.rightStick.x.get();            // Flip values if xbox inverted
             inverted.update(driverLeftBumper);
             robot.dashboard.XboxFlipped.set(inverted.isInOnState());
             if (inverted.isInOnState()) {
