@@ -393,18 +393,19 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
-            if( driverLeftTrigger != 0.0 && !speed.getState() ) {
+            if( driverLeftTrigger != 0.0/* && !speed.getState() */) {
                 speed.set(-driverLeftTrigger); // Intake
 				System.out.println(driverLeftTrigger);
             } else if( driverRightTrigger != 0.0 ){
                 speed.set(driverRightTrigger); // Outtake
-            } else if( manipRightTrigger != 0.0 && !speed.getState() ) {
+            } else if( manipRightTrigger != 0.0/* && !speed.getState() */) {
                 speed.set( -manipRightTrigger);
             } else if( manipLeftTrigger != 0.0 ) {
                 speed.set( manipLeftTrigger);
             } else {
                 idle.activate();
             }
+
         }
     }
 
@@ -506,7 +507,6 @@ public class TeleopMode extends Coordinator {
 
             if( driverY ) {
                 sliderForward.update( driverY );
-                System.out.println("update druver");
             } else if( manipRightBumper ) {
                 sliderForward.update( manipRightBumper);
             } else {
@@ -514,16 +514,13 @@ public class TeleopMode extends Coordinator {
             }
 
             if( sliderForward.isInOnState()) {
-                robot.slider.front.activate();
-                System.out.println("<<<<<<<<<<<<<<<<<<<slider on");
-                robot.limelight.limelightLED.set(1);
-                System.out.println(robot.limelight.limelightLED.get() + " LIMMMMELIGHT");
-
+                if( !robot.arm.isInRange(0, Calibration.Arm.OUTPUT_SETPOINT)) {
+                    robot.slider.front.activate();
+                    robot.limelight.limelightLED.set(1);
+                }
             } else if( sliderForward.isInOffState() ) {
                 robot.slider.back.activate();
-                System.out.println(">>>>>>>>>>>>>>slider off");
                 robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
-                System.out.println(robot.limelight.limelightLED.get() + " LIMMMMELIGHT");
 
             }
 

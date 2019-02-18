@@ -35,6 +35,7 @@ public class Tilter extends Module {
         @Override
         public void begin() {
             tiltMotor.set(ControlMode.PercentOutput, 0);
+            tiltMotor.stopMotor();
         }
 
     }
