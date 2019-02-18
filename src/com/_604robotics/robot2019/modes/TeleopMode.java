@@ -544,7 +544,7 @@ public class TeleopMode extends Coordinator {
                     break;
 
                 case ( 2 ):
-                    if( hatchTime.hasPeriodPassed(Calibration.HOOK_TIME) ) {
+                    if( hatchTime.hasPeriodPassed(Calibration.PUSH_TIME) ) {
                         sliderForward.update(sliderForward.isInOffState());
                         hatchTime.stopAndReset();
                         hatchTime.startIfNotRunning();
@@ -554,7 +554,7 @@ public class TeleopMode extends Coordinator {
                     break;
 
                 case( 3 ):
-                    if( hatchTime.hasPeriodPassed(Calibration.PUSH_TIME) ) {
+                    if( hatchTime.hasPeriodPassed(Calibration.BACK_TIME) ) {
                         sliderForward.update(sliderForward.isInOnState());
                         hatchTime.stopAndReset();
                         System.out.println("END auto");
