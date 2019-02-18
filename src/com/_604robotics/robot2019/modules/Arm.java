@@ -123,6 +123,10 @@ public class Arm extends Module {
         }
     }
 
+    public void resetEncoder() {
+        leftEncoder.zero();
+    }
+
     public Hold hold = new Hold();
     public Move move = new Move();
     public Setpoint setpoint = new Setpoint();

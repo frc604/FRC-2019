@@ -389,11 +389,14 @@ public class TeleopMode extends Coordinator {
 
         public void run() {
             if( driverLeftTrigger != 0.0 && speed.getState() ) {
-				System.out.println("SPEEDDD");
                 speed.set(-driverLeftTrigger); // Intake
 				System.out.println(driverLeftTrigger);
             } else if( driverRightTrigger != 0.0 ){
                 speed.set(driverRightTrigger); // Outtake
+            } else if( manipRightTrigger != 0.0 && speed.getState() ) {
+                speed.set( -manipRightTrigger);
+            } else if( manipLeftTrigger != 0.0 ) {
+                speed.set( manipLeftTrigger);
             } else {
                 idle.activate();
             }
@@ -408,6 +411,10 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
+            if ( manipBack ) {
+                arm.resetEncoder();
+            }
+
             if ( !robot.slider.isForward.get() ) {
                 // Check setpoints
                 if( manipA ) {
@@ -419,7 +426,7 @@ public class TeleopMode extends Coordinator {
                     arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
                     arm.setpoint.activate();
                 } else if( manipY ) {
-                    // Hatch place position (stow)
+                    // Vertical position
                     arm.setpoint.setpoint.set(Calibration.Arm.VERTICAL_POSITION);
                     arm.setpoint.activate();
                 } else {
