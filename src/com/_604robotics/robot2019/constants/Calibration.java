@@ -58,8 +58,8 @@ public class Calibration {
         public static final double SCALE_JOYSTICK = 0.6; // Multiply the input joystick by this
     }
 
-    public static final double PUSH_TIME = 1;
-    public static final double HOOK_TIME = 1;
+    public static final double PUSH_TIME = 0.5;
+    public static final double HOOK_TIME = 0.5;
 
     @Unreal("Values must be updated when the real robot is designed")
     public static final AutonMovement.DriveTrainProperties DRIVE_PROPERTIES
