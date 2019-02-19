@@ -277,7 +277,7 @@ public class TeleopMode extends Coordinator {
                 rightY*=-1;
             }
 
-            if( driverStart && driverDPad) {
+            if( driverStart ) {
                 robot.powermonitor.updateCompressor(false);
                 if ( robot.slider.isForward.get() ) {
                     hatchManager.sliderForward.update(true);
@@ -286,8 +286,14 @@ public class TeleopMode extends Coordinator {
                 armManager.disableArm = true;
                 robot.arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
                 robot.arm.setpoint.activate();
-                if (robot.arm.pidError.get() >=-20 && robot.arm.pidError.get() <= 20)
-                     robot.tilter.tilt.activate();
+                if ( driverDPad ){
+                    if (robot.arm.pidError.get() >=-20 && robot.arm.pidError.get() <= 20){
+                        robot.tilter.tilt.activate();
+                    }
+
+                } else {
+                    robot.tilter.stow.activate();
+                }   
             } else {
                 armManager.disableArm = false;
                 robot.powermonitor.updateCompressor(true);
