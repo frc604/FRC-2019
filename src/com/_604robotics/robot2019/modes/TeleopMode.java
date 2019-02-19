@@ -290,12 +290,6 @@ public class TeleopMode extends Coordinator {
                 if ( driverDPad ) {
                     System.out.println(robot.arm.pidError.get());
                     robot.tilter.tilt.activate();
-                    /*
-                    if (true robot.arm.pidError.get() >=-20 && robot.arm.pidError.get() <= 20){
-                        robot.tilter.tilt.activate();
-                    }
-                    */
-
                 } else if ( driverBack ) {
                     robot.tilter.retract.activate();
                 } else {
@@ -503,7 +497,8 @@ public class TeleopMode extends Coordinator {
         private Toggle hookToggle;
         protected Toggle sliderForward;
         private SmartTimer hatchTime;
-		private int autoState = 0;
+        private int autoState = 0;
+        private int intakeState = 0;
 
 		private double start;
 
@@ -565,7 +560,6 @@ public class TeleopMode extends Coordinator {
                 case ( 1 ):
                     sliderForward.update(sliderForward.isInOffState());
                     hatchTime.startIfNotRunning();
-                    System.out.println("Case1");
                     autoState++;
                     break;
 
@@ -574,7 +568,6 @@ public class TeleopMode extends Coordinator {
                         hookToggle.update(!hookToggle.isInOnState());
                         hatchTime.stopAndReset();
                         hatchTime.startIfNotRunning();
-                        System.out.println("Case2");
                         autoState++;
                     }
                     break;
@@ -583,7 +576,6 @@ public class TeleopMode extends Coordinator {
                     if( hatchTime.hasPeriodPassed(Calibration.BACK_TIME) ) {
                         sliderForward.update(sliderForward.isInOnState());
                         hatchTime.stopAndReset();
-                        System.out.println("END auto");
                         autoState++;
 
                     }
@@ -591,6 +583,43 @@ public class TeleopMode extends Coordinator {
                 case ( 4 ):
                     autoState = 0;
                     break;
+            }
+
+            if ( autoState == 0 ) {
+                switch (intakeState) {
+                    case( 0 ):
+                        if ( driverX ){
+                            intakeState++;
+                        }
+                        break;
+
+                    case ( 1 ):
+                        sliderForward.update(sliderForward.isInOffState());
+                        hatchTime.startIfNotRunning();
+                        intakeState++;
+                        break;
+
+                    case ( 2 ):
+                        if( hatchTime.hasPeriodPassed(Calibration.RELEASE_TIME) ) {
+                            hookToggle.update(!hookToggle.isInOffState());
+                            hatchTime.stopAndReset();
+                            hatchTime.startIfNotRunning();
+                            intakeState++;
+                        }
+                        break;
+
+                    case( 3 ):
+                        if( hatchTime.hasPeriodPassed(Calibration.PULL_TIME) ) {
+                            sliderForward.update(sliderForward.isInOnState());
+                            hatchTime.stopAndReset();
+                            intakeState++;
+
+                        }
+                        break;
+                    case ( 4 ):
+                        intakeState = 0;
+                        break;
+                }
             }
 
         }
@@ -622,7 +651,6 @@ public class TeleopMode extends Coordinator {
             };
             anglePID = new ExtendablePIDController(-0.05, 0, -0.3, new Limelight.HorizontalError(robot.limelight,0), rotation, 0.025);
             anglePID.setAbsoluteTolerance(Calibration.LIMELIGHT_ANGLE_TOLERANCE);
-            //anglePID.setOutputRange(-1, 0.5);
             System.out.println(anglePID.get());
             distPID = new ExtendablePIDController(0.5, 0, 0, new Limelight.DistanceError(robot.limelight, 18), drive);
             distPID.setAbsoluteTolerance(Calibration.LIMELIGHT_DIST_TOLERANCE);
@@ -643,7 +671,6 @@ public class TeleopMode extends Coordinator {
             anglePID.setEnabled(false);
             anglePID.reset();
             distPID.setEnabled(false);
-            //robot.limelight.driver.activate();
         }
     }
 
