@@ -38,7 +38,7 @@ public class Ports {
     public static final int HATCH_PUSHER_B = 6;
 
     /* Tilter Control */
-    public static final int TILT_MOTOR = 15;
+    public static final int TILT_MOTOR = 1;
     public static final int TILT_SWITCH = 9;
 
     /* Digital Inputs */

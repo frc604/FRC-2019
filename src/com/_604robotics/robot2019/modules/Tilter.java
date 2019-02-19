@@ -18,7 +18,7 @@ public class Tilter extends Module {
     public Tilter() {
         super(Tilter.class);
 
-        tiltMotor = new WPI_TalonSRX(Ports.TILT_MOTOR);
+        tiltMotor = new WPI_TalonSRX(1);
         //tiltComplete = new DigitalInput(Ports.TILT_SWITCH);
 
         isTilted = addOutput("Tilted", () -> tilt.isRunning());
@@ -34,7 +34,7 @@ public class Tilter extends Module {
 
         @Override
         public void begin() {
-            tiltMotor.set(ControlMode.PercentOutput, 0);
+            tiltMotor.set(ControlMode.PercentOutput, 0.0);
             tiltMotor.stopMotor();
         }
 
@@ -50,11 +50,7 @@ public class Tilter extends Module {
 
         @Override
         public void run() {
-            if( true /* !tiltComplete.get() */ ) {
-                tiltMotor.set(ControlMode.PercentOutput, 0.2);
-            } else {
-                tiltMotor.set(ControlMode.PercentOutput, 0);
-            }
+            tiltMotor.set(ControlMode.PercentOutput, -0.2);
         }
     }
 

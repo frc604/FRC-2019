@@ -287,9 +287,13 @@ public class TeleopMode extends Coordinator {
                 robot.arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
                 robot.arm.setpoint.activate();
                 if ( driverDPad ){
-                    if (robot.arm.pidError.get() >=-20 && robot.arm.pidError.get() <= 20){
+                    System.out.println(robot.arm.pidError.get());
+                    robot.tilter.tilt.activate();
+                    /*
+                    if (true robot.arm.pidError.get() >=-20 && robot.arm.pidError.get() <= 20){
                         robot.tilter.tilt.activate();
                     }
+                    */
 
                 } else {
                     robot.tilter.stow.activate();
