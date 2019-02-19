@@ -406,6 +406,7 @@ public class TeleopMode extends Coordinator {
         public void run() {
             if( driverRightTrigger != 0.0 && !speed.getState()) {
                 speed.set(-driverRightTrigger); // Intake
+                //Negative is Intake
             } else if( driverLeftTrigger != 0.0 ){
                 speed.set(driverLeftTrigger); // Outtake
             } else if( manipLeftTrigger != 0.0 && !speed.getState()) {
