@@ -266,9 +266,9 @@ public class TeleopMode extends Coordinator {
             double rightX = driver.rightStick.x.get();
 
             if (driverLeftJoystickButton) {
-                leftY /= 2;
-                rightY /= 2;
-                rightX /= 2;
+                leftY *= 0.8;
+                rightY *= 0.8;
+                rightX *= 0.8;
             }
 
             inverted.update(driverLeftBumper);
@@ -404,12 +404,12 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
-            if( driverRightTrigger != 0.0 && !speed.getState()) {
+            if( driverRightTrigger != 0.0 /*&& !speed.getState()*/) {
                 speed.set(-driverRightTrigger); // Intake
                 //Negative is Intake
             } else if( driverLeftTrigger != 0.0 ){
                 speed.set(driverLeftTrigger); // Outtake
-            } else if( manipLeftTrigger != 0.0 && !speed.getState()) {
+            } else if( manipLeftTrigger != 0.0 /*&& !speed.getState()*/) {
                 speed.set( -manipLeftTrigger);
             } else if( manipRightTrigger != 0.0 ) {
                 speed.set( manipRightTrigger);
@@ -633,10 +633,10 @@ public class TeleopMode extends Coordinator {
             rotation = new PIDOutput() {
                 @Override
                 public synchronized void pidWrite(double output) {
-                    if( output >= 0.5 ) {
-                        output = 0.5;
-                    } else if( output <= -0.5 ) {
-                        output = -0.5;
+                    if( output >= 0.6 ) {
+                        output = 0.6;
+                    } else if( output <= -0.6 ) {
+                        output = -0.6;
                     }
                     driveManager.arcade.rotatePower.set(output);
                 }
