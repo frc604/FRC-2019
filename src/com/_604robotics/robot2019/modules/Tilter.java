@@ -50,9 +50,20 @@ public class Tilter extends Module {
 
         @Override
         public void run() {
-            tiltMotor.set(ControlMode.PercentOutput, -0.2);
+            tiltMotor.set(ControlMode.PercentOutput, 0.5);
         }
     }
 
+    public class Retract extends Action {
+        public Retract() {
+            super(Tilter.this, Retract.class);
+        }
+
+        @Override
+        public void run() {
+            tiltMotor.set(ControlMode.PercentOutput, -0.3);
+        }
+    }
     public Action tilt = new Tilt();
+    public Action retract = new Retract();
 }
