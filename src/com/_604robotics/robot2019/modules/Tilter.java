@@ -50,7 +50,7 @@ public class Tilter extends Module {
 
         @Override
         public void run() {
-            tiltMotor.set(ControlMode.PercentOutput, 0.5);
+            tiltMotor.set(ControlMode.PercentOutput, 1);
         }
     }
 

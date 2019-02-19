@@ -456,6 +456,10 @@ public class TeleopMode extends Coordinator {
                         // Vertical position
                         arm.setpoint.setpoint.set(Calibration.Arm.VERTICAL_POSITION);
                         arm.setpoint.activate();
+                    } else if( manipX ) {
+                        // Vertical position
+                        arm.setpoint.setpoint.set(Calibration.Arm.ROCKET_SETPOINT);
+                        arm.setpoint.activate();
                     } else {
                         // Check thumbsticks
                         if( manipLeftJoystickY != 0 ) {
@@ -552,13 +556,13 @@ public class TeleopMode extends Coordinator {
 
             switch (autoState) {
                 case( 0 ):
-                    if ( driverB || manipX ){
+                    if ( driverB ){
                         autoState++;
                     }
                     break;
 
                 case ( 1 ):
-                    hookToggle.update(!hookToggle.isInOnState());
+                    sliderForward.update(sliderForward.isInOffState());
                     hatchTime.startIfNotRunning();
                     System.out.println("Case1");
                     autoState++;
@@ -566,7 +570,7 @@ public class TeleopMode extends Coordinator {
 
                 case ( 2 ):
                     if( hatchTime.hasPeriodPassed(Calibration.PUSH_TIME) ) {
-                        sliderForward.update(sliderForward.isInOffState());
+                        hookToggle.update(!hookToggle.isInOnState());
                         hatchTime.stopAndReset();
                         hatchTime.startIfNotRunning();
                         System.out.println("Case2");

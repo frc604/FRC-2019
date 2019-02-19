@@ -43,6 +43,7 @@ public class Calibration {
         public static final double LOW_SETPOINT = 4170; // Ready to intake from front
         public static final double STOW_SETPOINT = 0; // Starting position
         public static final double OUTPUT_SETPOINT = 1730; // Output from front
+        public static final double ROCKET_SETPOINT = 2800;
         public static final double VERTICAL_POSITION = 508; // The arm is straight up
         public static final double HORIZONTAL_POSITION = -1511; // The arm is horizontally forward
 
@@ -58,7 +59,7 @@ public class Calibration {
         public static final double SCALE_JOYSTICK = 0.6; // Multiply the input joystick by this
     }
 
-    public static final double PUSH_TIME = 0.25;
+    public static final double PUSH_TIME = 0.5;
     public static final double BACK_TIME = 0.5;
 
     @Unreal("Values must be updated when the real robot is designed")
