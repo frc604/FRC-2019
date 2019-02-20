@@ -413,7 +413,7 @@ public class TeleopMode extends Coordinator {
                 speed.set( -manipLeftTrigger);
             } else if( manipRightTrigger != 0.0 ) {
                 speed.set( manipRightTrigger);
-            } else if( manipRightJoystickY != 0.0) {
+            } else if( manipDPad ) {
                 speed.set(-1); //Force spit
             } else {
                 idle.activate();
@@ -552,7 +552,7 @@ public class TeleopMode extends Coordinator {
 
             switch (autoState) {
                 case( 0 ):
-                    if ( driverB || manipDPad ){
+                    if ( driverB || manipRightJoystickY != 0.0 ){
                         autoState++;
                     }
                     break;
