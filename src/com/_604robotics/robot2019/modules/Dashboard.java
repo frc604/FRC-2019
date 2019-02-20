@@ -20,6 +20,8 @@ public class Dashboard extends DashboardModule {
 
     public final Input<Boolean> XboxFlipped = addDashboardInput("XboxFlipped", false);
 
+    public final Input<Boolean> hookHolding = addDashboardInput("Hook Holding", false);
+
     /* Limelight values */
     public final Input<Boolean> limelightTarget = addDashboardInput("Limelight Has Target", false);
     public final Input<Double> limelightX = addDashboardInput("Limelight X Value", 0.0);

@@ -3,6 +3,7 @@ package com._604robotics.robot2019.modules;
 import com._604robotics.robot2019.constants.Ports;
 import com._604robotics.robotnik.Action;
 import com._604robotics.robotnik.Module;
+import com._604robotics.robotnik.prefabs.modules.DashboardModule;
 import com._604robotics.robotnik.Output;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -14,6 +15,7 @@ public class Hook extends Module {
     private DigitalInput rightSwitch;
 
     public Output<Boolean> isHolding;
+    public Output<Boolean> isHoldingDash;
     public Output<Boolean> aligned;
 
     public Hook() {

@@ -414,7 +414,7 @@ public class TeleopMode extends Coordinator {
             } else if( manipRightTrigger != 0.0 ) {
                 speed.set( manipRightTrigger);
             } else if( manipDPad ) {
-                speed.set(-1); //Force spit
+                speed.set(1); //Force spit
             } else {
                 idle.activate();
             }
@@ -635,10 +635,10 @@ public class TeleopMode extends Coordinator {
             rotation = new PIDOutput() {
                 @Override
                 public synchronized void pidWrite(double output) {
-                    if( output >= 0.55 ) {
-                        output = 0.55;
-                    } else if( output <= -0.55 ) {
-                        output = -0.55;
+                    if( output >= 0.535 ) {
+                        output = 0.535;
+                    } else if( output <= -0.535 ) {
+                        output = -0.535;
                     }
                     driveManager.arcade.rotatePower.set(output);
                 }
