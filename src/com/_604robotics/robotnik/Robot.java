@@ -82,7 +82,7 @@ public abstract class Robot extends SampleRobot {
     @Override
     protected void robotInit () {
         printBanner("eNqlVsGO3CAMvfMV3DIrZPtu9VNGwj1sL1UVaXuoVsrH1zYkgYTMrGbJikDAj4f97NkQQrxuwiwM/TcGYJBwbVEMkLCxIbE14EtLao/RIwARtW9AzHpsm+LzJhRWmP42+NyWpUOCFWnWu+5LSM+RGqZIzPN6H2B3XOFCXwBSc6iW5ri0e7V4zD5Dki0o6krYuR7munE9HBoXz/HoMeJqXhhKgupb3oArpiTHEY0h09HFtBEBN9x4xqPWXAmAQV0NKEPdNBHuPYw81IESUm5yZrUSr8dgGeA+HwcCiIvzbTBUT3E2d3M+3bRGlXBV198vKPOhaqu6dhm83DA5K6GetAYXrbM8jfzZHIOfGglA15iu9gS0GChamqEEVx/ybBINZnGhvnlnDYlqnNm2wOzCcUNvs2lW5JjTCVo4zSqpaRdbOKZjBZFThSqJwKmFs3jXBGjgZuxqTex1vlGrCPqW+t4Q6omnQre6XrzmDAFU0+sxCcNAh02NHgHskpR5YH8Qkrjvk4nCWi+XYZHfy8TDQp0uqjxe5Fe348HPUkuxZ6yOg/DwR5CrhC2OFQjta3hyl+IavzbHUsq+k4YwTd9BwEkhVIBvL0OQYWhPjxDycJx9fMsULwB0g/3luMQl2951XFZu+U1nvjC0X+KUFTzHu43iPdZxzmW+GBZFujS3pxyyeL+Ol7g+Mf4wL8bpbK274l0J05LRaPjYerfP/tyzkfJEzxrKcxR+ffz88/5v/vj9NIyTQUymh/BqIPUfBZgUJLxq7xRes765A0II/wGVOKOq");
-        printBanner("eJxTqFHABmpQKDRxLph4fAKQFR+vEANjAzlYBICUPlyTBtiUGjAJZseA1deAIUISCGyANsWDAEiJTnxNPMg4GBsI9EFGI0uCZWOANpEBuAA94jjf");
+        printBanner("eJzjUqAR0OPCL1+DTxRDEiIQEw8CmhCKOPPjE4Cs+HiFGBgbyMEiAKT0gUhXtwxkNFAowYYo8zXArBowCWbHgI2uAUOEJBDYIOnV1MdvONh/IKN04mviQS6EsYFAH+RaZEmwbAxCszoXEAAAFJdXwA==");
     }
 
     @Override
