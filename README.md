@@ -1,6 +1,20 @@
 # FRC-2019
 604 Quixilver's 2019 Robot Code
 
+## IMPORTANT!
+#### (as of 3/01/2019)
+**Please update the WPILib version on you computer, we cannot use older versions at competition!**
+
+*If you want to be able to imgae the roboRIO, install the new Update Suite too if you are unsure and have a windows laptop, just install it.*
+
+WPILib : [https://github.com/wpilibsuite/allwpilib/releases]
+
+*Read the information in the github wiki about reinstalling VSCode you probally won't have to do it.*
+
+Update Suite : [http://www.ni.com/download/first-robotics-software-2017/7904/en/]
+
+*Side note : robotRiO firware version v14 is now required for competions, and this version of WPILib only works with it.*
+
 ## Setting up WPILib
 More Instructions(If ones below do not work look at this):https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027503-installing-c-and-java-development-tools-for-frc#windows
 
