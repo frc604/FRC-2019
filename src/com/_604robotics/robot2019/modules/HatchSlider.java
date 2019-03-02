@@ -14,7 +14,7 @@ public class HatchSlider extends Module {
      * One piston to release hatch
      */
     DoubleSolenoid left;
-    DoubleSolenoid right;
+    //DoubleSolenoid right;
 
     public Output<Boolean> isForward;
 
@@ -22,11 +22,11 @@ public class HatchSlider extends Module {
         super(HatchSlider.class);
 
         left = new DoubleSolenoid(Ports.HATCH_LEFT_SLIDE_A, Ports.HATCH_LEFT_SLIDE_B);
-        right = new DoubleSolenoid(Ports.HATCH_RIGHT_SLIDE_A, Ports.HATCH_RIGHT_SLIDE_B);
+        //right = new DoubleSolenoid(Ports.HATCH_RIGHT_SLIDE_A, Ports.HATCH_RIGHT_SLIDE_B);
 
         isForward = addOutput("Forward", this::isForward);
 
-        setDefaultAction(back);
+        setDefaultAction(front);
     }
 
     public class Back extends Action {
@@ -36,8 +36,9 @@ public class HatchSlider extends Module {
 
         @Override
         public void run() {
+            System.out.println("Front");
             left.set(DoubleSolenoid.Value.kReverse);
-            right.set(DoubleSolenoid.Value.kReverse);
+            //right.set(DoubleSolenoid.Value.kReverse);
         }
     }
 
@@ -48,8 +49,9 @@ public class HatchSlider extends Module {
 
         @Override
         public void run() {
+            System.out.println("Front");
             left.set(DoubleSolenoid.Value.kForward);
-            right.set(DoubleSolenoid.Value.kForward);
+            //right.set(DoubleSolenoid.Value.kForward);
         }
     }
 
@@ -57,6 +59,10 @@ public class HatchSlider extends Module {
     public Front front = new Front();
 
     public boolean isForward() {
-        return this.getRunningAction().equals(front);
+        try {
+            return this.getRunningAction().equals(front);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

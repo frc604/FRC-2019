@@ -37,7 +37,7 @@ public class TeleopMode extends Coordinator {
     private final DriveManager driveManager;
     //private final ArmManager armManager;
     //private final IntakeManager intakeManager;
-    //private final HatchManager hatchManager;
+    private final HatchManager hatchManager;
     private final AutoCenterManager autoCenterManager;
 
     private final Logger test = new Logger("Teleop");
@@ -73,7 +73,7 @@ public class TeleopMode extends Coordinator {
         driveManager = new DriveManager();
         //armManager = new ArmManager();
         //intakeManager = new IntakeManager();
-        //hatchManager = new HatchManager();
+        hatchManager = new HatchManager();
         autoCenterManager = new AutoCenterManager();
     }
 
@@ -241,7 +241,7 @@ public class TeleopMode extends Coordinator {
 		System.out.println("DriveManager running");
         //armManager.run();
         //intakeManager.run();
-        //hatchManager.run();
+        hatchManager.run();
     }
 	
 	public double getDriverLeftStickY() {
@@ -450,20 +450,21 @@ public class TeleopMode extends Coordinator {
         }
     }*/
 
-    /*private class HatchManager {
-        private Toggle useAuto;
-        private Toggle hookToggle;
+    private class HatchManager {
+        //private Toggle useAuto;
+        //private Toggle hookToggle;
         private Toggle sliderForward;
-        private Timer hatchTime;
+        //private Timer hatchTime;
 
         public HatchManager() {
-            useAuto = new Toggle(true);
-            hookToggle = new Toggle(true); // Assuming the piston is in the held state to start
+            //useAuto = new Toggle(true);
+           //hookToggle = new Toggle(true); // Assuming the piston is in the held state to start
             sliderForward = new Toggle(false); // Not extended initially
-            hatchTime = new Timer();
+            //hatchTime = new Timer();
         }
 
         public void run() {
+            /*
             useAuto.update(manipStart);
             if( useAuto.isInOnState() ) {
                 // Checks if the two limit switches are pressed, meaning the hatch is ready to deploy
@@ -472,7 +473,7 @@ public class TeleopMode extends Coordinator {
                 // Ignore the limit switches, only use the controller
                 hookToggle.update(manipRightBumper);
             }
-
+            
             // Toggle placer state
             if( hookToggle.isInOnState() ) {
                 robot.hook.release.activate();
@@ -491,22 +492,26 @@ public class TeleopMode extends Coordinator {
                 hatchTime.stop();
                 hatchTime.reset();
             }
-
+            
             if( manipLeftBumper ) {
                 robot.pusher.push.activate();
             } else {
                 robot.pusher.pullBack.activate();
-            }
+            }*/
 
             // Slide forward and back
-            sliderForward.update(manipX);
+            sliderForward.update(driverB);
+
+
+            System.out.println("HatchMnanger");
+
             if( sliderForward.isInOnState() ) {
-                robot.slider.back.activate();
-            } else if( sliderForward.isInOffState() ) {
                 robot.slider.front.activate();
+            } else if( sliderForward.isInOffState() ) {
+                robot.slider.back.activate();
             }
         }
-    }*/
+    }
 
     private class AutoCenterManager {
         private ExtendablePIDController anglePID;
@@ -518,6 +523,11 @@ public class TeleopMode extends Coordinator {
             rotation = new PIDOutput() {
                 @Override
                 public synchronized void pidWrite(double output) {
+                    if( output >= 0.535 ) {
+                        output = 0.535;
+                    } else if( output <= -0.535 ) {
+                        output = -0.535;
+                    }
                     driveManager.arcade.rotatePower.set(output);
                 }
             };
@@ -527,7 +537,7 @@ public class TeleopMode extends Coordinator {
                     driveManager.arcade.movePower.set(output);
                 }
             };
-            anglePID = new ExtendablePIDController(-0.04, 0, -0.15, new Limelight.HorizontalError(robot.limelight,0), rotation);
+            anglePID = new ExtendablePIDController(-0.055, 0, -0.3, new Limelight.HorizontalError(robot.limelight,0), rotation, 0.025);
             anglePID.setAbsoluteTolerance(Calibration.LIMELIGHT_ANGLE_TOLERANCE);
             distPID = new ExtendablePIDController(0.5, 0, 0, new Limelight.DistanceError(robot.limelight, 18), drive);
             distPID.setAbsoluteTolerance(Calibration.LIMELIGHT_DIST_TOLERANCE);
@@ -538,6 +548,7 @@ public class TeleopMode extends Coordinator {
             robot.limelight.scan.activate();
             if( robot.limelight.limelightHasTargets.get() ) {
                 anglePID.setEnabled(true);
+				System.out.println(anglePID.get());
             } else {
                 this.end();
             }
@@ -547,7 +558,6 @@ public class TeleopMode extends Coordinator {
             anglePID.setEnabled(false);
             anglePID.reset();
             distPID.setEnabled(false);
-            //robot.limelight.driver.activate();
         }
     }
 
