@@ -16,7 +16,7 @@ public class Robot2019 extends Robot {
 
     public final Dashboard dashboard = addModule(new Dashboard());
     public final DashboardSystem dashboardSystem = addSystem(DashboardSystem.class, new DashboardSystem(this));
-    public final PowerMonitor powermonitor = addModule(new PowerMonitor(Ports.PDP_MODULE, Ports.COMPRESSOR));
+    //public final PowerMonitor powermonitor = addModule(new PowerMonitor(Ports.PDP_MODULE, Ports.COMPRESSOR));
 
     public final Drive drive = addModule(new Drive());
     //public final Tilter tilter = addModule(new Tilter());
