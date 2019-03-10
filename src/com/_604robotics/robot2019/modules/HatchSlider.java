@@ -35,7 +35,7 @@ public class HatchSlider extends Module {
 
         @Override
         public void run() {
-            left.set(Value.kReverse);
+            left.set(Value.kForward);
         }
     }
 
@@ -46,7 +46,7 @@ public class HatchSlider extends Module {
 
         @Override
         public void run() {
-            left.set(Value.kForward);
+            left.set(Value.kReverse);
         }
     }
 

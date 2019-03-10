@@ -19,19 +19,19 @@ public class Robot2019 extends Robot {
     public final PowerMonitor powermonitor = addModule(new PowerMonitor(Ports.PDP_MODULE, Ports.COMPRESSOR));
 
     public final Drive drive = addModule(new Drive());
-    public final Tilter tilter = addModule(new Tilter());
+    //public final Tilter tilter = addModule(new Tilter());
 
-    public final Intake intake = addModule(new Intake());
-    public final Arm arm = addModule(new Arm());
+    //public final Intake intake = addModule(new Intake());
+    //public final Arm arm = addModule(new Arm());
 
     public final HatchSlider slider = addModule(new HatchSlider());
     public final Hook hook = addModule(new Hook());
-    public final HatchPusher pusher = addModule(new HatchPusher());
+    //public final HatchPusher pusher = addModule(new HatchPusher());
 
     public final Limelight limelight = addModule(new Limelight());
 	
-	public final Camera frontCamera = addModule(new Camera("video0"));
-	public final Camera backCamera = addModule(new Camera("video1"));
+	//public final Camera frontCamera = addModule(new Camera("video0"));
+	//public final Camera backCamera = addModule(new Camera("video1"));
 	
 	
     public final TeleopMode teleopMode = setTeleopMode(new TeleopMode(this));

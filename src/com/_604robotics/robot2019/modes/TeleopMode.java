@@ -36,8 +36,8 @@ public class TeleopMode extends Coordinator {
     private final com._604robotics.robot2019.Robot2019 robot;
 
     private final DriveManager driveManager;
-    private final ArmManager armManager;
-    private final IntakeManager intakeManager;
+    //private final ArmManager armManager;
+    //private final IntakeManager intakeManager;
     private final HatchManager hatchManager;
     private final AutoCenterManager autoCenterManager;
 
@@ -72,8 +72,8 @@ public class TeleopMode extends Coordinator {
         this.robot = robot;
 
         driveManager = new DriveManager();
-        armManager = new ArmManager();
-        intakeManager = new IntakeManager();
+        //armManager = new ArmManager();
+        //intakeManager = new IntakeManager();
         hatchManager = new HatchManager();
         autoCenterManager = new AutoCenterManager();
     }
@@ -237,8 +237,8 @@ public class TeleopMode extends Coordinator {
 
     private void process() {
         driveManager.run();
-        armManager.run();
-        intakeManager.run();
+        //armManager.run();
+        //intakeManager.run();
         hatchManager.run();
     }
 
@@ -278,7 +278,7 @@ public class TeleopMode extends Coordinator {
                 rightY*=-1;
             }
 
-            if( driverStart ) {
+            /*if( driverStart ) {
                 robot.powermonitor.updateCompressor(false);
                 if ( robot.slider.isForward.get() ) {
                     hatchManager.sliderForward.update(true);
@@ -297,7 +297,7 @@ public class TeleopMode extends Coordinator {
                 armManager.disableArm = false;
                 robot.powermonitor.updateCompressor(true);
                 robot.tilter.stow.activate();
-            }
+            }*/
 
             // Get Dashboard option for drive
             switch (robot.dashboard.driveMode.get()){
@@ -393,7 +393,7 @@ public class TeleopMode extends Coordinator {
         }
     }
 
-
+    /*
     private class IntakeManager {
         private final Intake.Idle idle;
         private final Intake.Speed speed;
@@ -404,12 +404,12 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
-            if( driverRightTrigger != 0.0 /*&& !speed.getState()*/) {
+            if( driverRightTrigger != 0.0 && !speed.getState()) {
                 speed.set(-driverRightTrigger); // Intake
                 //Negative is Intake
             } else if( driverLeftTrigger != 0.0 ){
                 speed.set(driverLeftTrigger); // Outtake
-            } else if( manipLeftTrigger != 0.0 /*&& !speed.getState()*/) {
+            } else if( manipLeftTrigger != 0.0 && !speed.getState()) {
                 speed.set( -manipLeftTrigger);
             } else if( manipRightTrigger != 0.0 ) {
                 speed.set( manipRightTrigger);
@@ -421,6 +421,7 @@ public class TeleopMode extends Coordinator {
 
         }
     }
+    
 
     private class ArmManager {
         private Arm arm;
@@ -490,7 +491,7 @@ public class TeleopMode extends Coordinator {
 
         }
 
-    }
+    }*/
 
     private class HatchManager {
         private Toggle useAuto;
@@ -530,7 +531,7 @@ public class TeleopMode extends Coordinator {
             }
 
 
-            if(robot.arm.leftEncoderClicks.get() <= 1560) {
+            if(true/*robot.arm.leftEncoderClicks.get() <= 1560*/) {
                 if( driverY ) {
                     sliderForward.update( driverY );
                 } else if( manipRightBumper ) {
@@ -540,8 +541,8 @@ public class TeleopMode extends Coordinator {
                 }
 
                 if( sliderForward.isInOnState()) {
-                        robot.slider.front.activate();
-                        robot.limelight.limelightLED.set(1);
+                    robot.slider.front.activate();
+                    robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
                 } else if( sliderForward.isInOffState() ) {
                     robot.slider.back.activate();
                     robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());

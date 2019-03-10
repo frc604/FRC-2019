@@ -12,11 +12,11 @@ public class Ports {
     
     /* Victor Motors */
     public static final int DRIVE_FRONT_LEFT_MOTOR = 1;
-    public static final int DRIVE_MIDDLE_LEFT_MOTOR = 2;
-    public static final int DRIVE_REAR_LEFT_MOTOR = 3;
-    public static final int DRIVE_FRONT_RIGHT_MOTOR = 4;
-    public static final int DRIVE_MIDDLE_RIGHT_MOTOR = 5;
-    public static final int DRIVE_REAR_RIGHT_MOTOR = 6;
+    //public static final int DRIVE_MIDDLE_LEFT_MOTOR = 2;
+    public static final int DRIVE_REAR_LEFT_MOTOR = 2;
+    public static final int DRIVE_FRONT_RIGHT_MOTOR = 3;
+    //public static final int DRIVE_MIDDLE_RIGHT_MOTOR = 5;
+    public static final int DRIVE_REAR_RIGHT_MOTOR = 4;
 
     /* Arm Motors */
     public static final int ARM_LEFT_MOTOR = 2;
@@ -27,9 +27,9 @@ public class Ports {
     public static final int INTAKE_LIMIT = 4;
 
     /* Hatch Control */
-    public static final int HOOK_A = 0;
-    public static final int HOOK_B = 4;
-    public static final int HATCH_LEFT_SLIDE_A= 1;
+    public static final int HOOK_A = 2;
+    public static final int HOOK_B = 3;
+    public static final int HATCH_LEFT_SLIDE_A= 4;
     public static final int HATCH_LEFT_SLIDE_B = 5;
 
     public static final int HATCH_LEFT_SWITCH = 0;
