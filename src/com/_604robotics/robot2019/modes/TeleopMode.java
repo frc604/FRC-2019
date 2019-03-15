@@ -399,17 +399,17 @@ public class TeleopMode extends Coordinator {
         private final Intake.Speed speed;
 
         public IntakeManager() {
-            idle = robot.intake.new Idle();
-            speed = robot.intake.new Speed();
+            idle = robot.intake.idle;
+            speed = robot.intake.speed;
         }
 
         public void run() {
-            if( driverRightTrigger != 0.0 /*&& !speed.getState()*/) {
+            if( driverRightTrigger != 0.0 ) {
                 speed.set(-driverRightTrigger); // Intake
                 //Negative is Intake
             } else if( driverLeftTrigger != 0.0 ){
                 speed.set(driverLeftTrigger); // Outtake
-            } else if( manipLeftTrigger != 0.0 /*&& !speed.getState()*/) {
+            } else if( manipLeftTrigger != 0.0 ) {
                 speed.set( -manipLeftTrigger);
             } else if( manipRightTrigger != 0.0 ) {
                 speed.set( manipRightTrigger);
@@ -417,6 +417,15 @@ public class TeleopMode extends Coordinator {
                 speed.set(1); //Force spit
             } else {
                 idle.activate();
+            }
+            
+            // Blink limelight if ball in intake, ONLY IF we are not scanning
+            if( robot.intake.holdingBall.get() && !robot.limelight.scan.isRunning() ) {
+                robot.limelight.limelightLED.set(Limelight.LEDState.BLINK.ordinal());
+            } else if( robot.limelight.scan.isRunning() ){
+                robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
+            } else if( robot.limelight.driver.isRunning() ) {
+                robot.limelight.limelightLED.set(Limelight.LEDState.OFF.ordinal());
             }
 
         }
@@ -656,8 +665,8 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
-
             robot.limelight.scan.activate();
+            
             if( robot.limelight.limelightHasTargets.get() ) {
                 anglePID.setEnabled(true);
 				System.out.println(anglePID.get());
