@@ -422,12 +422,9 @@ public class TeleopMode extends Coordinator {
             // Blink limelight if ball in intake, ONLY IF we are not scanning
             if( robot.intake.holdingBall.get() && !robot.limelight.scan.isRunning() ) {
                 robot.limelight.limelightLED.set(Limelight.LEDState.BLINK.ordinal());
-            } else if( robot.limelight.scan.isRunning() ){
-                robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
-            } else if( robot.limelight.driver.isRunning() ) {
+            } else if( robot.limelight.scan.isRunning() || robot.limelight.driver.isRunning() ){
                 robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
             }
-
         }
     }
 
@@ -548,11 +545,11 @@ public class TeleopMode extends Coordinator {
 
                 if( sliderForward.isInOnState()) {
                     robot.slider.front.activate();
-                    robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
                 } else if( sliderForward.isInOffState() ) {
                     robot.slider.back.activate();
-                    robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
                 }
+				
+				robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
             }
 
 
