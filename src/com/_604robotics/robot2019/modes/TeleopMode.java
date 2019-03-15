@@ -532,13 +532,11 @@ public class TeleopMode extends Coordinator {
 
             if ( hookToggle.isInOffState() ) {
                 robot.hook.hold.activate();
-
             } else if ( hookToggle.isInOnState() ) {
                 robot.hook.release.activate();
-
             }
 
-
+            // Prevents a catastrophic failure
             if(robot.arm.leftEncoderClicks.get() <= 1560) {
                 if( driverY ) {
                     sliderForward.update( driverY );
@@ -549,12 +547,11 @@ public class TeleopMode extends Coordinator {
                 }
 
                 if( sliderForward.isInOnState()) {
-                        robot.slider.front.activate();
-                        robot.limelight.limelightLED.set(1);
+                    robot.slider.front.activate();
+                    robot.limelight.limelightLED.set(Limelight.LEDState.OFF.ordinal());
                 } else if( sliderForward.isInOffState() ) {
                     robot.slider.back.activate();
                     robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
-
                 }
             }
 

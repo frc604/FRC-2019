@@ -113,21 +113,7 @@ public class Limelight extends Module {
 
         @Override
         public void run() {
-            if( limelightPipeline.isFresh() ) {
-                table.getEntry("pipeline").setNumber(limelightPipeline.get());
-            }
-
-            if( limelightLED.isFresh() ) {
-                table.getEntry("ledMode").setNumber(limelightLED.get());
-            }
-
-            if( limelightSnapshotEnabled.isFresh() ) {
-                table.getEntry("snapshot").setNumber((limelightSnapshotEnabled.get() ? 1 : 0));
-            }
-
-            if( limelightStreamMode.isFresh() ) {
-                table.getEntry("stream").setNumber(limelightStreamMode.get());
-            }
+            setSettings();
         }
 
         @Override
@@ -156,21 +142,7 @@ public class Limelight extends Module {
 
         @Override
         public void run() {
-            if( limelightPipeline.isFresh() ) {
-                table.getEntry("pipeline").setNumber(limelightPipeline.get());
-            }
-
-            if( limelightLED.isFresh() ) {
-                table.getEntry("ledMode").setNumber(limelightLED.get());
-            }
-
-            if( limelightSnapshotEnabled.isFresh() ) {
-                table.getEntry("snapshot").setNumber((limelightSnapshotEnabled.get() ? 1 : 0));
-            }
-
-            if( limelightStreamMode.isFresh() ) {
-                table.getEntry("stream").setNumber(limelightStreamMode.get());
-            }
+            setSettings();
         }
 
         @Override
@@ -181,6 +153,30 @@ public class Limelight extends Module {
 
     public final Action scan = new Scan();
     public final Action driver = new Driver();
+    
+    /**
+     * Checks the inputs to the limelight for a change, and if present, updates the limelight
+     * with the new values.
+     * 
+     * Should be called in the run() of each action.
+     */
+    private void setSettings() {
+        if( limelightPipeline.isFresh() ) {
+            table.getEntry("pipeline").setNumber(limelightPipeline.get());
+        }
+
+        if( limelightLED.isFresh() ) {
+            table.getEntry("ledMode").setNumber(limelightLED.get());
+        }
+
+        if( limelightSnapshotEnabled.isFresh() ) {
+            table.getEntry("snapshot").setNumber((limelightSnapshotEnabled.get() ? 1 : 0));
+        }
+
+        if( limelightStreamMode.isFresh() ) {
+            table.getEntry("stream").setNumber(limelightStreamMode.get());
+        }
+    }
 
     /**
      * Uses trig to find the distance of the limelight to the target.
