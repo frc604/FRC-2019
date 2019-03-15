@@ -327,11 +327,11 @@ public class TeleopMode extends Coordinator {
                     System.out.println("Current value is:"+robot.dashboard.driveMode.get());
             }
 
-            if( driverRightBumper ){
+            if( driverRightBumper ) {
                 robot.limelight.scan.activate();
                 arcade.activate();
 
-                if( robot.limelight.limelightHasTargets.get() ){
+                if( robot.limelight.limelightHasTargets.get() ) {
                     arcade.movePower.set(leftY);
                     autoCenterManager.run();
                 } else {
@@ -573,7 +573,7 @@ public class TeleopMode extends Coordinator {
                     break;
 
                 case ( 2 ):
-                    if( hatchTime.hasPeriodPassed(Calibration.PUSH_TIME) ) {
+                    if( hatchTime.hasPeriodPassed(Calibration.HATCH_PUSH_TIME) ) {
                         hookToggle.update(!hookToggle.isInOnState());
                         hatchTime.stopAndReset();
                         hatchTime.startIfNotRunning();
@@ -582,7 +582,7 @@ public class TeleopMode extends Coordinator {
                     break;
 
                 case( 3 ):
-                    if( hatchTime.hasPeriodPassed(Calibration.BACK_TIME) ) {
+                    if( hatchTime.hasPeriodPassed(Calibration.HATCH_BACK_TIME) ) {
                         sliderForward.update(sliderForward.isInOnState());
                         hatchTime.stopAndReset();
                         autoState++;
@@ -609,7 +609,7 @@ public class TeleopMode extends Coordinator {
                         break;
 
                     case ( 2 ):
-                        if( hatchTime.hasPeriodPassed(Calibration.RELEASE_TIME) ) {
+                        if( hatchTime.hasPeriodPassed(Calibration.HATCH_RELEASE_TIME) ) {
                             hookToggle.update(!hookToggle.isInOffState());
                             hatchTime.stopAndReset();
                             hatchTime.startIfNotRunning();
@@ -618,13 +618,13 @@ public class TeleopMode extends Coordinator {
                         break;
 
                     case( 3 ):
-                        if( hatchTime.hasPeriodPassed(Calibration.PULL_TIME) ) {
+                        if( hatchTime.hasPeriodPassed(Calibration.HATCH_PULL_TIME) ) {
                             sliderForward.update(sliderForward.isInOnState());
                             hatchTime.stopAndReset();
                             intakeState++;
-
                         }
                         break;
+                        
                     case ( 4 ):
                         intakeState = 0;
                         break;
