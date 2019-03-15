@@ -541,7 +541,8 @@ public class TeleopMode extends Coordinator {
 
                 if( sliderForward.isInOnState()) {
                         robot.slider.front.activate();
-                        robot.limelight.limelightLED.set(1);
+                        robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
+                        //Set to 1 to turn off, 2 to blink, and 3 to force on
                 } else if( sliderForward.isInOffState() ) {
                     robot.slider.back.activate();
                     robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
