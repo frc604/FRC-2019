@@ -25,6 +25,7 @@ public class DashboardSystem extends Coordinator {
         //robot.powermonitor.initDashboardSendables();
 
         robot.dashboard.hookHolding.set(robot.hook.isHolding.get());
+        robot.dashboard.hasBall.set(robot.intake.holdingBall.get());
 
         /* Limelight Testing */
         robot.dashboard.limelightTarget.set(robot.limelight.limelightHasTargets.get());
