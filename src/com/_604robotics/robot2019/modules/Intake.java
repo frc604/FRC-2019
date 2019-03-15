@@ -9,10 +9,18 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 public class Intake extends Module {
-    public Output<Boolean> LeftLimitSwitch;
+    public Output<Boolean> holdingBall;
 
     public final WPI_VictorSPX intakeMotor = new WPI_VictorSPX(Ports.INTAKE_MOTOR);
     private final DigitalInput ballSwitch = new DigitalInput(Ports.INTAKE_LIMIT);
+    
+    public Intake() {
+        super(Intake.class);
+        
+        holdingBall = addOutput("Ball in Intake", () -> ballSwitch.get());
+
+        setDefaultAction(speed);
+    }
 
     public class Idle extends Action {
         public Idle () {
@@ -20,38 +28,22 @@ public class Intake extends Module {
         }
 
         @Override
-        public void run () {
+        public void run() {
             intakeMotor.stopMotor();
-        }
-
-        public boolean getState() {
-            return ballSwitch.get();
         }
     }
 
-    public final Action idle = new Idle();
+    public final Idle idle = new Idle();
 
     public class Speed extends Action {
-        public void set(double speed) {
-            System.out.println("SPEEDDD333333");
-            intakeMotor.set(ControlMode.PercentOutput, speed);
-        }
-
-        public boolean getState() {
-            return ballSwitch.get();
-        }
-
         public Speed() {
             super(Intake.this, Speed.class);
         }
+        
+        public void set(double speed) {
+            intakeMotor.set(ControlMode.PercentOutput, speed);
+        }
     }
 	
-	public final Action speed = new Speed();
-
-    public Intake() {
-        super(Intake.class);
-        LeftLimitSwitch = addOutput("Left Limit Switch", () -> ballSwitch.get());
-
-        setDefaultAction(speed);
-    }
+	public final Speed speed = new Speed();
 }
