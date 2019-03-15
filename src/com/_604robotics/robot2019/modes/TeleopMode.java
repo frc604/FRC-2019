@@ -548,11 +548,12 @@ public class TeleopMode extends Coordinator {
 
                 if( sliderForward.isInOnState()) {
                     robot.slider.front.activate();
-                    robot.limelight.limelightLED.set(Limelight.LEDState.OFF.ordinal());
                 } else if( sliderForward.isInOffState() ) {
                     robot.slider.back.activate();
-                    robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
                 }
+				
+				robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
+
             }
 
 
