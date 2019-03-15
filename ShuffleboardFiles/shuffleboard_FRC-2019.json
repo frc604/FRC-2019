@@ -398,10 +398,10 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
-          "11,0": {
+          "16,0": {
             "size": [
-              5,
-              1
+              1,
+              2
             ],
             "content": {
               "_type": "ComboBox Chooser",
@@ -409,29 +409,10 @@
               "_title": "SmartDashboard/VisionMode"
             }
           },
-          "0,0": {
+          "16,2": {
             "size": [
-              11,
-              7
-            ],
-            "content": {
-              "_type": "Camera Stream",
-              "_source0": "camera_server://limelight",
-              "_title": "limelight",
-              "Crosshair/Show crosshair": false,
-              "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": false,
-              "Controls/Rotation": "NONE",
-              "compression": -1.0,
-              "fps": -1,
-              "imageWidth": -1,
-              "imageHeight": -1
-            }
-          },
-          "11,1": {
-            "size": [
-              5,
-              6
+              3,
+              5
             ],
             "content": {
               "_type": "Boolean Box",
@@ -441,15 +422,53 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "16,0": {
+          "17,0": {
             "size": [
-              3,
-              1
+              2,
+              2
             ],
             "content": {
               "_type": "ComboBox Chooser",
               "_source0": "network_table:///SmartDashboard/driveMode",
               "_title": "SmartDashboard/driveMode"
+            }
+          },
+          "0,0": {
+            "size": [
+              8,
+              6
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://limelight",
+              "_title": "limelight",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "NONE",
+              "compression": 100.0,
+              "fps": -1,
+              "imageWidth": 0,
+              "imageHeight": 0
+            }
+          },
+          "8,0": {
+            "size": [
+              7,
+              5
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://video0",
+              "_title": "video0",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": false,
+              "Controls/Rotation": "QUARTER_CW",
+              "compression": -1.0,
+              "fps": 10,
+              "imageWidth": 200,
+              "imageHeight": 200
             }
           }
         }
