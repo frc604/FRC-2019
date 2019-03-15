@@ -425,7 +425,7 @@ public class TeleopMode extends Coordinator {
             } else if( robot.limelight.scan.isRunning() ){
                 robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
             } else if( robot.limelight.driver.isRunning() ) {
-                robot.limelight.limelightLED.set(Limelight.LEDState.OFF.ordinal());
+                robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
             }
 
         }
@@ -548,10 +548,10 @@ public class TeleopMode extends Coordinator {
 
                 if( sliderForward.isInOnState()) {
                     robot.slider.front.activate();
-                    robot.limelight.limelightLED.set(Limelight.LEDState.OFF.ordinal());
+                    robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
                 } else if( sliderForward.isInOffState() ) {
                     robot.slider.back.activate();
-                    robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
+                    robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
                 }
             }
 
