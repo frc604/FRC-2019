@@ -389,7 +389,7 @@
       }
     },
     {
-      "title": "Tab 3",
+      "title": "Driver",
       "autoPopulate": false,
       "autoPopulatePrefix": "",
       "widgetPane": {
@@ -447,45 +447,7 @@
               "Controls/Show controls": false,
               "Controls/Rotation": "NONE",
               "compression": -1.0,
-              "fps": -1,
-              "imageWidth": 0,
-              "imageHeight": 0
-            }
-          },
-          "6,0": {
-            "size": [
-              6,
-              7
-            ],
-            "content": {
-              "_type": "Camera Stream",
-              "_source0": "camera_server://video0",
-              "_title": "video0",
-              "Crosshair/Show crosshair": true,
-              "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": false,
-              "Controls/Rotation": "NONE",
-              "compression": -1.0,
-              "fps": 10,
-              "imageWidth": 200,
-              "imageHeight": 200
-            }
-          },
-          "12,0": {
-            "size": [
-              6,
-              7
-            ],
-            "content": {
-              "_type": "Camera Stream",
-              "_source0": "camera_server://video1",
-              "_title": "video1",
-              "Crosshair/Show crosshair": true,
-              "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": false,
-              "Controls/Rotation": "QUARTER_CW",
-              "compression": -1.0,
-              "fps": -1,
+              "fps": 15,
               "imageWidth": 0,
               "imageHeight": 0
             }
@@ -501,6 +463,109 @@
               "_title": "SmartDashboard/Hook Holding",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "6,0": {
+            "size": [
+              6,
+              7
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://video1",
+              "_title": "video1",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "QUARTER_CW",
+              "compression": -1.0,
+              "fps": 15,
+              "imageWidth": 0,
+              "imageHeight": 0
+            }
+          },
+          "12,0": {
+            "size": [
+              6,
+              7
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://video0",
+              "_title": "video0",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": false,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": 5,
+              "imageWidth": 200,
+              "imageHeight": 200
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Tab 4",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "3,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Arm PID Error",
+              "_title": "SmartDashboard/Arm PID Error"
+            }
+          },
+          "3,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Left Arm Encoder",
+              "_title": "SmartDashboard/Left Arm Encoder"
+            }
+          },
+          "5,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Arm Setpoint",
+              "_title": "SmartDashboard/Arm Setpoint"
+            }
+          },
+          "3,2": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://video0",
+              "_title": "video0",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": 5,
+              "imageWidth": 200,
+              "imageHeight": 200
             }
           }
         }
