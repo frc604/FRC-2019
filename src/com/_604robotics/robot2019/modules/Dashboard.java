@@ -22,6 +22,9 @@ public class Dashboard extends DashboardModule {
 
     public final Input<Boolean> hookHolding = addDashboardInput("Hook Holding", false);
     public final Input<Boolean> hasBall = addDashboardInput("Ball in Intake", false);
+	public final Input<Double> leftEncoderClicks = addDashboardInput("Left Arm Encoder", 0.0);
+	public final Input<Double> armPIDError = addDashboardInput("Arm PID Error", 0.0);
+	public final Input<Double> armSetpoint = addDashboardInput("Arm Setpoint", 0.0);
 
     /* Limelight values */
     public final Input<Boolean> limelightTarget = addDashboardInput("Limelight Has Target", false);

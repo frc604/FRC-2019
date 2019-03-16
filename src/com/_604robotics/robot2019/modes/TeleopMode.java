@@ -448,7 +448,7 @@ public class TeleopMode extends Coordinator {
                 //if ( !robot.slider.isForward.get() ) {
                     // Check setpoints
                     if( manipA ) {
-                        // Low position
+                        // Low position // ARMSETPOINTS
                         arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
                         arm.setpoint.activate();
                     } else if( manipB ) {
