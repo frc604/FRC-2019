@@ -37,6 +37,7 @@ public class Arm extends Module {
         rightMotor.setInverted(true);
         rightMotor.set(ControlMode.Follower, Ports.ARM_LEFT_MOTOR);
 
+		//rightEncoder = new TalonPWMEncoder(leftMotor);
         leftEncoder = new TalonPWMEncoder(rightMotor);
 		leftEncoder.setInverted(false);
 
@@ -56,7 +57,7 @@ public class Arm extends Module {
 
         pid.setEncoderPeriod(Calibration.Arm.CLICKS_FULL_ROTATION);
         pid.setFeedforwardZeroOffset(Calibration.Arm.HORIZONTAL_POSITION);
-        pid.setOutputRange(-0.7,.7); //-.45,.4
+        pid.setOutputRange(-0.5,.5); //-.45,.4
         pidError = addOutput("PID Error", () -> this.pid.getError());
 
         setDefaultAction(move);

@@ -536,7 +536,7 @@ public class TeleopMode extends Coordinator {
             }
 
             // Prevents a catastrophic failure
-            if(robot.arm.leftEncoderClicks.get() <= 1560) {
+            //if(robot.arm.leftEncoderClicks.get() <= 1560) {
                 if( driverY ) {
                     sliderForward.update( driverY );
                 } else if( manipRightBumper ) {
@@ -552,7 +552,7 @@ public class TeleopMode extends Coordinator {
                 }
 				
 				robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
-            }
+            //}
 
 
             switch (autoState) {
