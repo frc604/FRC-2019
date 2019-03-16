@@ -226,3 +226,6 @@ Uses Pixy code adapted from [BHSRobotix/Steamworks2017](https://github.com/BHSRo
 When flashing the Limelight, follow the instructions found [here](http://docs.limelightvision.io/en/latest/getting_started.html#imaging).
 However, it is also nessessary to install the drivers for a Raspberry Pi compute module as well.
 You will know you have succeeded when the Pi shows up as a removable drive (if on Windows).
+
+## Drivers
+http://www.sapphiretech.com/product_downloadmore.asp?PID=1482&CataID=30&lang=eng
