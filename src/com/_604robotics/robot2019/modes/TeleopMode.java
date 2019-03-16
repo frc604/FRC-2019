@@ -445,7 +445,7 @@ public class TeleopMode extends Coordinator {
             }
 
             if ( !disableArm ) {
-                if ( !robot.slider.isForward.get() ) {
+                //if ( !robot.slider.isForward.get() ) {
                     // Check setpoints
                     if( manipA ) {
                         // Low position
@@ -491,9 +491,9 @@ public class TeleopMode extends Coordinator {
                             arm.hold.activate();
                         }
                     }
-                } else {
+                /*} else {
                     arm.hold.activate();
-                }
+                }*/
             }
 
         }
