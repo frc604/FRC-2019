@@ -145,6 +145,8 @@ public class TeleopMode extends Coordinator {
             logger.info("Recording inputs with Marionette");
             inputRecorder = new InputRecorder(2400, driverJoystick, manipJoystick);
         }
+		
+		robot.intake.speed.set(0);
     }
 
     @Override
