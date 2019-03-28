@@ -9,15 +9,10 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 public class Intake extends Module {
-    public Output<Boolean> holdingBall;
-
     public final WPI_VictorSPX intakeMotor = new WPI_VictorSPX(Ports.INTAKE_MOTOR);
-    private final DigitalInput ballSwitch = new DigitalInput(Ports.INTAKE_LIMIT);
-    
+
     public Intake() {
         super(Intake.class);
-        
-        holdingBall = addOutput("Ball in Intake", () -> ballSwitch.get());
 
         setDefaultAction(speed);
     }
@@ -36,12 +31,20 @@ public class Intake extends Module {
     public final Idle idle = new Idle();
 
     public class Speed extends Action {
+		private double speed;
+		
         public Speed() {
             super(Intake.this, Speed.class);
+			
+			this.speed = 0;
         }
+		
+		public void run() {
+			intakeMotor.set(ControlMode.PercentOutput, speed);
+		}
         
         public void set(double speed) {
-            intakeMotor.set(ControlMode.PercentOutput, speed);
+			this.speed = speed;
         }
     }
 	

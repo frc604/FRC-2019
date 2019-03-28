@@ -21,4 +21,6 @@ if hash ant; then
   ant
 else
   echo "Code tagged and ready for deploy"
+  echo "To deploy, run:"
+  echo "./gradlew build deploy --offline"
 fi
