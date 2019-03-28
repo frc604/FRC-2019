@@ -95,6 +95,11 @@ public class Arm extends Module {
         }
 
         @Override
+        public void begin() {
+            pid.setEnabled(false);
+        }
+
+        @Override
         public void run() {
             leftMotor.set(inputPower.get());
         }

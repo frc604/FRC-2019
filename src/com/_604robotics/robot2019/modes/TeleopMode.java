@@ -280,27 +280,6 @@ public class TeleopMode extends Coordinator {
                 rightY*=-1;
             }
 
-            if( driverStart ) {
-                robot.powermonitor.updateCompressor(false);
-                if ( robot.slider.isForward.get() ) {
-                    hatchManager.sliderForward.update(true);
-                }
-                armManager.disableArm = true;
-                robot.arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
-                robot.arm.setpoint.activate();
-                if ( driverDPad ) {
-                    robot.tilter.tilt.activate();
-                } else if ( driverBack ) {
-                    robot.tilter.retract.activate();
-                } else {
-                    robot.tilter.stow.activate();
-                }
-            } else {
-                armManager.disableArm = false;
-                robot.powermonitor.updateCompressor(true);
-                robot.tilter.stow.activate();
-            }
-
             // Get Dashboard option for drive
             switch (robot.dashboard.driveMode.get()){
                 case OFF:
@@ -327,6 +306,30 @@ public class TeleopMode extends Coordinator {
                 default:
                     System.out.println("This should never happen!");
                     System.out.println("Current value is:"+robot.dashboard.driveMode.get());
+            }
+
+            if( driverStart ) {
+                robot.powermonitor.updateCompressor(false);
+                if ( robot.slider.isForward.get() ) {
+                    hatchManager.sliderForward.update(true);
+                }
+                armManager.disableArm = true;
+                robot.arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
+                robot.arm.move.inputPower.set(-0.075);
+                robot.arm.move.activate();
+                if ( driverDPad ) {
+                    robot.tilter.tilt.activate();
+                    arcade.activate();
+                    arcade.movePower.set(-0.075);
+                } else if ( driverBack ) {
+                    robot.tilter.retract.activate();
+                } else {
+                    robot.tilter.stow.activate();
+                }
+            } else {
+                armManager.disableArm = false;
+                robot.powermonitor.updateCompressor(true);
+                robot.tilter.stow.activate();
             }
 
             // It would be bad if this turned off
