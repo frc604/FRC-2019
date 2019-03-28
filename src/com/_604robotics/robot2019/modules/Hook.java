@@ -41,7 +41,7 @@ public class Hook extends Module {
 		
 		@Override
 		public void run() {
-			hook.set(Value.kForward);
+			hook.set(Value.kReverse);
 		}
     }
 
@@ -52,7 +52,7 @@ public class Hook extends Module {
 		
 		@Override
 		public void run() {
-			hook.set(Value.kReverse);
+			hook.set(Value.kForward);
 		}
     }
 

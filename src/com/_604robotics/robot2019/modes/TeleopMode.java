@@ -145,6 +145,8 @@ public class TeleopMode extends Coordinator {
             logger.info("Recording inputs with Marionette");
             inputRecorder = new InputRecorder(2400, driverJoystick, manipJoystick);
         }
+		
+		robot.intake.speed.set(0);
     }
 
     @Override
@@ -327,6 +329,8 @@ public class TeleopMode extends Coordinator {
                     System.out.println("Current value is:"+robot.dashboard.driveMode.get());
             }
 
+            // It would be bad if this turned off
+            robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
             if( driverRightBumper ) {
                 robot.limelight.scan.activate();
                 arcade.activate();
@@ -418,16 +422,6 @@ public class TeleopMode extends Coordinator {
             } else {
                 idle.activate();
             }
-            
-            // Blink limelight if ball in intake, ONLY IF we are not scanning
-            if( robot.intake.holdingBall.get() && !robot.limelight.scan.isRunning() ) {
-                robot.limelight.limelightLED.set(Limelight.LEDState.BLINK.ordinal());
-            } else if( robot.limelight.scan.isRunning() ){
-                robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
-            } else if( robot.limelight.driver.isRunning() ) {
-                robot.limelight.limelightLED.set(Limelight.LEDState.OFF.ordinal());
-            }
-
         }
     }
 
@@ -449,7 +443,7 @@ public class TeleopMode extends Coordinator {
                 if ( !robot.slider.isForward.get() || !robot.dashboard.safetyEnabled.get() ) {
                     // Check setpoints
                     if( manipA ) {
-                        // Low position
+                        // Low position // ARMSETPOINTS
                         arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
                         arm.setpoint.activate();
                     } else if( manipB ) {
