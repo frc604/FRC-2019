@@ -41,8 +41,6 @@ public class Dashboard extends DashboardModule {
     public final Output<Double> limelightPipeline = addDashboardOutput("Vision Pipeline", 0);
     public final Output<Boolean> limelightSnapshot = addDashboardOutput("Snapshots", false);
 
-    public final Output<Boolean> safetyEnabled = addDashboardOutput("Enable Arm Safety", true);
-
     public enum LimelightMode {
         // TODO Make a enum populated by class name of actions in module
         DRIVER,

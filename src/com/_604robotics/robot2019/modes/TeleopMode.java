@@ -440,7 +440,7 @@ public class TeleopMode extends Coordinator {
             }
 
             if ( !disableArm ) {
-                if ( !robot.slider.isForward.get() || !robot.dashboard.safetyEnabled.get() ) {
+                if ( !robot.slider.isForward.get() ) {
                     // Check setpoints
                     if( manipA ) {
                         // Low position // ARMSETPOINTS
@@ -531,7 +531,7 @@ public class TeleopMode extends Coordinator {
             }
 
             // Prevents a catastrophic failure
-            if( robot.arm.leftEncoderClicks.get() <= 1560 || !robot.dashboard.safetyEnabled.get() ) {
+            if(robot.arm.leftEncoderClicks.get() <= 1560) {
                 if( driverY ) {
                     sliderForward.update( driverY );
                 } else if( manipRightBumper ) {
@@ -547,6 +547,7 @@ public class TeleopMode extends Coordinator {
                 }
 				
 				robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
+
             }
 
 
