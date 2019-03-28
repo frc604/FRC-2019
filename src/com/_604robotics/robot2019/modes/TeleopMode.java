@@ -329,6 +329,8 @@ public class TeleopMode extends Coordinator {
                     System.out.println("Current value is:"+robot.dashboard.driveMode.get());
             }
 
+            // It would be bad if this turned off
+            robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
             if( driverRightBumper ) {
                 robot.limelight.scan.activate();
                 arcade.activate();
@@ -420,13 +422,6 @@ public class TeleopMode extends Coordinator {
             } else {
                 idle.activate();
             }
-            
-            // Blink limelight if ball in intake, ONLY IF we are not scanning
-            if( robot.intake.holdingBall.get() && !robot.limelight.scan.isRunning() ) {
-                robot.limelight.limelightLED.set(Limelight.LEDState.BLINK.ordinal());
-            } else if( robot.limelight.scan.isRunning() || robot.limelight.driver.isRunning() ){
-                robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
-            }
         }
     }
 
@@ -445,7 +440,7 @@ public class TeleopMode extends Coordinator {
             }
 
             if ( !disableArm ) {
-                //if ( !robot.slider.isForward.get() ) {
+                if ( !robot.slider.isForward.get() ) {
                     // Check setpoints
                     if( manipA ) {
                         // Low position // ARMSETPOINTS
@@ -491,9 +486,9 @@ public class TeleopMode extends Coordinator {
                             arm.hold.activate();
                         }
                     }
-                /*} else {
+                } else {
                     arm.hold.activate();
-                }*/
+                }
             }
 
         }
@@ -536,7 +531,7 @@ public class TeleopMode extends Coordinator {
             }
 
             // Prevents a catastrophic failure
-            //if(robot.arm.leftEncoderClicks.get() <= 1560) {
+            if(robot.arm.leftEncoderClicks.get() <= 1560) {
                 if( driverY ) {
                     sliderForward.update( driverY );
                 } else if( manipRightBumper ) {
@@ -550,9 +545,7 @@ public class TeleopMode extends Coordinator {
                 } else if( sliderForward.isInOffState() ) {
                     robot.slider.back.activate();
                 }
-				
-				robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
-            //}
+            }
 
 
             switch (autoState) {
