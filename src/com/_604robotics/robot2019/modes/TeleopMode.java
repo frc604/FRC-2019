@@ -314,13 +314,12 @@ public class TeleopMode extends Coordinator {
                     hatchManager.sliderForward.update(true);
                 }
                 armManager.disableArm = true;
-                robot.arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
                 robot.arm.move.inputPower.set(-0.075);
                 robot.arm.move.activate();
                 if ( driverDPad ) {
-                    robot.tilter.tilt.activate();
                     arcade.activate();
                     arcade.movePower.set(-0.075);
+                    robot.tilter.tilt.activate();
                 } else if ( driverBack ) {
                     robot.tilter.retract.activate();
                 } else {
@@ -330,6 +329,27 @@ public class TeleopMode extends Coordinator {
                 armManager.disableArm = false;
                 robot.powermonitor.updateCompressor(true);
                 robot.tilter.stow.activate();
+
+                switch( currentDrive ) {
+                    case IDLE:
+                        idle.activate();
+                        break;
+                    case ARCADE:
+                        arcade.movePower.set(leftY);
+                        if( driverLeftJoystickButton ) {
+                            arcade.rotatePower.set(rightX * Calibration.SLOW_ROTATION_MODIFIER);
+                        } else {
+                            arcade.rotatePower.set(rightX);
+                        }
+                        arcade.activate();
+                        break;
+                    case TANK:
+                        tank.leftPower.set(leftY);
+                        tank.rightPower.set(rightY);
+                        tank.activate();
+                        break;
+                }
+                
             }
 
             // It would be bad if this turned off
