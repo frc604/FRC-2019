@@ -145,8 +145,8 @@ public class TeleopMode extends Coordinator {
             logger.info("Recording inputs with Marionette");
             inputRecorder = new InputRecorder(2400, driverJoystick, manipJoystick);
         }
-		
-		robot.intake.speed.set(0);
+
+        robot.intake.speed.set(0);
     }
 
     @Override
@@ -294,7 +294,7 @@ public class TeleopMode extends Coordinator {
                     robot.tilter.retract.activate();
                 } else {
                     robot.tilter.stow.activate();
-                }   
+                }
             } else {
                 armManager.disableArm = false;
                 robot.powermonitor.updateCompressor(true);
@@ -440,55 +440,53 @@ public class TeleopMode extends Coordinator {
             }
 
             if ( !disableArm ) {
-                if ( !robot.slider.isForward.get() ) {
-                    // Check setpoints
-                    if( manipA ) {
-                        // Low position // ARMSETPOINTS
-                        arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
-                        arm.setpoint.activate();
-                    } else if( manipB ) {
-                        // Ball place position
-                        arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
-                        arm.setpoint.activate();
-                    } else if( manipY ) {
-                        // Vertical position
-                        arm.setpoint.setpoint.set(Calibration.Arm.VERTICAL_POSITION);
-                        arm.setpoint.activate();
-                    } else if( manipX ) {
-                        // Vertical position
-                        arm.setpoint.setpoint.set(Calibration.Arm.ROCKET_SETPOINT);
-                        arm.setpoint.activate();
-                    } else {
-                        // Check thumbsticks
-                        if( manipLeftJoystickY != 0 ) {
-                            // Set arm rate to joystick
-                            double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
-
-                            // Calculate needed factor for torque
-                            double angle = 2*Math.PI * (arm.leftEncoderClicks.get() - Calibration.Arm.HORIZONTAL_POSITION) / Calibration.Arm.CLICKS_FULL_ROTATION;
-                            angle = Math.cos(angle);
-
-                            if( (motorValue < 0 && arm.leftEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
-                                (motorValue > 0 && arm.leftEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
-
-                                // We need to account for gravity existing
-                                motorValue += Calibration.Arm.kF * angle;
-                            }
-
-                            arm.move.inputPower.set(motorValue);
-                            arm.move.activate();
-                        } else {
-                            // Hold arm still
-                            arm.hold.activate();
-                        }
-
-                        if ( manipBack ){
-                            arm.hold.activate();
-                        }
-                    }
+                // Check setpoints
+                if( manipA ) {
+                    // Low position // ARMSETPOINTS
+                    arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
+                    arm.setpoint.activate();
+                } else if( manipB ) {
+                    // Ball place position
+                    arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
+                    arm.setpoint.activate();
+                } else if( manipY ) {
+                    // Vertical position
+                    arm.setpoint.setpoint.set(Calibration.Arm.VERTICAL_POSITION);
+                    arm.setpoint.activate();
+                } else if( manipX ) {
+                    // Vertical position
+                    arm.setpoint.setpoint.set(Calibration.Arm.ROCKET_SETPOINT);
+                    arm.setpoint.activate();
                 } else {
-                    arm.hold.activate();
+                    // Check thumbsticks
+                    if( manipLeftJoystickY != 0 ) {
+                        // Set arm rate to joystick
+                        double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
+
+                        // Calculate needed factor for torque
+                        double angle = 2*Math.PI * (arm.leftEncoderClicks.get() - Calibration.Arm.HORIZONTAL_POSITION) / Calibration.Arm.CLICKS_FULL_ROTATION;
+                        angle = Math.cos(angle);
+
+                        if( (motorValue < 0 && arm.leftEncoderClicks.get() < Calibration.Arm.VERTICAL_POSITION) ||
+                            (motorValue > 0 && arm.leftEncoderClicks.get() > Calibration.Arm.VERTICAL_POSITION) ) {
+
+                            // We need to account for gravity existing
+                            motorValue += Calibration.Arm.kF * angle;
+                        }
+
+                        arm.move.inputPower.set(motorValue);
+                        arm.move.activate();
+                    } else {
+                        // Hold arm still
+                        arm.hold.activate();
+                    }
+
+                    if ( manipBack ){
+                        arm.hold.activate();
+                    }
                 }
+                arm.hold.activate();
+
             }
 
         }
@@ -503,7 +501,7 @@ public class TeleopMode extends Coordinator {
         private int autoState = 0;
         private int intakeState = 0;
 
-		private double start;
+        private double start;
 
         public HatchManager() {
             useAuto = new Toggle(false);
@@ -511,7 +509,7 @@ public class TeleopMode extends Coordinator {
             sliderForward = new Toggle(false); // Not extended initially
             hatchTime = new SmartTimer();
 
-			start = System.currentTimeMillis();
+            start = System.currentTimeMillis();
         }
 
         public void run() {
@@ -530,26 +528,19 @@ public class TeleopMode extends Coordinator {
                 robot.hook.release.activate();
             }
 
-            // Prevents a catastrophic failure
-            if(robot.arm.leftEncoderClicks.get() <= 1560) {
-                if( driverY ) {
-                    sliderForward.update( driverY );
-                } else if( manipRightBumper ) {
-                    sliderForward.update( manipRightBumper);
-                } else {
-                    sliderForward.update(false);
-                }
-
-                if( sliderForward.isInOnState()) {
-                    robot.slider.front.activate();
-                } else if( sliderForward.isInOffState() ) {
-                    robot.slider.back.activate();
-                }
-				
-				robot.limelight.limelightLED.set(robot.dashboard.limelightLEDState.get().ordinal());
-
+            if( driverY ) {
+                sliderForward.update( driverY );
+            } else if( manipRightBumper ) {
+                sliderForward.update( manipRightBumper);
+            } else {
+                sliderForward.update(false);
             }
 
+            if( sliderForward.isInOnState()) {
+                robot.slider.front.activate();
+            } else if( sliderForward.isInOffState() ) {
+                robot.slider.back.activate();
+            }
 
             switch (autoState) {
                 case( 0 ):
@@ -616,7 +607,7 @@ public class TeleopMode extends Coordinator {
                             intakeState++;
                         }
                         break;
-                        
+
                     case ( 4 ):
                         intakeState = 0;
                         break;
@@ -658,10 +649,10 @@ public class TeleopMode extends Coordinator {
 
         public void run() {
             robot.limelight.scan.activate();
-            
+
             if( robot.limelight.limelightHasTargets.get() ) {
                 anglePID.setEnabled(true);
-				System.out.println(anglePID.get());
+                System.out.println(anglePID.get());
             } else {
                 this.end();
             }
