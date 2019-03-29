@@ -78,7 +78,7 @@ public class Dashboard extends DashboardModule {
 
     public final Output<AutonMode> autonMode = addDashboardOutput("autonMode", AutonMode.MANUAL, AutonMode.class);
     
-    public final Output<DriveMode> driveMode = addDashboardOutput("driveMode", DriveMode.ARCADE, DriveMode.class);
+    public final Output<DriveMode> driveMode = addDashboardOutput("driveMode", DriveMode.DYNAMIC, DriveMode.class);
 
     public final Output<MarionetteRecorder> marionetteRecorder = addDashboardOutput("marionetteRecorder", MarionetteRecorder.MANUAL, MarionetteRecorder.class);
     
