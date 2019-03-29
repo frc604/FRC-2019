@@ -8,6 +8,7 @@ import com._604robotics.robot2019.constants.Calibration;
 import com._604robotics.robot2019.modules.Arm;
 import com._604robotics.robot2019.modules.Drive;
 import com._604robotics.robot2019.modules.Intake;
+import com._604robotics.robot2019.modules.Dashboard.DriveMode;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
 import com._604robotics.robotnik.prefabs.controller.ExtendablePIDController;
@@ -322,9 +323,11 @@ public class TeleopMode extends Coordinator {
                     robot.arm.setpoint.activate();
                 }
                 if ( driverDPad ) {
-                    arcade.activate();
-                    arcade.movePower.set(-0.075);
                     robot.tilter.tilt.activate();
+                    System.out.println("CILMBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+                    currentDrive = CurrentDrive.ARCADE;
+                    arcade.movePower.set(-0.15);
+                    //arcade.activate();
                 } else if ( driverBack ) {
                     robot.tilter.retract.activate();
                 } else {
@@ -335,11 +338,13 @@ public class TeleopMode extends Coordinator {
                 robot.powermonitor.updateCompressor(true);
                 robot.tilter.stow.activate();
 
+                
                 switch( currentDrive ) {
                     case IDLE:
                         idle.activate();
                         break;
                     case ARCADE:
+                        System.out.println("CURRRRENT");
                         arcade.movePower.set(leftY);
                         if( driverLeftJoystickButton ) {
                             arcade.rotatePower.set(rightX * Calibration.SLOW_ROTATION_MODIFIER);
@@ -373,6 +378,7 @@ public class TeleopMode extends Coordinator {
                             idle.activate();
                             break;
                         case ARCADE:
+                            System.out.println("CURRRRENTLEMON");
                             arcade.movePower.set(leftY);
                             if( driverLeftJoystickButton ) {
                                 arcade.rotatePower.set(rightX * Calibration.SLOW_ROTATION_MODIFIER);
@@ -402,7 +408,8 @@ public class TeleopMode extends Coordinator {
                         robot.limelight.scan.activate();
                 }
 
-                switch( currentDrive ) {
+                
+                /*switch( currentDrive ) {
                     case IDLE:
                         idle.activate();
                         break;
@@ -420,7 +427,8 @@ public class TeleopMode extends Coordinator {
                         tank.rightPower.set(rightY);
                         tank.activate();
                         break;
-                }
+                }*/
+            
             }
         }
     }
@@ -513,7 +521,7 @@ public class TeleopMode extends Coordinator {
                         arm.hold.activate();
                     }
                 }
-                arm.hold.activate();
+                //arm.hold.activate();
 
             }
 
@@ -666,7 +674,8 @@ public class TeleopMode extends Coordinator {
             drive = new PIDOutput() {
                 @Override
                 public synchronized void pidWrite(double output) {
-                    driveManager.arcade.movePower.set(output);
+                    System.out.println("CURRRRENTCENTERRRR");
+                    //driveManager.arcade.movePower.set(output);
                 }
             };
             anglePID = new ExtendablePIDController(-0.05, 0, -0.3, new Limelight.HorizontalError(robot.limelight,0), rotation, 0.025);
