@@ -308,14 +308,19 @@ public class TeleopMode extends Coordinator {
                     System.out.println("Current value is:"+robot.dashboard.driveMode.get());
             }
 
-            if( driverStart ) {
+            if ( driverStart ) {
                 robot.powermonitor.updateCompressor(false);
                 if ( robot.slider.isForward.get() ) {
                     hatchManager.sliderForward.update(true);
                 }
                 armManager.disableArm = true;
-                robot.arm.move.inputPower.set(-0.075);
-                robot.arm.move.activate();
+                if ( robot.arm.leftEncoderClicks.get() >= (Calibration.Arm.LOW_SETPOINT - Calibration.Arm.LOW_SETPOINT * 0.25) ) {  
+                    robot.arm.move.inputPower.set(-0.075);
+                    robot.arm.move.activate();
+                } else {
+                    robot.arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
+                    robot.arm.setpoint.activate();
+                }
                 if ( driverDPad ) {
                     arcade.activate();
                     arcade.movePower.set(-0.075);
