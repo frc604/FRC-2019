@@ -313,11 +313,16 @@ public class TeleopMode extends Coordinator {
 
             //Climber Code
             if ( driverStart ) {
+
+                //Preperation for climb
                 robot.powermonitor.updateCompressor(false);
+
                 if ( robot.slider.isForward.get() ) {
                     hatchManager.sliderForward.update(true);
                 }
-                armManager.disableArm = true;
+
+                armManager.disableArm = true;//Disabling arm control from Arm Manager
+
                 if ( robot.arm.leftEncoderClicks.get() >= (Calibration.Arm.LOW_SETPOINT - Calibration.Arm.LOW_SETPOINT * 0.25) ) {  
                     robot.arm.move.inputPower.set(-0.075); //Arm downwards power
                     robot.arm.move.activate();
@@ -328,12 +333,12 @@ public class TeleopMode extends Coordinator {
 
                 // Start Climb
                 if ( driverDPad ) {
-                    robot.tilter.tilt.activate();
-                    currentDrive = CurrentDrive.ARCADE;
+                    robot.tilter.tilt.activate(); // Climbs at 100% power
+                    currentDrive = CurrentDrive.ARCADE; 
                     arcade.movePower.set(-0.5); //Drive backwards power
                     arcade.activate();
                 } else if ( driverBack ) {
-                    robot.tilter.retract.activate();
+                    robot.tilter.retract.activate(); //Retracts at 30% power
                 } else {
                     robot.tilter.stow.activate();
                 }
@@ -418,9 +423,10 @@ public class TeleopMode extends Coordinator {
             } else if( driverLeftTrigger != 0.0 ){
                 speed.set(driverLeftTrigger); // Outtake
             } else if( manipLeftTrigger != 0.0 ) {
-                speed.set(-manipLeftTrigger );
+                speed.set(-manipLeftTrigger ); // Intake
             } else if( manipRightTrigger != 0.0 ) {
-                speed.set( Math.min(manipRightTrigger, 0.75) );
+                speed.set( Math.min(manipRightTrigger, 0.75) ); // Outtake
+                //Clamping output to reduce outake speed
             } else if( manipDPad ) {
                 speed.set(1); //Force spit
             } else {
@@ -497,22 +503,16 @@ public class TeleopMode extends Coordinator {
     }
 
     private class HatchManager {
-        private Toggle useAuto;
         private Toggle hookToggle;
         protected Toggle sliderForward;
         private SmartTimer hatchTime;
         private int autoState = 0;
         private int intakeState = 0;
 
-        private double start;
-
         public HatchManager() {
-            useAuto = new Toggle(false);
             hookToggle = new Toggle(false); // Assuming the piston is in the held state to start
             sliderForward = new Toggle(false); // Not extended initially
-            hatchTime = new SmartTimer();
-
-            start = System.currentTimeMillis();
+            hatchTime = new SmartTimer(); 
         }
 
         public void run() {
@@ -642,6 +642,7 @@ public class TeleopMode extends Coordinator {
                 @Override
                 public synchronized void pidWrite(double output) {
                     //driveManager.arcade.movePower.set(output);
+                    //TODO Find out why this was running in the main loop
                 }
             };
             anglePID = new ExtendablePIDController(-0.05, 0, -0.3, new Limelight.HorizontalError(robot.limelight,0), rotation, 0.025);
