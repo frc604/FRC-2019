@@ -351,6 +351,7 @@ public class TeleopMode extends Coordinator {
                 robot.tilter.stow.activate();
             }
 
+            //Limelight Activaation Code
             // It would be bad if this turned off
             robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
             if( driverRightBumper ) {
@@ -488,10 +489,6 @@ public class TeleopMode extends Coordinator {
                         arm.move.activate();
                     } else {
                         // Hold arm still
-                        arm.hold.activate();
-                    }
-
-                    if ( manipBack ){
                         arm.hold.activate();
                     }
                 }
