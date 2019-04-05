@@ -8,6 +8,7 @@ import com._604robotics.robot2019.constants.Calibration;
 import com._604robotics.robot2019.modules.Arm;
 import com._604robotics.robot2019.modules.Drive;
 import com._604robotics.robot2019.modules.Intake;
+import com._604robotics.robot2019.modules.Dashboard.DriveMode;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
 import com._604robotics.robotnik.prefabs.controller.ExtendablePIDController;
@@ -250,6 +251,7 @@ public class TeleopMode extends Coordinator {
         private final Drive.Idle idle;
         private CurrentDrive currentDrive;
         private Toggle inverted;
+        private boolean manualDrive;
 
         public DriveManager () {
             idle = robot.drive.new Idle();
@@ -259,10 +261,11 @@ public class TeleopMode extends Coordinator {
             currentDrive = CurrentDrive.ARCADE;
             // TODO: Expose on dashboard
             inverted = new Toggle(false);
+            manualDrive = true;
         }
 
         public void run() {
-
+            manualDrive = true;
             double leftY = driver.leftStick.y.get();
             double rightY = driver.rightStick.y.get();
             double rightX = driver.rightStick.x.get();
@@ -308,50 +311,47 @@ public class TeleopMode extends Coordinator {
                     System.out.println("Current value is:"+robot.dashboard.driveMode.get());
             }
 
-            if( driverStart ) {
+            //Climber Code
+            if ( driverStart ) {
+
+                //Preperation for climb
                 robot.powermonitor.updateCompressor(false);
+
                 if ( robot.slider.isForward.get() ) {
                     hatchManager.sliderForward.update(true);
                 }
-                armManager.disableArm = true;
-                robot.arm.move.inputPower.set(-0.075);
-                robot.arm.move.activate();
+
+                armManager.disableArm = true;//Disabling arm control from Arm Manager
+
+                if ( robot.arm.leftEncoderClicks.get() >= (Calibration.Arm.LOW_SETPOINT - Calibration.Arm.LOW_SETPOINT * 0.25) ) {  
+                    robot.arm.move.inputPower.set(-0.075); //Arm downwards power
+                    robot.arm.move.activate();
+                } else {
+                    robot.arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
+                    robot.arm.setpoint.activate();
+                }
+
+                // Start Climb
                 if ( driverDPad ) {
+                    robot.tilter.tilt.activate(); // Climbs at 100% power
+                    currentDrive = CurrentDrive.ARCADE; 
+                    arcade.movePower.set(-0.5); //Drive backwards power
                     arcade.activate();
-                    arcade.movePower.set(-0.075);
-                    robot.tilter.tilt.activate();
                 } else if ( driverBack ) {
-                    robot.tilter.retract.activate();
+                    robot.tilter.retract.activate(); //Retracts at 30% power
                 } else {
                     robot.tilter.stow.activate();
                 }
+
+                manualDrive = false;
+
             } else {
                 armManager.disableArm = false;
                 robot.powermonitor.updateCompressor(true);
                 robot.tilter.stow.activate();
-
-                switch( currentDrive ) {
-                    case IDLE:
-                        idle.activate();
-                        break;
-                    case ARCADE:
-                        arcade.movePower.set(leftY);
-                        if( driverLeftJoystickButton ) {
-                            arcade.rotatePower.set(rightX * Calibration.SLOW_ROTATION_MODIFIER);
-                        } else {
-                            arcade.rotatePower.set(rightX);
-                        }
-                        arcade.activate();
-                        break;
-                    case TANK:
-                        tank.leftPower.set(leftY);
-                        tank.rightPower.set(rightY);
-                        tank.activate();
-                        break;
-                }
-                
             }
 
+            //Limelight Activaation Code
             // It would be bad if this turned off
             robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
             if( driverRightBumper ) {
@@ -359,31 +359,16 @@ public class TeleopMode extends Coordinator {
                 arcade.activate();
 
                 if( robot.limelight.limelightHasTargets.get() ) {
+                    manualDrive = false;
                     arcade.movePower.set(leftY);
                     autoCenterManager.run();
                 } else {
                     robot.limelight.scan.activate();
-                    switch( currentDrive ) {
-                        case IDLE:
-                            idle.activate();
-                            break;
-                        case ARCADE:
-                            arcade.movePower.set(leftY);
-                            if( driverLeftJoystickButton ) {
-                                arcade.rotatePower.set(rightX * Calibration.SLOW_ROTATION_MODIFIER);
-                            } else {
-                                arcade.rotatePower.set(rightX);
-                            }
-                            arcade.activate();
-                            break;
-                        case TANK:
-                            tank.leftPower.set(leftY);
-                            tank.rightPower.set(rightY);
-                            tank.activate();
-                            break;
-                    }
+                    manualDrive = true;
                 }
+                
             } else {
+                manualDrive = true;
                 autoCenterManager.end();
 
                 switch(robot.dashboard.limelightVisionMode.get()){
@@ -396,7 +381,9 @@ public class TeleopMode extends Coordinator {
                     default:
                         robot.limelight.scan.activate();
                 }
+            }
 
+            if( manualDrive ) {
                 switch( currentDrive ) {
                     case IDLE:
                         idle.activate();
@@ -437,9 +424,10 @@ public class TeleopMode extends Coordinator {
             } else if( driverLeftTrigger != 0.0 ){
                 speed.set(driverLeftTrigger); // Outtake
             } else if( manipLeftTrigger != 0.0 ) {
-                speed.set( -manipLeftTrigger);
+                speed.set(-manipLeftTrigger ); // Intake
             } else if( manipRightTrigger != 0.0 ) {
-                speed.set( manipRightTrigger);
+                speed.set( Math.min(manipRightTrigger, 0.75) ); // Outtake
+                //Clamping output to reduce outake speed
             } else if( manipDPad ) {
                 speed.set(1); //Force spit
             } else {
@@ -503,12 +491,7 @@ public class TeleopMode extends Coordinator {
                         // Hold arm still
                         arm.hold.activate();
                     }
-
-                    if ( manipBack ){
-                        arm.hold.activate();
-                    }
                 }
-                arm.hold.activate();
 
             }
 
@@ -517,22 +500,16 @@ public class TeleopMode extends Coordinator {
     }
 
     private class HatchManager {
-        private Toggle useAuto;
         private Toggle hookToggle;
         protected Toggle sliderForward;
         private SmartTimer hatchTime;
         private int autoState = 0;
         private int intakeState = 0;
 
-        private double start;
-
         public HatchManager() {
-            useAuto = new Toggle(false);
             hookToggle = new Toggle(false); // Assuming the piston is in the held state to start
             sliderForward = new Toggle(false); // Not extended initially
-            hatchTime = new SmartTimer();
-
-            start = System.currentTimeMillis();
+            hatchTime = new SmartTimer(); 
         }
 
         public void run() {
@@ -661,7 +638,8 @@ public class TeleopMode extends Coordinator {
             drive = new PIDOutput() {
                 @Override
                 public synchronized void pidWrite(double output) {
-                    driveManager.arcade.movePower.set(output);
+                    //driveManager.arcade.movePower.set(output);
+                    //TODO Find out why this was running in the main loop
                 }
             };
             anglePID = new ExtendablePIDController(-0.05, 0, -0.3, new Limelight.HorizontalError(robot.limelight,0), rotation, 0.025);
