@@ -464,8 +464,10 @@ public class TeleopMode extends Coordinator {
                 if ( manipLeftBumper ) {
                     hardstopToggle.update(manipLeftBumper);
                 } else if ( ( arm.leftEncoderClicks.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) && ( arm.setpoint.setpoint.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) ) {
+                    hardstopToggle.update(false);
                     hardstopToggle.update(hardstopToggle.isInOnState());
                 } else {
+                    hardstopToggle.update(false);
                     hardstopToggle.update(hardstopToggle.isInOffState());
                 }
                 
