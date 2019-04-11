@@ -13,7 +13,6 @@ import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
 import com._604robotics.robotnik.prefabs.controller.ExtendablePIDController;
 import com._604robotics.robotnik.prefabs.flow.Toggle;
-import com._604robotics.robotnik.prefabs.flow.Pulse;
 import com._604robotics.robotnik.prefabs.inputcontroller.xbox.XboxController;
 import com._604robotics.robotnik.prefabs.modules.Limelight;
 import edu.wpi.first.wpilibj.PIDOutput;
@@ -440,17 +439,13 @@ public class TeleopMode extends Coordinator {
     private class ArmManager {
         private Arm arm;
         private Toggle hardstopToggle;
-        private Pulse backStatePulse;
         protected boolean disableArm;
-        private int holdState = 0;
-        private int backState = 0;
 
         public ArmManager() {
             arm = robot.arm;
             disableArm = false;
 
             hardstopToggle = new Toggle(false);
-            backStatePulse = new Pulse();
         }
 
         public void run() {
@@ -460,96 +455,44 @@ public class TeleopMode extends Coordinator {
 
             if ( !disableArm ) {
 
-                backStatePulse.update(manipY);
-
-                if ( manipLeftBumper ) {
-                    hardstopToggle.update(manipLeftBumper);
-                } else {
-                    hardstopToggle.update(false);
-                }
-
                 if ( hardstopToggle.isInOffState() ) {
                     robot.hardstop.close.activate();
                 } else if ( hardstopToggle.isInOnState() ) {
                     robot.hardstop.open.activate();
                 }
 
+                if ( manipLeftBumper ) {
+                    hardstopToggle.update(manipLeftBumper);
+                } else if ( ( arm.leftEncoderClicks.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) && ( arm.setpoint.setpoint.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) ) {
+                    hardstopToggle.update(false);
+                    hardstopToggle.update(hardstopToggle.isInOnState());
+                } else {
+                    hardstopToggle.update(false);
+                    hardstopToggle.update(hardstopToggle.isInOffState());
+                }
+                
 
                 // Check setpoints
                 if( manipA ) {
                     // Low position // ARMSETPOINTS
-                    if ( (arm.leftEncoderClicks.get() >= 400) ) {
-                        hardstopToggle.update(hardstopToggle.isInOffState());
-                        arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
-                        arm.setpoint.activate();
-                    } else {
-                        arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
-                        arm.setpoint.activate();
-                    }
+                    arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
+                    arm.setpoint.activate();
                 } else if( manipB ) {
                     // Ball place position
-                    if ( (arm.leftEncoderClicks.get() >= 400) ) {
-                        hardstopToggle.update(hardstopToggle.isInOffState());
-                        arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
-                        arm.setpoint.activate();
-                    } else {
-                        arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
-                        arm.setpoint.activate();
-                    }
+                    arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
+                    arm.setpoint.activate();
+                } else if( manipY ) {
+                    // Back Scoring
+                    arm.setpoint.setpoint.set(Calibration.Arm.BACK_ROCKET_SETPOINT);
+                    arm.setpoint.activate();
                 } else if( manipX ) {
                     // Vertical position
-                    if ( (arm.leftEncoderClicks.get() >= 400) ) {
-                        hardstopToggle.update(hardstopToggle.isInOffState());
-                        arm.setpoint.setpoint.set(Calibration.Arm.ROCKET_SETPOINT);
-                        arm.setpoint.activate();
-                    } else {
-                        arm.setpoint.setpoint.set(Calibration.Arm.ROCKET_SETPOINT);
-                        arm.setpoint.activate();
-                    }
+                    arm.setpoint.setpoint.set(Calibration.Arm.ROCKET_SETPOINT);
+                    arm.setpoint.activate();
                 } else {
-
-                    backStatePulse.update(manipY);
-
-                    if ( backStatePulse.isRisingEdge() ){
-                        backState++;
-                    }
-                    if ( backStatePulse.isFallingEdge() ){
-                        backState = 0;
-                    }
-
-                    switch (backState) {
-                        case( 0 ):
-                            break;
-        
-                        case ( 1 ):
-                            arm.setpoint.setpoint.set(700.0);
-                            arm.setpoint.activate();
-                            backState++;
-                            break;
-        
-                        case ( 2 ):
-                        if ( arm.leftEncoderClicks.get() >= 650.0 ) {
-                            hardstopToggle.update(hardstopToggle.isInOnState());
-                            backState++;
-                            }   
-                            break;
-
-                        case ( 3 ):
-                            arm.setpoint.setpoint.set(Calibration.Arm.BACK_ROCKET_SETPOINT);
-                            arm.setpoint.activate();
-                            break;
-                    }
-
                     // Check thumbsticks
                     if( manipLeftJoystickY != 0 ) {
                         // Set arm rate to joystick
-                        if ( arm.leftEncoderClicks.get() >= 400 ) {
-                            hardstopToggle.update(hardstopToggle.isInOffState());
-                        } else {
-                            hardstopToggle.update(hardstopToggle.isInOnState());
-                        }
-                        backState = 0;
-
                         double motorValue = manipLeftJoystickY * Calibration.Arm.SCALE_JOYSTICK;
 
                         // Calculate needed factor for torque
@@ -565,45 +508,9 @@ public class TeleopMode extends Coordinator {
 
                         arm.move.inputPower.set(motorValue);
                         arm.move.activate();
-                    } else if ( backState == 0 ) {
-                        switch (holdState) {
-                            case( 0 ):
-                                if ( arm.leftEncoderClicks.get() <= -200 && hardstopToggle.isInOnState() ) {
-                                    holdState++;
-                                } else if ( arm.leftEncoderClicks.get() <= -200 && hardstopToggle.isInOffState() ){
-                                    holdState = 4;
-                                } else {
-                                    arm.hold.activate();
-                                }
-                                break;
-            
-                            case ( 1 ):
-                                arm.setpoint.setpoint.set(700.0);
-                                arm.setpoint.activate();
-                                holdState++;
-                                break;
-            
-                            case ( 2 ):
-                            if ( arm.leftEncoderClicks.get() >= 650.0 ) {
-                                hardstopToggle.update(hardstopToggle.isInOffState());
-                                holdState++;
-                                }   
-                                break;
-            
-                            case( 3 ):
-                                holdState = 0;
-                                break;
-
-                            case( 4 ):
-                                arm.setpoint.setpoint.set(-800.0);
-                                if ( arm.leftEncoderClicks.get() <= -850.0) {
-                                    hardstopToggle.update(hardstopToggle.isInOnState());
-                                    holdState = 1;
-                                }
-                                break;
-
-                        }
-
+                    } else {
+                        // Hold arm still
+                        arm.hold.activate();
                     }
 
                 }
