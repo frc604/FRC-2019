@@ -12,25 +12,25 @@ public class DashboardSystem extends Coordinator {
 
     @Override
     public boolean run () {
-        robot.dashboard.leftDriveClicks.set(robot.drive.leftClicks.get());
+        /*robot.dashboard.leftDriveClicks.set(robot.drive.leftClicks.get());
         robot.dashboard.rightDriveClicks.set(robot.drive.rightClicks.get());
         robot.dashboard.leftDriveRate.set(robot.drive.leftClickRate.get());
         robot.dashboard.rightDriveRate.set(robot.drive.rightClickRate.get());
         robot.dashboard.xAccel.set(robot.drive.xAccel.get());
         robot.dashboard.yAccel.set(robot.drive.yAccel.get());
-        robot.dashboard.zAccel.set(robot.drive.zAccel.get());
+        robot.dashboard.zAccel.set(robot.drive.zAccel.get());*/
 
         //robot.dashboard.totalCurrent.set(robot.powermonitor.totalPortCurrent.get());
         
         //robot.powermonitor.initDashboardSendables();
 
-        robot.dashboard.hookHolding.set(robot.hook.isHolding.get());
+        //robot.dashboard.hookHolding.set(robot.hook.isHolding.get());
 		robot.dashboard.leftEncoderClicks.set(robot.arm.leftEncoderClicks.get());
 		robot.dashboard.armPIDError.set(robot.arm.pidError.get());
 		robot.dashboard.armSetpoint.set(robot.arm.holdPoint.get());
 
         /* Limelight Testing */
-        robot.dashboard.limelightTarget.set(robot.limelight.limelightHasTargets.get());
+        /*robot.dashboard.limelightTarget.set(robot.limelight.limelightHasTargets.get());
         robot.dashboard.limelightX.set(robot.limelight.limelightX.get());
         robot.dashboard.limelightY.set(robot.limelight.limelightY.get());
         robot.dashboard.limelightArea.set(robot.limelight.limelightArea.get());
@@ -44,7 +44,7 @@ public class DashboardSystem extends Coordinator {
         if( robot.limelight.scan.isRunning() ) {
             robot.limelight.limelightPipeline.set(
                 Math.min(0, Math.max(9, robot.dashboard.limelightPipeline.get().intValue())) );
-        }
+        }*/
         
         switch( robot.dashboard.marionetteRecorder.get() ) {
             case MANUAL:

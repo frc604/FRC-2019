@@ -147,7 +147,7 @@ public class TeleopMode extends Coordinator {
             inputRecorder = new InputRecorder(2400, driverJoystick, manipJoystick);
         }
 
-        robot.intake.speed.set(0);
+        //robot.intake.speed.set(0);
     }
 
     @Override

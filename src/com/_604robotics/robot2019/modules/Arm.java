@@ -15,7 +15,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 public class Arm extends Module {
     private RotatingArmPIDController pid;
 
-    private WPI_TalonSRX leftMotor;
+    //private WPI_TalonSRX rightMotor;
     private WPI_TalonSRX rightMotor;
 
     private TalonPWMEncoder leftEncoder;
@@ -35,7 +35,7 @@ public class Arm extends Module {
 
         rightMotor.setInverted(true);
 
-		//rightEncoder = new TalonPWMEncoder(leftMotor);
+		//rightEncoder = new TalonPWMEncoder(rightMotor);
         leftEncoder = new TalonPWMEncoder(rightMotor);
 		leftEncoder.setInverted(false);
 
@@ -51,7 +51,7 @@ public class Arm extends Module {
         //redundantEncoderClicks = addOutput("Redundant Encoder Clicks", () -> redundantEncoder.getValue());
 
         this.pid = new RotatingArmPIDController(Calibration.Arm.kP, Calibration.Arm.kI, Calibration.Arm.kD,
-            Calibration.Arm.kF, leftEncoder, leftMotor);
+            Calibration.Arm.kF, leftEncoder, rightMotor);
 
         pid.setEncoderPeriod(Calibration.Arm.CLICKS_FULL_ROTATION);
         pid.setFeedforwardZeroOffset(Calibration.Arm.HORIZONTAL_POSITION);
@@ -99,7 +99,7 @@ public class Arm extends Module {
 
         @Override
         public void run() {
-            leftMotor.set(inputPower.get());
+            rightMotor.set(inputPower.get());
         }
     }
 

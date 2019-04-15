@@ -5,7 +5,7 @@ import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.prefabs.flow.SmartTimer;
 
 public abstract class TankTimedDriveMacro extends Coordinator {
-    private final SmartTimer timer = new SmartTimer();
+   /* private final SmartTimer timer = new SmartTimer();
 
     private final Drive.TankDrive driveForward;
 
@@ -34,5 +34,5 @@ public abstract class TankTimedDriveMacro extends Coordinator {
     @Override
     protected void end () {
         timer.stopAndReset();
-    }
+    }*/
 }

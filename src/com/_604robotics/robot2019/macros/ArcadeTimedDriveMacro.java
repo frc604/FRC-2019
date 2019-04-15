@@ -5,7 +5,7 @@ import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.prefabs.flow.SmartTimer;
 
 public abstract class ArcadeTimedDriveMacro extends Coordinator {
-    private final SmartTimer timer = new SmartTimer();
+    /*private final SmartTimer timer = new SmartTimer();
 
     private final Drive.ArcadeDrive driveForward;
 
@@ -34,5 +34,5 @@ public abstract class ArcadeTimedDriveMacro extends Coordinator {
     @Override
     protected void end () {
         timer.stopAndReset();
-    }
+    }*/
 }

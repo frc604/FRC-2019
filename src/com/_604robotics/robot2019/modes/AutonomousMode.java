@@ -28,7 +28,7 @@ import jaci.pathfinder.followers.EncoderFollower;
 import jaci.pathfinder.modifiers.TankModifier;
 
 public class AutonomousMode extends Coordinator {
-	private static final Logger logger = new Logger(AutonomousMode.class);
+	/*private static final Logger logger = new Logger(AutonomousMode.class);
 
 	private final com._604robotics.robot2019.Robot2019 robot;
 
@@ -515,13 +515,13 @@ public class AutonomousMode extends Coordinator {
 				double dTheta_val=Calibration.Pathfinder.K_DTHETA_0/(Calibration.Pathfinder.K_DTHETA_DECAY*normcurv*normcurv+1);
 				dTheta_val*=dAngleError;
 
-				dTheta_val=clamp(dTheta_val,-pTheta_val,pTheta_val);
+				dTheta_val=clamp(dTheta_val,-pTheta_val,pTheta_val);*/
 
 				/*
 				double deshed=-Pathfinder.boundHalfRadians(leftFollower.getHeading());
 				System.out.println("Equal "+(deshed-Pathfinder.d2r(desiredHeading)));
 				*/
-
+/*
 				if (side==PathFollowSide.LEFT) {
 					tankDrive.leftPower.set(rawPow+kappa_val
 							+pTheta_val+dTheta_val);
@@ -606,6 +606,6 @@ public class AutonomousMode extends Coordinator {
 			}, Calibration.PATHFINDER_CONFIG ), reverseDrive );
 		}
 	}
-
+*/
 
 }
