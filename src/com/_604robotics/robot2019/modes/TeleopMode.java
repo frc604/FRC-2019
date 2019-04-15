@@ -36,11 +36,11 @@ public class TeleopMode extends Coordinator {
 
     private final com._604robotics.robot2019.Robot2019 robot;
 
-    private final DriveManager driveManager;
+    //private final DriveManager driveManager;
     private final ArmManager armManager;
-    private final IntakeManager intakeManager;
-    private final HatchManager hatchManager;
-    private final AutoCenterManager autoCenterManager;
+    //private final IntakeManager intakeManager;
+    //private final HatchManager hatchManager;
+    //private final AutoCenterManager autoCenterManager;
 
     private final Logger test = new Logger("Teleop");
 
@@ -72,11 +72,11 @@ public class TeleopMode extends Coordinator {
 
         this.robot = robot;
 
-        driveManager = new DriveManager();
+        //driveManager = new DriveManager();
         armManager = new ArmManager();
-        intakeManager = new IntakeManager();
-        hatchManager = new HatchManager();
-        autoCenterManager = new AutoCenterManager();
+        //intakeManager = new IntakeManager();
+        //hatchManager = new HatchManager();
+        //autoCenterManager = new AutoCenterManager();
     }
 
     //<editor-fold desc="Getting Controller Values"
@@ -239,12 +239,13 @@ public class TeleopMode extends Coordinator {
     }
 
     private void process() {
-        driveManager.run();
+        //driveManager.run();
         armManager.run();
-        intakeManager.run();
-        hatchManager.run();
+        //intakeManager.run();
+        //hatchManager.run();
     }
 
+    /*
     private class DriveManager {
         private final Drive.ArcadeDrive arcade;
         private final Drive.TankDrive tank;
@@ -405,9 +406,9 @@ public class TeleopMode extends Coordinator {
                 }
             }
         }
-    }
+    */
 
-
+    /*
     private class IntakeManager {
         private final Intake.Idle idle;
         private final Intake.Speed speed;
@@ -435,6 +436,7 @@ public class TeleopMode extends Coordinator {
             }
         }
     }
+    */
 
     private class ArmManager {
         private Arm arm;
@@ -521,6 +523,7 @@ public class TeleopMode extends Coordinator {
 
     }
 
+    /*
     private class HatchManager {
         private Toggle hookToggle;
         protected Toggle sliderForward;
@@ -636,7 +639,9 @@ public class TeleopMode extends Coordinator {
 
         }
     }
+    */
 
+    /*
     private class AutoCenterManager {
         private ExtendablePIDController anglePID;
         private ExtendablePIDController distPID;
@@ -684,7 +689,7 @@ public class TeleopMode extends Coordinator {
             anglePID.reset();
             distPID.setEnabled(false);
         }
-    }
+    */
 
     private enum CurrentDrive {
         IDLE, ARCADE, TANK

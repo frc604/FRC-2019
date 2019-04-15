@@ -12,21 +12,18 @@ import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PWMVictorSPX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive extends Module {
-    private final RampMotor m_frontLeft = new RampMotor(new WPI_VictorSPX(Ports.DRIVE_FRONT_LEFT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
-    private final RampMotor m_middleLeft =  new RampMotor(new WPI_VictorSPX(Ports.DRIVE_MIDDLE_LEFT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
-    private final RampMotor m_rearLeft = new RampMotor(new WPI_VictorSPX(Ports.DRIVE_REAR_LEFT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
-    private final SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontLeft, m_middleLeft, m_rearLeft);
+    private final RampMotor m_frontLeft = new RampMotor(new PWMVictorSPX(Ports.DRIVE_FRONT_LEFT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
+    private final RampMotor m_rearLeft = new RampMotor(new PWMVictorSPX(Ports.DRIVE_REAR_LEFT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
+    private final SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontLeft, m_rearLeft);
 
-    private final RampMotor m_frontRight = new RampMotor(new WPI_VictorSPX(Ports.DRIVE_FRONT_RIGHT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
-    private final RampMotor m_middleRight =  new RampMotor(new WPI_VictorSPX(Ports.DRIVE_MIDDLE_RIGHT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
-    private final RampMotor m_rearRight = new RampMotor(new WPI_VictorSPX(Ports.DRIVE_REAR_RIGHT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
-    private final SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontRight, m_middleRight, m_rearRight);
+    private final RampMotor m_frontRight = new RampMotor(new PWMVictorSPX(Ports.DRIVE_FRONT_RIGHT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
+    private final RampMotor m_rearRight = new RampMotor(new PWMVictorSPX(Ports.DRIVE_REAR_RIGHT_MOTOR),Calibration.DRIVE_MOTOR_RAMP);
+    private final SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontRight, m_rearRight);
 
     DifferentialDrive robotDrive = new DifferentialDrive(m_left, m_right);
 

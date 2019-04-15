@@ -31,11 +31,9 @@ public class Arm extends Module {
     public Arm() {
         super(Arm.class);
 
-        leftMotor = new WPI_TalonSRX(Ports.ARM_LEFT_MOTOR);
         rightMotor = new WPI_TalonSRX(Ports.ARM_RIGHT_MOTOR);
 
         rightMotor.setInverted(true);
-        rightMotor.set(ControlMode.Follower, Ports.ARM_LEFT_MOTOR);
 
 		//rightEncoder = new TalonPWMEncoder(leftMotor);
         leftEncoder = new TalonPWMEncoder(rightMotor);
