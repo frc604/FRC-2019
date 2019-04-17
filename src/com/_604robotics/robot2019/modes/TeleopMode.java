@@ -461,8 +461,8 @@ public class TeleopMode extends Coordinator {
                     robot.hardstop.open.activate();
                 }
 
-                if ( manipLeftBumper ) {
-                    hardstopToggle.update(manipLeftBumper);
+                if ( manipRightBumper ) {
+                    hardstopToggle.update(manipRightBumper);
                 } else if ( ( arm.leftEncoderClicks.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) && ( arm.setpoint.setpoint.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) ) {
                     hardstopToggle.update(false);
                     hardstopToggle.update(hardstopToggle.isInOnState());
@@ -489,7 +489,7 @@ public class TeleopMode extends Coordinator {
                     // Vertical position
                     arm.setpoint.setpoint.set(Calibration.Arm.ROCKET_SETPOINT);
                     arm.setpoint.activate();
-                } else if( manipRightBumper ) {
+                } else if( manipLeftBumper ) {
                     // Vertical position
                     arm.setpoint.setpoint.set(Calibration.Arm.BACK_CARGO_SETPOINT);
                     arm.setpoint.activate();
