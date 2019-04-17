@@ -489,6 +489,10 @@ public class TeleopMode extends Coordinator {
                     // Vertical position
                     arm.setpoint.setpoint.set(Calibration.Arm.ROCKET_SETPOINT);
                     arm.setpoint.activate();
+                } else if( manipRightBumper ) {
+                    // Vertical position
+                    arm.setpoint.setpoint.set(Calibration.Arm.BACK_CARGO_SETPOINT);
+                    arm.setpoint.activate();
                 } else {
                     // Check thumbsticks
                     if( manipLeftJoystickY != 0 ) {
@@ -550,8 +554,6 @@ public class TeleopMode extends Coordinator {
 
             if( driverY ) {
                 sliderForward.update( driverY );
-            } else if( manipRightBumper ) {
-                sliderForward.update(manipRightBumper);
             } else {
                 sliderForward.update(false);
             }

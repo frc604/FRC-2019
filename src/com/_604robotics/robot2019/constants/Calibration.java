@@ -47,6 +47,7 @@ public class Calibration {
         public static final double VERTICAL_POSITION = 508 - 3; // The arm is straight up
         public static final double HORIZONTAL_POSITION = -1511 - 3; // The arm is horizontally backwards
         public static final double BACK_ROCKET_SETPOINT = -2800;
+        public static final double BACK_CARGO_SETPOINT  = -1700;
 
         public static final double HARDSTOP_CLOSE_POSITION = -200;
         //HORIZONTAL_POSITION = Arm balance point - (CLICKS_FULL_ROTATION / 4)
