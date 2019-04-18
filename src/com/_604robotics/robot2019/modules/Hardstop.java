@@ -34,7 +34,7 @@ public class Hardstop extends Module {
 		
 		@Override
 		public void run() {
-			hardstop.set(Value.kReverse);
+			hardstop.set(Value.kForward);
 		}
     }
 
@@ -45,7 +45,7 @@ public class Hardstop extends Module {
 		
 		@Override
 		public void run() {
-			hardstop.set(Value.kForward);
+			hardstop.set(Value.kReverse);
 		}
     }
 

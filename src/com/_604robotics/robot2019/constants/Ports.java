@@ -38,8 +38,8 @@ public class Ports {
     public static final int HATCH_PUSHER_B = 6;
 
     /* Hardstop */
-    public static final int HARDSTOP_A = 1;
-    public static final int HARDSTOP_B = 2;
+    public static final int HARDSTOP_A = 2;
+    public static final int HARDSTOP_B = 3;
 
     /* Tilter Control */
     public static final int TILT_MOTOR = 1;
