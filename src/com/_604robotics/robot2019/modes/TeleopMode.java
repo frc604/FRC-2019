@@ -461,9 +461,9 @@ public class TeleopMode extends Coordinator {
                     robot.hardstop.open.activate();
                 }
 
-                if ( manipLeftBumper ) {
-                    hardstopToggle.update(manipLeftBumper);
-                } else if ( ( arm.leftEncoderClicks.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) && ( arm.setpoint.setpoint.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) ) {
+                if ( manipRightBumper ) {
+                    hardstopToggle.update(manipRightBumper);
+                } else if ( ( arm.leftEncoderClicks.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) && ( (arm.setpoint.setpoint.get() == null ? 10.0 : arm.setpoint.setpoint.get()) >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) ) {
                     hardstopToggle.update(false);
                     hardstopToggle.update(hardstopToggle.isInOnState());
                 } else {
@@ -489,7 +489,10 @@ public class TeleopMode extends Coordinator {
                     // Vertical position
                     arm.setpoint.setpoint.set(Calibration.Arm.ROCKET_SETPOINT);
                     arm.setpoint.activate();
-                } else {
+                } else if( manipLeftBumper) {
+					arm.setpoint.setpoint.set(Calibration.Arm.BACK_CARGO_SETPOINT);
+                    arm.setpoint.activate();
+				} else {
                     // Check thumbsticks
                     if( manipLeftJoystickY != 0 ) {
                         // Set arm rate to joystick
