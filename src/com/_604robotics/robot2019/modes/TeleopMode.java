@@ -422,7 +422,7 @@ public class TeleopMode extends Coordinator {
                 speed.set(-driverRightTrigger); // Intake
                 //Negative is Intake
             } else if( driverLeftTrigger != 0.0 ){
-                speed.set( Math.min(driverLeftTrigger, 0.75) ); // Outtake
+                speed.set( Math.min(driverLeftTrigger, 0.80) ); // Outtake
             } else if( manipLeftTrigger != 0.0 ) {
                 speed.set(-manipLeftTrigger ); // Intake
             } else if( manipRightTrigger != 0.0 ) {
@@ -466,7 +466,7 @@ public class TeleopMode extends Coordinator {
                 if ( manipLeftBumper ) {
                     hardstopToggle.update(manipLeftBumper);
                     manualHardstop.update(manipLeftBumper);
-                } else if ( manualHardstop.isInOffState() && ( arm.leftEncoderClicks.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) && ( (arm.setpoint.setpoint.get() == null ? 10.0 : arm.setpoint.setpoint.get()) >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) ) {
+                } else if ( manualHardstop.isInOffState() && ( arm.leftEncoderClicks.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) && ( (arm.setpoint.setpoint.get() == 300.0/*arm.hold.isRunning()*/ ? 300.0 : arm.setpoint.setpoint.get()) >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) ) {
                     hardstopToggle.update(false);
                     hardstopToggle.update(hardstopToggle.isInOnState());
                 } else if ( manualHardstop.isInOffState() ) {
