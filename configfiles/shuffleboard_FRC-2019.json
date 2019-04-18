@@ -433,28 +433,9 @@
               "_title": "SmartDashboard/driveMode"
             }
           },
-          "0,0": {
+          "7,0": {
             "size": [
               8,
-              8
-            ],
-            "content": {
-              "_type": "Camera Stream",
-              "_source0": "camera_server://limelight",
-              "_title": "limelight",
-              "Crosshair/Show crosshair": false,
-              "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": false,
-              "Controls/Rotation": "NONE",
-              "compression": -1.0,
-              "fps": 15,
-              "imageWidth": 0,
-              "imageHeight": 0
-            }
-          },
-          "8,0": {
-            "size": [
-              7,
               8
             ],
             "content": {
@@ -483,11 +464,43 @@
               "Crosshair/Show crosshair": true,
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": false,
-              "Controls/Rotation": "NONE",
+              "Controls/Rotation": "HALF",
               "compression": -1.0,
               "fps": 5,
               "imageWidth": 200,
               "imageHeight": 200
+            }
+          },
+          "0,0": {
+            "size": [
+              7,
+              8
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://limelight",
+              "_title": "limelight",
+              "Crosshair/Show crosshair": false,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": false,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": 0,
+              "imageHeight": 0
+            }
+          },
+          "0,8": {
+            "size": [
+              18,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Hardstop Active",
+              "_title": "SmartDashboard/Hardstop Active",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
             }
           }
         }
@@ -553,6 +566,25 @@
               "fps": 5,
               "imageWidth": 200,
               "imageHeight": 200
+            }
+          },
+          "8,1": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://limelight",
+              "_title": "limelight",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": -1,
+              "imageHeight": -1
             }
           }
         }
