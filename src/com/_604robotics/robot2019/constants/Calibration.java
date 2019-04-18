@@ -39,7 +39,7 @@ public class Calibration {
     @Unreal("Values must be updated when robot is designed")
     public static final class Arm {
         public static final double CLICKS_FULL_ROTATION = 10240; // One rotation of the encoder in clicks
-        public static final double HARDSTOP_CHANGE_CLICKS = 418; // We added a different hardstop system, shifting setpoints
+        public static final double HARDSTOP_CHANGE_CLICKS = 302; // We added a different hardstop system, shifting setpoints
 
         public static final double LOW_SETPOINT = 4170 + 90 + HARDSTOP_CHANGE_CLICKS; // Ready to intake from front
         public static final double STOW_SETPOINT = 0 - 3; // Starting position
