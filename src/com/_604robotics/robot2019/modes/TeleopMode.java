@@ -462,7 +462,7 @@ public class TeleopMode extends Coordinator {
                 }
 
                 if ( manipLeftBumper ) {
-                    hardstopToggle.update(manipRightBumper);
+                    hardstopToggle.update(manipLeftBumper);
                 } else if ( ( arm.leftEncoderClicks.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) && ( (arm.setpoint.setpoint.get() == null ? 10.0 : arm.setpoint.setpoint.get()) >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) ) {
                     hardstopToggle.update(false);
                     hardstopToggle.update(hardstopToggle.isInOnState());
@@ -483,7 +483,8 @@ public class TeleopMode extends Coordinator {
                     arm.setpoint.activate();
                 } else if( manipY ) {
                     // Back Scoring
-                    arm.setpoint.setpoint.set(Calibration.Arm.BACK_ROCKET_SETPOINT);
+                    arm.setpoint.setpoint.set
+					(Calibration.Arm.BACK_ROCKET_SETPOINT);
                     arm.setpoint.activate();
                 } else if( manipX ) {
                     // Vertical position
@@ -553,8 +554,6 @@ public class TeleopMode extends Coordinator {
 
             if( driverY ) {
                 sliderForward.update( driverY );
-            } else if( manipRightBumper ) {
-                sliderForward.update(manipRightBumper);
             } else {
                 sliderForward.update(false);
             }
