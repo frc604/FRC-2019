@@ -3,16 +3,14 @@ package com._604robotics.robot2019.modules;
 import com._604robotics.robot2019.constants.Ports;
 import com._604robotics.robotnik.Action;
 import com._604robotics.robotnik.Module;
-import com._604robotics.robotnik.prefabs.modules.DashboardModule;
 import com._604robotics.robotnik.Output;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class Hardstop extends Module {
     private final DoubleSolenoid hardstop;
 
-    public Output<Boolean> Closed;
+    public Output<Boolean> closed;
 
     public Hardstop() {
         super(Hardstop.class);
@@ -22,9 +20,9 @@ public class Hardstop extends Module {
         open = new Open();
         close = new Close();
 
-        Closed = addOutput("Closed", () -> close.isRunning());
+        closed = addOutput("closed", () -> close.isRunning());
 		
-        setDefaultAction(close); // TODO make dashboard value
+        setDefaultAction(close);
     }
 
     public class Open extends Action {

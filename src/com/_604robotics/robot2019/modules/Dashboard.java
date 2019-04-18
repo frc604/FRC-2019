@@ -25,6 +25,7 @@ public class Dashboard extends DashboardModule {
 	public final Input<Double> leftEncoderClicks = addDashboardInput("Left Arm Encoder", 0.0);
 	public final Input<Double> armPIDError = addDashboardInput("Arm PID Error", 0.0);
 	public final Input<Double> armSetpoint = addDashboardInput("Arm Setpoint", 0.0);
+	public final Input<Boolean> hardstopClosed = addDashboardInput("Hardstop Active", true);
 
     /* Limelight values */
     public final Input<Boolean> limelightTarget = addDashboardInput("Limelight Has Target", false);
