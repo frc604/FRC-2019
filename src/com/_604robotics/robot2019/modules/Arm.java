@@ -67,7 +67,7 @@ public class Arm extends Module {
 
         public Hold() {
             super(Arm.this, Hold.class);
-            holdPoint = addInput("Hold Point", 100.0, true);
+            holdPoint = addInput("Hold Point", 100.0, true); // TODO low priority move forward
         }
 
         @Override

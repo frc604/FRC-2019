@@ -324,7 +324,7 @@ public class TeleopMode extends Coordinator {
                 armManager.disableArm = true;//Disabling arm control from Arm Manager
 
                 if ( robot.arm.leftEncoderClicks.get() >= (Calibration.Arm.LOW_SETPOINT - Calibration.Arm.LOW_SETPOINT * 0.25) ) {  
-                    robot.arm.move.inputPower.set(-0.075); //Arm downwards power
+                    robot.arm.move.inputPower.set(-0.10); // Arm downwards power, NOTE: needs to overcome gravity
                     robot.arm.move.activate();
                 } else {
                     robot.arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
@@ -440,10 +440,12 @@ public class TeleopMode extends Coordinator {
         private Arm arm;
         private Toggle hardstopToggle;
         protected boolean disableArm;
+        private Toggle manualHardstop;
 
         public ArmManager() {
             arm = robot.arm;
             disableArm = false;
+            manualHardstop = new Toggle(false);
 
             hardstopToggle = new Toggle(false);
         }
@@ -463,10 +465,11 @@ public class TeleopMode extends Coordinator {
 
                 if ( manipLeftBumper ) {
                     hardstopToggle.update(manipLeftBumper);
-                } else if ( ( arm.leftEncoderClicks.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) && ( (arm.setpoint.setpoint.get() == null ? 10.0 : arm.setpoint.setpoint.get()) >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) ) {
+                    manualHardstop.update(manipLeftBumper);
+                } else if ( manualHardstop.isInOffState() && ( arm.leftEncoderClicks.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) && ( (arm.setpoint.setpoint.get() == null ? 10.0 : arm.setpoint.setpoint.get()) >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) ) {
                     hardstopToggle.update(false);
                     hardstopToggle.update(hardstopToggle.isInOnState());
-                } else {
+                } else if ( manualHardstop.isInOffState() ) {
                     hardstopToggle.update(false);
                     hardstopToggle.update(hardstopToggle.isInOffState());
                 }
