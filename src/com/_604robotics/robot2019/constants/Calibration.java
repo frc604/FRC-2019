@@ -39,14 +39,16 @@ public class Calibration {
     @Unreal("Values must be updated when robot is designed")
     public static final class Arm {
         public static final double CLICKS_FULL_ROTATION = 10240; // One rotation of the encoder in clicks
+        public static final double HARDSTOP_CHANGE_CLICKS = 418; // We added a different hardstop system, shifting setpoints
 
-        public static final double LOW_SETPOINT = 4170 + 90; // Ready to intake from front
+        public static final double LOW_SETPOINT = 4170 + 90 + HARDSTOP_CHANGE_CLICKS; // Ready to intake from front
         public static final double STOW_SETPOINT = 0 - 3; // Starting position
-        public static final double OUTPUT_SETPOINT = 1730 - 3; // Output from front
-        public static final double ROCKET_SETPOINT = 2800 - 3;
-        public static final double VERTICAL_POSITION = 508 - 3; // The arm is straight up
-        public static final double HORIZONTAL_POSITION = -1511 - 3; // The arm is horizontally backwards
-        public static final double BACK_ROCKET_SETPOINT = -2800;
+        public static final double OUTPUT_SETPOINT = 1730 - 3 + HARDSTOP_CHANGE_CLICKS; // Output from front
+        public static final double ROCKET_SETPOINT = 2800 - 3 + HARDSTOP_CHANGE_CLICKS;
+        public static final double VERTICAL_POSITION = 508 - 3 + HARDSTOP_CHANGE_CLICKS; // The arm is straight up
+        public static final double HORIZONTAL_POSITION = -1511 - 3; // The arm is horizontally backwards NOTE: Did not modify with HARDSTOP b.c. it works still
+        public static final double BACK_ROCKET_SETPOINT = -1100;
+        public static final double BACK_CARGO_SETPOINT = -700;
 
         public static final double HARDSTOP_CLOSE_POSITION = -200;
         //HORIZONTAL_POSITION = Arm balance point - (CLICKS_FULL_ROTATION / 4)
