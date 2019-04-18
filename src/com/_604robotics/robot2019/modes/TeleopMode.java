@@ -324,7 +324,7 @@ public class TeleopMode extends Coordinator {
                 armManager.disableArm = true;//Disabling arm control from Arm Manager
 
                 if ( robot.arm.leftEncoderClicks.get() >= (Calibration.Arm.LOW_SETPOINT - Calibration.Arm.LOW_SETPOINT * 0.25) ) {  
-                    robot.arm.move.inputPower.set(-0.075); //Arm downwards power
+                    robot.arm.move.inputPower.set(-0.10); //Arm downwards power
                     robot.arm.move.activate();
                 } else {
                     robot.arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
