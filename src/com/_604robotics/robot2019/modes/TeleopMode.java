@@ -336,7 +336,7 @@ public class TeleopMode extends Coordinator {
                     robot.tilter.tilt.activate(); // Climbs at 100% power
                     currentDrive = CurrentDrive.ARCADE; 
                     arcade.activate();  
-                    arcade.movePower.set(-1.0); //Drive backwards power
+                    arcade.movePower.set(-0.5); //Drive backwards power
                     arcade.activate();  
                 } else if ( driverBack ) {
                     robot.tilter.retract.activate(); //Retracts at 30% power
@@ -369,7 +369,6 @@ public class TeleopMode extends Coordinator {
                 }
                 
             } else {
-                manualDrive = true;
                 autoCenterManager.end();
 
                 switch(robot.dashboard.limelightVisionMode.get()){
