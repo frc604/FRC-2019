@@ -335,8 +335,9 @@ public class TeleopMode extends Coordinator {
                 if ( driverDPad ) {
                     robot.tilter.tilt.activate(); // Climbs at 100% power
                     currentDrive = CurrentDrive.ARCADE; 
-                    arcade.movePower.set(-0.5); //Drive backwards power
-                    arcade.activate();
+                    arcade.activate();  
+                    arcade.movePower.set(-1.0); //Drive backwards power
+                    arcade.activate();  
                 } else if ( driverBack ) {
                     robot.tilter.retract.activate(); //Retracts at 30% power
                 } else {
