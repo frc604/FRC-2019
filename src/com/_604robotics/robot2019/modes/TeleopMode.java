@@ -251,7 +251,6 @@ public class TeleopMode extends Coordinator {
         private final Drive.Idle idle;
         private CurrentDrive currentDrive;
         private Toggle inverted;
-        private boolean manualDrive;
 
         public DriveManager () {
             idle = robot.drive.new Idle();
@@ -261,11 +260,9 @@ public class TeleopMode extends Coordinator {
             currentDrive = CurrentDrive.ARCADE;
             // TODO: Expose on dashboard
             inverted = new Toggle(false);
-            manualDrive = true;
         }
 
         public void run() {
-            manualDrive = true;
             double leftY = driver.leftStick.y.get();
             double rightY = driver.rightStick.y.get();
             double rightX = driver.rightStick.x.get();
@@ -344,7 +341,7 @@ public class TeleopMode extends Coordinator {
                     robot.tilter.stow.activate();
                 }
 
-                manualDrive = false;
+                currentDrive = CurrentDrive.MANUAL;
 
             } else {
                 armManager.disableArm = false;
@@ -360,12 +357,12 @@ public class TeleopMode extends Coordinator {
                 arcade.activate();
 
                 if( robot.limelight.limelightHasTargets.get() ) {
-                    manualDrive = false;
+                    currentDrive = CurrentDrive.MANUAL;
                     arcade.movePower.set(leftY);
                     autoCenterManager.run();
                 } else {
                     robot.limelight.scan.activate();
-                    manualDrive = true;
+                    currentDrive = CurrentDrive.ARCADE;
                 }
                 
             } else {
@@ -383,26 +380,26 @@ public class TeleopMode extends Coordinator {
                 }
             }
 
-            if( manualDrive ) {
-                switch( currentDrive ) {
-                    case IDLE:
-                        idle.activate();
-                        break;
-                    case ARCADE:
-                        arcade.movePower.set(leftY);
-                        if( driverLeftJoystickButton ) {
-                            arcade.rotatePower.set(rightX * Calibration.SLOW_ROTATION_MODIFIER);
-                        } else {
-                            arcade.rotatePower.set(rightX);
-                        }
-                        arcade.activate();
-                        break;
-                    case TANK:
-                        tank.leftPower.set(leftY);
-                        tank.rightPower.set(rightY);
-                        tank.activate();
-                        break;
-                }
+            switch( currentDrive ) {
+                case IDLE:
+                    idle.activate();
+                    break;
+                case ARCADE:
+                    arcade.movePower.set(leftY);
+                    if( driverLeftJoystickButton ) {
+                        arcade.rotatePower.set(rightX * Calibration.SLOW_ROTATION_MODIFIER);
+                    } else {
+                        arcade.rotatePower.set(rightX);
+                    }
+                    arcade.activate();
+                    break;
+                case TANK:
+                    tank.leftPower.set(leftY);
+                    tank.rightPower.set(rightY);
+                    tank.activate();
+                    break;
+                case MANUAL:
+                    break;
             }
         }
     }
@@ -698,7 +695,7 @@ public class TeleopMode extends Coordinator {
     }
 
     private enum CurrentDrive {
-        IDLE, ARCADE, TANK
+        IDLE, ARCADE, TANK, MANUAL
     }
 }
 
