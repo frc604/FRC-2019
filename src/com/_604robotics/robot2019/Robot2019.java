@@ -23,17 +23,16 @@ public class Robot2019 extends Robot {
 
     public final Intake intake = addModule(new Intake());
     public final Arm arm = addModule(new Arm());
+    public final Hardstop hardstop = addModule(new Hardstop());
 
     public final HatchSlider slider = addModule(new HatchSlider());
     public final Hook hook = addModule(new Hook());
-    public final HatchPusher pusher = addModule(new HatchPusher());
 
     public final Limelight limelight = addModule(new Limelight());
 	
 	public final Camera frontCamera = addModule(new Camera("video0"));
 	public final Camera backCamera = addModule(new Camera("video1"));
-	
-	
+
     public final TeleopMode teleopMode = setTeleopMode(new TeleopMode(this));
     public final AutonomousMode autonomousMode = setAutonomousMode(new AutonomousMode(this));
 }

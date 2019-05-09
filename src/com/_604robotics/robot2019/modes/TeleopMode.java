@@ -324,7 +324,7 @@ public class TeleopMode extends Coordinator {
                 armManager.disableArm = true;//Disabling arm control from Arm Manager
 
                 if ( robot.arm.leftEncoderClicks.get() >= (Calibration.Arm.LOW_SETPOINT - Calibration.Arm.LOW_SETPOINT * 0.25) ) {  
-                    robot.arm.move.inputPower.set(-0.075); //Arm downwards power
+                    robot.arm.move.inputPower.set(-0.10); // Arm downwards power, NOTE: needs to overcome gravity
                     robot.arm.move.activate();
                 } else {
                     robot.arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
@@ -335,8 +335,9 @@ public class TeleopMode extends Coordinator {
                 if ( driverDPad ) {
                     robot.tilter.tilt.activate(); // Climbs at 100% power
                     currentDrive = CurrentDrive.ARCADE; 
+                    arcade.activate();  
                     arcade.movePower.set(-0.5); //Drive backwards power
-                    arcade.activate();
+                    arcade.activate();  
                 } else if ( driverBack ) {
                     robot.tilter.retract.activate(); //Retracts at 30% power
                 } else {
@@ -368,7 +369,6 @@ public class TeleopMode extends Coordinator {
                 }
                 
             } else {
-                manualDrive = true;
                 autoCenterManager.end();
 
                 switch(robot.dashboard.limelightVisionMode.get()){
@@ -422,7 +422,7 @@ public class TeleopMode extends Coordinator {
                 speed.set(-driverRightTrigger); // Intake
                 //Negative is Intake
             } else if( driverLeftTrigger != 0.0 ){
-                speed.set(driverLeftTrigger); // Outtake
+                speed.set( Math.min(driverLeftTrigger, 0.80) ); // Outtake
             } else if( manipLeftTrigger != 0.0 ) {
                 speed.set(-manipLeftTrigger ); // Intake
             } else if( manipRightTrigger != 0.0 ) {
@@ -438,19 +438,50 @@ public class TeleopMode extends Coordinator {
 
     private class ArmManager {
         private Arm arm;
+        private Toggle hardstopToggle;
         protected boolean disableArm;
+        private Toggle manualHardstop;
 
         public ArmManager() {
             arm = robot.arm;
             disableArm = false;
+            manualHardstop = new Toggle(false);
+            hardstopToggle = new Toggle(false);
         }
 
         public void run() {
+            if( arm.setpoint.setpoint.get() == null ) {
+                // Is never set to null, yet spazzes out anyways
+                // Perhaps setting to non-persistent?
+                arm.setpoint.setpoint.set(0.0);
+            }
+
             if ( manipBack ) {
                 arm.resetEncoder();
             }
 
             if ( !disableArm ) {
+
+                if ( hardstopToggle.isInOffState() ) {
+                    robot.hardstop.close.activate();
+                } else if ( hardstopToggle.isInOnState() ) {
+                    robot.hardstop.open.activate();
+                }
+
+                if ( manipLeftBumper ) {
+                    hardstopToggle.update(manipLeftBumper);
+                    manualHardstop.update(manipLeftBumper);
+                } else if ( manualHardstop.isInOffState() &&
+                        ( arm.leftEncoderClicks.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) &&
+                        ( (arm.hold.isRunning() ? 300.0 : arm.setpoint.setpoint.get()) >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) ) {
+                    hardstopToggle.update(false);
+                    hardstopToggle.update(hardstopToggle.isInOnState());
+                } else if ( manualHardstop.isInOffState() ) {
+                    hardstopToggle.update(false);
+                    hardstopToggle.update(hardstopToggle.isInOffState());
+                }
+                
+
                 // Check setpoints
                 if( manipA ) {
                     // Low position // ARMSETPOINTS
@@ -461,14 +492,17 @@ public class TeleopMode extends Coordinator {
                     arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
                     arm.setpoint.activate();
                 } else if( manipY ) {
-                    // Vertical position
-                    arm.setpoint.setpoint.set(Calibration.Arm.VERTICAL_POSITION);
+                    // Back Scoring
+                    arm.setpoint.setpoint.set(Calibration.Arm.BACK_ROCKET_SETPOINT);
                     arm.setpoint.activate();
                 } else if( manipX ) {
                     // Vertical position
                     arm.setpoint.setpoint.set(Calibration.Arm.ROCKET_SETPOINT);
                     arm.setpoint.activate();
-                } else {
+                } else if( manipRightBumper) {
+					arm.setpoint.setpoint.set(Calibration.Arm.BACK_CARGO_SETPOINT);
+                    arm.setpoint.activate();
+				} else {
                     // Check thumbsticks
                     if( manipLeftJoystickY != 0 ) {
                         // Set arm rate to joystick
@@ -491,6 +525,7 @@ public class TeleopMode extends Coordinator {
                         // Hold arm still
                         arm.hold.activate();
                     }
+
                 }
 
             }
@@ -516,8 +551,6 @@ public class TeleopMode extends Coordinator {
 
             if( driverA ) {
                 hookToggle.update(driverA);
-            } else if ( manipLeftBumper ){
-                hookToggle.update( manipLeftBumper );
             } else {
                 hookToggle.update(false);
             }
@@ -530,8 +563,6 @@ public class TeleopMode extends Coordinator {
 
             if( driverY ) {
                 sliderForward.update( driverY );
-            } else if( manipRightBumper ) {
-                sliderForward.update( manipRightBumper);
             } else {
                 sliderForward.update(false);
             }

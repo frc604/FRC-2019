@@ -40,12 +40,16 @@ public class Calibration {
     public static final class Arm {
         public static final double CLICKS_FULL_ROTATION = 10240; // One rotation of the encoder in clicks
 
-        public static final double LOW_SETPOINT = 4170 + 90; // Ready to intake from front
+        public static final double LOW_SETPOINT = 4116; // Ready to intake from front
         public static final double STOW_SETPOINT = 0 - 3; // Starting position
-        public static final double OUTPUT_SETPOINT = 1730 - 3; // Output from front
-        public static final double ROCKET_SETPOINT = 2800 - 3;
-        public static final double VERTICAL_POSITION = 508 - 3; // The arm is straight up
-        public static final double HORIZONTAL_POSITION = -1511 - 3; // The arm is horizontally backwards
+        public static final double OUTPUT_SETPOINT = 1182; // Output from front TODO: be higher
+        public static final double ROCKET_SETPOINT = 2606;
+        public static final double VERTICAL_POSITION = 440 ; // The arm is straight up
+        public static final double HORIZONTAL_POSITION = -1527; // The arm is horizontally backwards NOTE: Did not modify with HARDSTOP b.c. it works still
+        public static final double BACK_ROCKET_SETPOINT = -985;
+        public static final double BACK_CARGO_SETPOINT = -377;
+
+        public static final double HARDSTOP_CLOSE_POSITION = -25;
         //HORIZONTAL_POSITION = Arm balance point - (CLICKS_FULL_ROTATION / 4)
 
         public static final double MIN_ENCODER_VAL = 0; // The lowest value the encoder can have

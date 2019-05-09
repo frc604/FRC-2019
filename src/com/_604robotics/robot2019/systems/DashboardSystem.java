@@ -1,6 +1,5 @@
 package com._604robotics.robot2019.systems;
 
-import com._604robotics.robot2019.constants.Calibration;
 import com._604robotics.robotnik.Coordinator;
 
 public class DashboardSystem extends Coordinator {
@@ -28,6 +27,7 @@ public class DashboardSystem extends Coordinator {
 		robot.dashboard.leftEncoderClicks.set(robot.arm.leftEncoderClicks.get());
 		robot.dashboard.armPIDError.set(robot.arm.pidError.get());
 		robot.dashboard.armSetpoint.set(robot.arm.holdPoint.get());
+		robot.dashboard.hardstopClosed.set(robot.hardstop.closed.get());
 
         /* Limelight Testing */
         robot.dashboard.limelightTarget.set(robot.limelight.limelightHasTargets.get());

@@ -46,7 +46,7 @@ public class Arm extends Module {
         //redundantEncoder.setMinimum(Calibration.Arm.MIN_ENCODER_VAL);
         //redundantEncoder.setMaximum(Calibration.Arm.MAX_ENCODER_VAL);
 
-        holdPoint = addInput("Setpoint", 10.0);
+        holdPoint = addInput("Setpoint", 300.0);
 
         //rightEncoderClicks = addOutput("Right Encoder Clicks", () -> rightEncoder.getPosition());
         leftEncoderClicks = addOutput("Left Encoder Clicks", () -> leftEncoder.getPosition());
@@ -67,7 +67,7 @@ public class Arm extends Module {
 
         public Hold() {
             super(Arm.this, Hold.class);
-            holdPoint = addInput("Hold Point", 100.0, true);
+            holdPoint = addInput("Hold Point", 300.0, true); // TODO low priority move forward
         }
 
         @Override

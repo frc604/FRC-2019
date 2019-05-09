@@ -398,9 +398,9 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
-          "5,5": {
+          "20,9": {
             "size": [
-              1,
+              2,
               2
             ],
             "content": {
@@ -409,10 +409,10 @@
               "_title": "SmartDashboard/VisionMode"
             }
           },
-          "18,0": {
+          "22,0": {
             "size": [
-              1,
-              7
+              2,
+              11
             ],
             "content": {
               "_type": "Boolean Box",
@@ -422,9 +422,9 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "4,5": {
+          "18,9": {
             "size": [
-              1,
+              2,
               2
             ],
             "content": {
@@ -433,42 +433,10 @@
               "_title": "SmartDashboard/driveMode"
             }
           },
-          "0,0": {
+          "7,0": {
             "size": [
-              6,
-              5
-            ],
-            "content": {
-              "_type": "Camera Stream",
-              "_source0": "camera_server://limelight",
-              "_title": "limelight",
-              "Crosshair/Show crosshair": true,
-              "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": false,
-              "Controls/Rotation": "NONE",
-              "compression": -1.0,
-              "fps": 15,
-              "imageWidth": 0,
-              "imageHeight": 0
-            }
-          },
-          "0,5": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Hook Holding",
-              "_title": "SmartDashboard/Hook Holding",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "6,0": {
-            "size": [
-              6,
-              7
+              8,
+              8
             ],
             "content": {
               "_type": "Camera Stream",
@@ -476,7 +444,7 @@
               "_title": "video1",
               "Crosshair/Show crosshair": true,
               "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": true,
+              "Controls/Show controls": false,
               "Controls/Rotation": "QUARTER_CW",
               "compression": -1.0,
               "fps": 15,
@@ -484,10 +452,10 @@
               "imageHeight": 0
             }
           },
-          "12,0": {
+          "15,0": {
             "size": [
-              6,
-              7
+              7,
+              8
             ],
             "content": {
               "_type": "Camera Stream",
@@ -496,18 +464,50 @@
               "Crosshair/Show crosshair": true,
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": false,
-              "Controls/Rotation": "NONE",
+              "Controls/Rotation": "HALF",
               "compression": -1.0,
               "fps": 5,
               "imageWidth": 200,
               "imageHeight": 200
+            }
+          },
+          "0,0": {
+            "size": [
+              7,
+              8
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://limelight",
+              "_title": "limelight",
+              "Crosshair/Show crosshair": false,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": false,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": 0,
+              "imageHeight": 0
+            }
+          },
+          "0,8": {
+            "size": [
+              18,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Hardstop Active",
+              "_title": "SmartDashboard/Hardstop Active",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
             }
           }
         }
       }
     },
     {
-      "title": "Tab 4",
+      "title": "Raw Values",
       "autoPopulate": false,
       "autoPopulatePrefix": "",
       "widgetPane": {
@@ -567,15 +567,34 @@
               "imageWidth": 200,
               "imageHeight": 200
             }
+          },
+          "8,1": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://limelight",
+              "_title": "limelight",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": 0,
+              "imageHeight": 0
+            }
           }
         }
       }
     }
   ],
   "windowGeometry": {
-    "x": -7.333333492279053,
-    "y": -7.333333492279053,
-    "width": 1294.6666259765625,
-    "height": 704.0
+    "x": -8.0,
+    "y": -8.0,
+    "width": 1936.0,
+    "height": 1056.0
   }
 }
