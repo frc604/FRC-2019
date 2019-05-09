@@ -446,7 +446,6 @@ public class TeleopMode extends Coordinator {
             arm = robot.arm;
             disableArm = false;
             manualHardstop = new Toggle(false);
-
             hardstopToggle = new Toggle(false);
         }
 
@@ -494,8 +493,7 @@ public class TeleopMode extends Coordinator {
                     arm.setpoint.activate();
                 } else if( manipY ) {
                     // Back Scoring
-                    arm.setpoint.setpoint.set
-					(Calibration.Arm.BACK_ROCKET_SETPOINT);
+                    arm.setpoint.setpoint.set(Calibration.Arm.BACK_ROCKET_SETPOINT);
                     arm.setpoint.activate();
                 } else if( manipX ) {
                     // Vertical position
