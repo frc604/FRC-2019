@@ -451,6 +451,12 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
+            if( arm.setpoint.setpoint.get() == null ) {
+                // Is never set to null, yet spazzes out anyways
+                // Perhaps setting to non-persistent?
+                arm.setpoint.setpoint.set(0.0);
+            }
+
             if ( manipBack ) {
                 arm.resetEncoder();
             }
@@ -466,7 +472,9 @@ public class TeleopMode extends Coordinator {
                 if ( manipLeftBumper ) {
                     hardstopToggle.update(manipLeftBumper);
                     manualHardstop.update(manipLeftBumper);
-                } else if ( manualHardstop.isInOffState() && ( arm.leftEncoderClicks.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) && ( (arm.hold.isRunning() ? 300.0 : (arm.setpoint.setpoint.get() == null ? 0 : arm.setpoint.setpoint.get()) ) >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) ) {
+                } else if ( manualHardstop.isInOffState() &&
+                        ( arm.leftEncoderClicks.get() >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) &&
+                        ( (arm.hold.isRunning() ? 300.0 : arm.setpoint.setpoint.get()) >= Calibration.Arm.HARDSTOP_CLOSE_POSITION ) ) {
                     hardstopToggle.update(false);
                     hardstopToggle.update(hardstopToggle.isInOnState());
                 } else if ( manualHardstop.isInOffState() ) {
