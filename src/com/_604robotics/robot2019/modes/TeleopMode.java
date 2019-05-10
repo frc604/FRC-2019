@@ -256,9 +256,7 @@ public class TeleopMode extends Coordinator {
             idle = robot.drive.new Idle();
             arcade = robot.drive.new ArcadeDrive();
             tank = robot.drive.new TankDrive();
-            // TODO: Expose on dashboard
             currentDrive = CurrentDrive.ARCADE;
-            // TODO: Expose on dashboard
             inverted = new Toggle(false);
         }
 
@@ -275,9 +273,9 @@ public class TeleopMode extends Coordinator {
 
             inverted.update(driverLeftBumper);
             robot.dashboard.XboxFlipped.set(inverted.isInOnState());
-            if (inverted.isInOnState()) {            // Flip values if xbox inverted
-                leftY*=-1;
-                rightY*=-1;
+            if (inverted.isInOnState()) { // Flip values if xbox inverted
+                leftY *= -1;
+                rightY *= -1;
             }
 
             // Get Dashboard option for drive
@@ -315,16 +313,16 @@ public class TeleopMode extends Coordinator {
                 robot.powermonitor.updateCompressor(false);
 
                 if ( robot.slider.isForward.get() ) {
-                    hatchManager.sliderForward.update(true);
+                    hatchManager.sliderForward.update(true); //Check if slider is forward, if true update the toggle to move it back.
                 }
 
-                armManager.disableArm = true;//Disabling arm control from Arm Manager
+                armManager.disableArm = true; //Disabling arm control from Arm Manager
 
                 if ( robot.arm.leftEncoderClicks.get() >= (Calibration.Arm.LOW_SETPOINT - Calibration.Arm.LOW_SETPOINT * 0.25) ) {  
                     robot.arm.move.inputPower.set(-0.10); // Arm downwards power, NOTE: needs to overcome gravity
                     robot.arm.move.activate();
                 } else {
-                    robot.arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
+                    robot.arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);//If arm has not reach low setpont keep activating the setpoint till it does.
                     robot.arm.setpoint.activate();
                 }
 
@@ -341,7 +339,7 @@ public class TeleopMode extends Coordinator {
                     robot.tilter.stow.activate();
                 }
 
-                currentDrive = CurrentDrive.MANUAL;
+                currentDrive = CurrentDrive.MANUAL; //Disable driver control
 
             } else {
                 armManager.disableArm = false;
@@ -349,7 +347,7 @@ public class TeleopMode extends Coordinator {
                 robot.tilter.stow.activate();
             }
 
-            //Limelight Activaation Code
+            //Limelight Activation Code
             // It would be bad if this turned off
             robot.limelight.limelightLED.set(Limelight.LEDState.ON.ordinal());
             if( driverRightBumper ) {
@@ -357,8 +355,8 @@ public class TeleopMode extends Coordinator {
                 arcade.activate();
 
                 if( robot.limelight.limelightHasTargets.get() ) {
-                    currentDrive = CurrentDrive.MANUAL;
-                    arcade.movePower.set(leftY);
+                    currentDrive = CurrentDrive.MANUAL; //Disable manual control so the PID can take over
+                    arcade.movePower.set(leftY); //Still allow driver to control forward/backwards movement
                     autoCenterManager.run();
                 } else {
                     robot.limelight.scan.activate();
@@ -398,7 +396,7 @@ public class TeleopMode extends Coordinator {
                     tank.rightPower.set(rightY);
                     tank.activate();
                     break;
-                case MANUAL:
+                case MANUAL: //Disable driver control of the robot
                     break;
             }
         }
@@ -418,17 +416,23 @@ public class TeleopMode extends Coordinator {
             if( driverRightTrigger != 0.0 ) {
                 speed.set(-driverRightTrigger); // Intake
                 //Negative is Intake
+
             } else if( driverLeftTrigger != 0.0 ){
                 speed.set( Math.min(driverLeftTrigger, 0.80) ); // Outtake
+                //Clamping output to reduce outake speed
+
             } else if( manipLeftTrigger != 0.0 ) {
                 speed.set(-manipLeftTrigger ); // Intake
+
             } else if( manipRightTrigger != 0.0 ) {
                 speed.set( Math.min(manipRightTrigger, 0.75) ); // Outtake
                 //Clamping output to reduce outake speed
+
             } else if( manipDPad ) {
                 speed.set(1); //Force spit
+
             } else {
-                idle.activate();
+                idle.activate(); 
             }
         }
     }
@@ -450,6 +454,7 @@ public class TeleopMode extends Coordinator {
             if( arm.setpoint.setpoint.get() == null ) {
                 // Is never set to null, yet spazzes out anyways
                 // Perhaps setting to non-persistent?
+                // Setpoint is null when hold action is running
                 arm.setpoint.setpoint.set(0.0);
             }
 
@@ -465,6 +470,7 @@ public class TeleopMode extends Coordinator {
                     robot.hardstop.open.activate();
                 }
 
+                /*Hardstop Coordination code*/
                 if ( manipLeftBumper ) {
                     hardstopToggle.update(manipLeftBumper);
                     manualHardstop.update(manipLeftBumper);
@@ -489,7 +495,7 @@ public class TeleopMode extends Coordinator {
                     arm.setpoint.setpoint.set(Calibration.Arm.OUTPUT_SETPOINT);
                     arm.setpoint.activate();
                 } else if( manipY ) {
-                    // Back Scoring
+                    // Back Scoring Rocket
                     arm.setpoint.setpoint.set(Calibration.Arm.BACK_ROCKET_SETPOINT);
                     arm.setpoint.activate();
                 } else if( manipX ) {
@@ -497,6 +503,7 @@ public class TeleopMode extends Coordinator {
                     arm.setpoint.setpoint.set(Calibration.Arm.ROCKET_SETPOINT);
                     arm.setpoint.activate();
                 } else if( manipRightBumper) {
+                    //Back Scoring Cargo
 					arm.setpoint.setpoint.set(Calibration.Arm.BACK_CARGO_SETPOINT);
                     arm.setpoint.activate();
 				} else {
@@ -542,6 +549,7 @@ public class TeleopMode extends Coordinator {
             hookToggle = new Toggle(false); // Assuming the piston is in the held state to start
             sliderForward = new Toggle(false); // Not extended initially
             hatchTime = new SmartTimer(); 
+            //TODO: Test if you can have multiple timers per thread
         }
 
         public void run() {
