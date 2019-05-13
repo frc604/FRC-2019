@@ -7,17 +7,14 @@ import com._604robotics.marionette.InputRecording;
 import com._604robotics.robot2019.Robot2019;
 import com._604robotics.robot2019.constants.Calibration;
 import com._604robotics.robot2019.macros.ArcadeTimedDriveMacro;
-import com._604robotics.robot2019.modules.Drive;
+import com._604robotics.robotnik.prefabs.modules.TankDriveSixWheel;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
-import com._604robotics.robotnik.prefabs.coordinators.SleepCoordinator;
 import com._604robotics.robotnik.prefabs.coordinators.StatefulCoordinator;
-import com._604robotics.robotnik.prefabs.coordinators.SwitchCoordinator;
 import com._604robotics.robotnik.prefabs.flow.Pulse;
 import com._604robotics.robotnik.prefabs.flow.SmartTimer;
 import com._604robotics.robotnik.utils.AutonMovement;
 import com._604robotics.robotnik.utils.PathFinderUtil;
-import com._604robotics.robotnik.utils.annotations.Unreal;
 
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
@@ -196,7 +193,7 @@ public class AutonomousMode extends Coordinator {
 		private Logger arcadePIDLog=new Logger(ArcadePIDCoordinator.class);
 		// Timer that is started to continue running PID for some time after equilibrium
 		private SmartTimer timeElapsed = new SmartTimer();
-		private Drive.ArcadeDrive arcadeDrive = robot.drive.new ArcadeDrive(false);
+		private TankDriveSixWheel.ArcadeDrive arcadeDrive = robot.drive.new ArcadeDrive(false);
 		private Pulse PIDTargetPulse=new Pulse();
 		// PIDOutputs write to persistent Input that retain their values
 		// This prevents jerky movement when PIDs don't run often enough
@@ -408,7 +405,7 @@ public class AutonomousMode extends Coordinator {
 		private EncoderFollower rightFollower;
 		private java.util.Timer timer;
 		private SmartTimer timeElapsed;
-		private Drive.TankDrive tankDrive;
+		private TankDriveSixWheel.TankDrive tankDrive;
 		private Pulse PIDTargetPulse=new Pulse();
 
 		public PathFollower( Waypoint[] waypoints ) {

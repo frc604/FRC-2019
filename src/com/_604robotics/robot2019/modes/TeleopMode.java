@@ -6,9 +6,8 @@ import com._604robotics.marionette.InputRecording;
 import com._604robotics.marionette.MarionetteJoystick;
 import com._604robotics.robot2019.constants.Calibration;
 import com._604robotics.robot2019.modules.Arm;
-import com._604robotics.robot2019.modules.Drive;
+import com._604robotics.robotnik.prefabs.modules.TankDriveSixWheel;
 import com._604robotics.robot2019.modules.Intake;
-import com._604robotics.robot2019.modules.Dashboard.DriveMode;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
 import com._604robotics.robotnik.prefabs.controller.ExtendablePIDController;
@@ -16,7 +15,6 @@ import com._604robotics.robotnik.prefabs.flow.Toggle;
 import com._604robotics.robotnik.prefabs.inputcontroller.xbox.XboxController;
 import com._604robotics.robotnik.prefabs.modules.Limelight;
 import edu.wpi.first.wpilibj.PIDOutput;
-import edu.wpi.first.wpilibj.Timer;
 import com._604robotics.robotnik.prefabs.flow.SmartTimer;
 
 import java.io.IOException;
@@ -82,6 +80,8 @@ public class TeleopMode extends Coordinator {
     //<editor-fold desc="Getting Controller Values"
     private double driverLeftJoystickY = 0.0;
     private double driverLeftJoystickX = 0.0;
+    private double driverLeftJoystickAngle = 0.0;
+    private double driverLeftJoystickMagnitude = 0.0;
     private double driverLeftTrigger = 0.0;
 
     private boolean driverLeftJoystickButton = false;
@@ -90,6 +90,8 @@ public class TeleopMode extends Coordinator {
 
     private double driverRightJoystickY = 0.0;
     private double driverRightJoystickX = 0.0;
+    private double driverRightJoystickAngle = 0.0;
+    private double driverRightJoystickMagnitude = 0.0;
     private double driverRightTrigger = 0.0;
 
     private boolean driverRightJoystickButton = false;
@@ -193,6 +195,8 @@ public class TeleopMode extends Coordinator {
 
         driverLeftJoystickButton = driver.buttons.leftStick.get();
         driverLeftTriggerButton = driver.buttons.lt.get();
+        driverLeftJoystickAngle = 0.0;
+        driverLeftJoystickMagnitude = 0.0;
         driverLeftBumper = driver.buttons.lb.get();
 
         driverRightJoystickY = driver.rightStick.y.get();
@@ -201,6 +205,8 @@ public class TeleopMode extends Coordinator {
 
         driverRightJoystickButton = driver.buttons.rightStick.get();
         driverRightTriggerButton = driver.buttons.rt.get();
+        driverRightJoystickAngle = 0.0;
+        driverRightJoystickMagnitude = 0.0;
         driverRightBumper = driver.buttons.rb.get();
 
         driverBack = driver.buttons.back.get();
@@ -246,9 +252,9 @@ public class TeleopMode extends Coordinator {
     }
 
     private class DriveManager {
-        private final Drive.ArcadeDrive arcade;
-        private final Drive.TankDrive tank;
-        private final Drive.Idle idle;
+        private final TankDriveSixWheel.ArcadeDrive arcade;
+        private final TankDriveSixWheel.TankDrive tank;
+        private final TankDriveSixWheel.Idle idle;
         private CurrentDrive currentDrive;
         private Toggle inverted;
         private boolean manualDrive;

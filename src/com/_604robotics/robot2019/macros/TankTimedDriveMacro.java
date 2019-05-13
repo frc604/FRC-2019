@@ -1,13 +1,13 @@
 package com._604robotics.robot2019.macros;
 
-import com._604robotics.robot2019.modules.Drive;
+import com._604robotics.robotnik.prefabs.modules.TankDriveSixWheel;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.prefabs.flow.SmartTimer;
 
 public abstract class TankTimedDriveMacro extends Coordinator {
     private final SmartTimer timer = new SmartTimer();
 
-    private final Drive.TankDrive driveForward;
+    private final TankDriveSixWheel.TankDrive driveForward;
 
     public TankTimedDriveMacro ( com._604robotics.robot2019.Robot2019 robot) {
         driveForward = robot.drive.new TankDrive();
