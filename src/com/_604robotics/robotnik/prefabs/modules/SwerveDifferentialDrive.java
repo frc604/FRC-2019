@@ -1,14 +1,16 @@
 package com._604robotics.robotnik.prefabs.modules;
 
-import com._604robotics.robotnik.Action;
-import com._604robotics.robotnik.Input;
-import com._604robotics.robotnik.Module;
-import com._604robotics.robotnik.Output;
+import com._604robotics.robotnik.*;
 import com._604robotics.robotnik.prefabs.devices.wrappers.RampMotor;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.drive.RobotDriveBase;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+
+import java.util.StringJoiner;
 
 public class SwerveDifferentialDrive extends Module {
     /* To copy paste:
@@ -32,6 +34,8 @@ public class SwerveDifferentialDrive extends Module {
     private final RampMotor backRightTurn;
     private final RampMotor backRightDrive;
     //</editor-fold>
+
+    final SwerveDifferentialDriveBase driveBase;
 
     //<editor-fold desc="Encoders"
     private final Encoder frontLeftTurnEncoder;
@@ -90,6 +94,9 @@ public class SwerveDifferentialDrive extends Module {
         this.backRightTurn = backRightTurn;
         this.backRightDrive = backRightDrive;
 
+        this.driveBase = new SwerveDifferentialDriveBase(frontLeftTurn, frontLeftDrive, frontRightTurn, frontRightDrive,
+                backLeftTurn, backLeftDrive, backRightTurn, backRightDrive);
+
         this.frontLeftTurnEncoder = frontLeftTurnEncoder;
         this.frontLeftDriveEncoder = frontLeftDriveEncoder;
         this.frontRightTurnEncoder = frontRightTurnEncoder;
@@ -115,6 +122,8 @@ public class SwerveDifferentialDrive extends Module {
         this.backLeftDriveClicks = addOutput("Back Left Drive Clicks", backLeftDriveEncoder::get);
         this.backRightTurnClicks = addOutput("Back Left Right Clicks", backRightTurnEncoder::get);
         this.backRightDriveClicks = addOutput("Back Right Drive Clicks", backRightDriveEncoder::get);
+
+        this.driveBase.setDeadband(0.04);
 
         setDefaultAction(idle);
     }
@@ -145,7 +154,7 @@ public class SwerveDifferentialDrive extends Module {
 
         @Override
         public void run() {
-            stopAllMotors();
+            driveBase.stopMotor();
         }
     }
 
@@ -179,14 +188,106 @@ public class SwerveDifferentialDrive extends Module {
 
     public FieldRelative fieldRelative = new FieldRelative();
 
-    private void stopAllMotors() {
-        frontLeftTurn.stopMotor();
-        frontLeftDrive.stopMotor();
-        frontRightTurn.stopMotor();
-        frontRightDrive.stopMotor();
-        backLeftTurn.stopMotor();
-        backLeftDrive.stopMotor();
-        backRightTurn.stopMotor();
-        backRightDrive.stopMotor();
+    public synchronized void resetSensors() {
+        frontLeftTurnEncoder.reset();
+        frontLeftDriveEncoder.reset();
+        frontRightTurnEncoder.reset();
+        frontRightDriveEncoder.reset();
+        backLeftTurnEncoder.reset();
+        backLeftDriveEncoder.reset();
+        backRightTurnEncoder.reset();
+        backRightDriveEncoder.reset();
+
+        gyroscope.reset();
+    }
+
+    private class SwerveDifferentialDriveBase extends RobotDriveBase {
+
+        private final SpeedController frontLeftTurn;
+        private final SpeedController frontLeftDrive;
+        private final SpeedController frontRightTurn;
+        private final SpeedController frontRightDrive;
+        private final SpeedController backLeftTurn;
+        private final SpeedController backLeftDrive;
+        private final SpeedController backRightTurn;
+        private final SpeedController backRightDrive;
+
+        public SwerveDifferentialDriveBase(SpeedController frontLeftTurn, SpeedController frontLeftDrive,
+                                           SpeedController frontRightTurn, SpeedController frontRightDrive,
+                                           SpeedController backLeftTurn, SpeedController backLeftDrive,
+                                           SpeedController backRightTurn, SpeedController backRightDrive) {
+            verifyMotors(frontLeftTurn, frontLeftDrive, frontRightTurn, frontRightDrive, backLeftTurn, backLeftDrive,
+                    backRightTurn, backRightDrive);
+
+            this.frontLeftTurn = frontLeftTurn;
+            this.frontLeftDrive = frontLeftDrive;
+            this.frontRightTurn = frontRightTurn;
+            this.frontRightDrive = frontRightDrive;
+            this.backLeftTurn = backLeftTurn;
+            this.backLeftDrive = backLeftTurn;
+            this.backRightTurn = backLeftTurn;
+            this.backRightDrive = backLeftTurn;
+
+            addChild(frontLeftTurn);
+            addChild(frontLeftDrive);
+            addChild(frontRightTurn);
+            addChild(frontRightDrive);
+            addChild(backLeftTurn);
+            addChild(backLeftDrive);
+            addChild(backRightTurn);
+            addChild(backRightDrive);
+
+            setName("SwerveDifferentialDrive");
+        }
+
+        @Override
+        public void stopMotor() {
+            frontLeftTurn.stopMotor();
+            frontLeftDrive.stopMotor();
+            frontRightTurn.stopMotor();
+            frontRightDrive.stopMotor();
+            backLeftTurn.stopMotor();
+            backLeftDrive.stopMotor();
+            backRightTurn.stopMotor();
+            backRightDrive.stopMotor();
+
+            feed();
+        }
+
+        private void verifyMotors(SpeedController... motors) {
+            int numNull = 0;
+
+            for( SpeedController s : motors ) {
+                if( s == null ) {
+                    numNull++;
+                }
+            }
+
+            if( numNull > 0 ) {
+                throw new NullPointerException(numNull + " swerve motors");
+            }
+        }
+
+        @Override
+        public String getDescription() {
+            return "SwerveDifferentialDrive";
+        }
+
+        @Override
+        public void initSendable(SendableBuilder builder) {
+            builder.setSmartDashboardType("DifferentialDrive");
+            builder.setSafeState(this::stopMotor);
+            builder.setActuator(true);
+
+            builder.addDoubleProperty("Front Left Turn Speed", frontLeftTurn::get, frontLeftTurn::set);
+            builder.addDoubleProperty("Front Left Drive Speed", frontLeftDrive::get, frontLeftDrive::set);
+            builder.addDoubleProperty("Front Right Turn Speed", frontRightTurn::get, frontRightTurn::set);
+            builder.addDoubleProperty("Front Right Drive Speed", frontRightDrive::get, frontRightDrive::set);
+            builder.addDoubleProperty("Back Left Turn Speed", backLeftTurn::get, backLeftTurn::set);
+            builder.addDoubleProperty("Back Left Drive Speed", backLeftDrive::get, backLeftDrive::set);
+            builder.addDoubleProperty("Back Right Turn Speed", backRightTurn::get, backRightTurn::set);
+            builder.addDoubleProperty("Back Right Drive Speed", backRightDrive::get, backRightDrive::set);
+
+        }
     }
 }
