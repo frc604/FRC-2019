@@ -1,16 +1,15 @@
 package com._604robotics.robotnik.prefabs.modules;
 
+import com._604robotics.robot2019.modules.Dashboard;
 import com._604robotics.robotnik.*;
 import com._604robotics.robotnik.prefabs.devices.wrappers.RampMotor;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.RobotDriveBase;
+import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-
-import java.util.StringJoiner;
 
 public class SwerveDifferentialDrive extends Module {
     /* To copy paste:
@@ -95,7 +94,7 @@ public class SwerveDifferentialDrive extends Module {
         this.backRightDrive = backRightDrive;
 
         this.driveBase = new SwerveDifferentialDriveBase(frontLeftTurn, frontLeftDrive, frontRightTurn, frontRightDrive,
-                backLeftTurn, backLeftDrive, backRightTurn, backRightDrive);
+                backLeftTurn, backLeftDrive, backRightTurn, backRightDrive, gyroscope);
 
         this.frontLeftTurnEncoder = frontLeftTurnEncoder;
         this.frontLeftDriveEncoder = frontLeftDriveEncoder;
@@ -161,18 +160,21 @@ public class SwerveDifferentialDrive extends Module {
     public Idle idle = new Idle();
 
     public class RobotRelative extends Action {
-        public final Input<Double> angleDirection;
-        public final Input<Double> anglePower;
-        public final Input<Double> driveDirection;
-        public final Input<Double> drivePower;
+        public final Input<Double> spinPower;
+        public final Input<Double> driveX;
+        public final Input<Double> driveY;
 
         public RobotRelative() {
             super(SwerveDifferentialDrive.this, RobotRelative.class);
 
-            angleDirection = addInput("angleDirection", 0.0, true);
-            anglePower = addInput("anglePower", 0.0, true);
-            driveDirection = addInput("driveDirection", 0.0, true);
-            drivePower = addInput("drivePower", 0.0, true);
+            spinPower = addInput("spinPower", 0.0, true);
+            driveX = addInput("driveX", 0.0, true);
+            driveY = addInput("driveY", 0.0, true);
+        }
+
+        @Override
+        public void run() {
+            driveBase.robotRelativeDrive(new Vector2d(driveX.get(), driveY.get()), spinPower.get());
         }
 
     }
@@ -180,10 +182,23 @@ public class SwerveDifferentialDrive extends Module {
     public RobotRelative robotRelative = new RobotRelative();
 
     public class FieldRelative extends Action {
+        public final Input<Double> angle;
+        public final Input<Double> driveX;
+        public final Input<Double> driveY;
+
         public FieldRelative() {
             super(SwerveDifferentialDrive.this, FieldRelative.class);
+
+            angle = addInput("angle", 0.0, true);
+            driveX = addInput("driveX", 0.0, true);
+            driveY = addInput("driveY", 0.0, true);
         }
 
+        @Override
+        public void run() {
+            // NOTE: Move start-relative logic here?
+            driveBase.startRelativeDrive(new Vector2d(driveX.get(), driveY.get()), angle.get());
+        }
     }
 
     public FieldRelative fieldRelative = new FieldRelative();
@@ -201,6 +216,17 @@ public class SwerveDifferentialDrive extends Module {
         gyroscope.reset();
     }
 
+    /**
+     * Represents a swerve drive base that uses differential motor gearing. When the motors are run against each other,
+     * the module will spin. When run in the same direction, the wheel spins. Thank mechanical for awesome gearing to
+     * make this happen.
+     *
+     * Some basic vector math and power scaling allows for turning while driving.
+     *
+     * The advantage of this is the additional power that can be utilized when driving and *not* spinning in circles.
+     * Imagine: a swerve drive beating a tank drive because of having two motors per wheel. Of course, this is not close
+     * to being garunteed, due to having only four wheels total, but it is nice to think about.
+     */
     private class SwerveDifferentialDriveBase extends RobotDriveBase {
 
         private final SpeedController frontLeftTurn;
@@ -212,10 +238,14 @@ public class SwerveDifferentialDrive extends Module {
         private final SpeedController backRightTurn;
         private final SpeedController backRightDrive;
 
+        private final Gyro gyro;
+
         public SwerveDifferentialDriveBase(SpeedController frontLeftTurn, SpeedController frontLeftDrive,
                                            SpeedController frontRightTurn, SpeedController frontRightDrive,
                                            SpeedController backLeftTurn, SpeedController backLeftDrive,
-                                           SpeedController backRightTurn, SpeedController backRightDrive) {
+                                           SpeedController backRightTurn, SpeedController backRightDrive,
+                                           Gyro gyro) {
+
             verifyMotors(frontLeftTurn, frontLeftDrive, frontRightTurn, frontRightDrive, backLeftTurn, backLeftDrive,
                     backRightTurn, backRightDrive);
 
@@ -228,6 +258,8 @@ public class SwerveDifferentialDrive extends Module {
             this.backRightTurn = backLeftTurn;
             this.backRightDrive = backLeftTurn;
 
+            this.gyro = gyro;
+
             addChild(frontLeftTurn);
             addChild(frontLeftDrive);
             addChild(frontRightTurn);
@@ -238,6 +270,62 @@ public class SwerveDifferentialDrive extends Module {
             addChild(backRightDrive);
 
             setName("SwerveDifferentialDrive");
+        }
+
+        /**
+         * <p>Robot relative method of controlling a swerve drive platform.</p>
+         *
+         * <p>This allows for more complex maneuvers around the field, but also requires more thought by the controllers to
+         * constantly remember the orientation of the robot.</p>
+         *
+         * <p>For example, if the robot is given a drive power of 1 and a spin of 0, the robot will drive straight relative
+         * to the front of the robot. Then, if a spin is given, the robot will continue to spin until instructed to stop,
+         * as there is no "end goal" of the spin.</p>
+         *
+         * @param vector horizontal magnitude and direction of the robot not including angle/spin <br>
+         * @param spin magnitude of spin the robot should have, from -1.0 to 1.0
+         */
+        public void robotRelativeDrive(Vector2d vector, double spin) {
+            if( spin > 1.0 ) {
+                spin = 1.0;
+            } else if( spin < -1.0 ) {
+                spin = -1.0;
+            }
+
+            feed();
+        }
+
+        /**
+         * <p>Start relative method of controlling a swerve drive platform.</p>
+         *
+         * <p>Each input is calculated relative to the zero orientation of the robot. This means that the inputs are
+         * interpreted to align starting angle with "forwards", and allow for absolute turning angles.</p>
+         *
+         * <p>This is most useful to reduce effort by the driver to maintain awareness of the robot's orentation at
+         * any given time. This allows for faster reactions, as the driver only has to provide the "goal" position of
+         * the robot, instead of thinking of how to achieve it. However, this mode makes actions such as drifting more
+         * difficult.</p>
+         *
+         * <p>For example, if the robot is facing 45 degrees from its starting position, but the given vector is "straight"
+         * (no turning/spinning/angles away from 0), then the robot will drive in a single axis away from the start.
+         * Using a field as an example, if the robot starts in the center pushed against the alliance wall, then
+         * independent of the robot's orientation it will drive towards the opposite wall given a vector with angle 0.</p>
+         *
+         * @param vector horizontal magnitude and direction of the robot not including angle/spin <br>
+         * @param angle desired angle of the robot relative to starting angle in radians
+         */
+        public void startRelativeDrive(Vector2d vector, double angle) {
+            if( gyro == null ) {
+                throw new RuntimeException("Gyro needed for relative swerve drive");
+            }
+
+            // Corrects to counterclockwise positive, keeps in 1 circle, and converts to radians
+            double currentAngle = Math.toRadians((gyro.getAngle() - 180) % 360);
+            angle = angle % (Math.PI * 2); // Keeps angles within one circle
+
+            // Calculates current difference in angle
+
+            feed();
         }
 
         @Override
