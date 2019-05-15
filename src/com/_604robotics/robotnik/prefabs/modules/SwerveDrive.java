@@ -1,11 +1,13 @@
 package com._604robotics.robotnik.prefabs.modules;
 
-import com._604robotics.robot2019.modules.Dashboard;
 import com._604robotics.robotnik.Module;
 import com._604robotics.robotnik.Output;
 import com._604robotics.robotnik.Action;
 import com._604robotics.robotnik.Input;
+import com._604robotics.robotnik.prefabs.controller.ExtendablePIDController;
+import com._604robotics.robotnik.prefabs.devices.SwerveUnit;
 import com._604robotics.robotnik.prefabs.devices.wrappers.RampMotor;
+import com._604robotics.robotnik.utils.PIDValues;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.RobotDriveBase;
@@ -27,14 +29,10 @@ public class SwerveDifferentialDrive extends Module {
      */
 
     //<editor-fold desc="Motors"
-    private final RampMotor frontLeftTurn;
-    private final RampMotor frontLeftDrive;
-    private final RampMotor frontRightTurn;
-    private final RampMotor frontRightDrive;
-    private final RampMotor backLeftTurn;
-    private final RampMotor backLeftDrive;
-    private final RampMotor backRightTurn;
-    private final RampMotor backRightDrive;
+    private final SwerveUnit frontLeft;
+    private final SwerveUnit frontRight;
+    private final SwerveUnit backLeft;
+    private final SwerveUnit backRight;
     //</editor-fold>
 
     final SwerveDifferentialDriveBase driveBase;
@@ -76,28 +74,16 @@ public class SwerveDifferentialDrive extends Module {
     public final Output<Integer> backRightDriveClicks;
     //</editor-fold>
 
-    public SwerveDifferentialDrive( RampMotor frontLeftTurn, RampMotor frontLeftDrive,
-                                    RampMotor frontRightTurn, RampMotor frontRightDrive,
-                                    RampMotor backLeftTurn, RampMotor backLeftDrive,
-                                    RampMotor backRightTurn, RampMotor backRightDrive,
-                                    Encoder frontLeftTurnEncoder, Encoder frontLeftDriveEncoder,
-                                    Encoder frontRightTurnEncoder, Encoder frontRightDriveEncoder,
-                                    Encoder backLeftTurnEncoder, Encoder backLeftDriveEncoder,
-                                    Encoder backRightTurnEncoder, Encoder backRightDriveEncoder,
-                                    Gyro gyroscope, Accelerometer accelerometer ) {
+    public SwerveDifferentialDrive(SwerveUnit frontLeft, SwerveUnit frontRight, SwerveUnit backLeft, SwerveUnit backRight,
+                                   Encoder frontLeftTurnEncoder, Encoder frontLeftDriveEncoder, Encoder frontRightTurnEncoder,
+                                   Encoder frontRightDriveEncoder, Encoder backLeftTurnEncoder, Encoder backLeftDriveEncoder,
+                                   Encoder backRightTurnEncoder, Encoder backRightDriveEncoder, Gyro gyroscope,
+                                   Accelerometer accelerometer ) {
         super(SwerveDifferentialDrive.class);
 
-        this.frontLeftTurn = frontLeftTurn;
-        this.frontLeftDrive = frontLeftDrive;
-        this.frontRightTurn = frontRightTurn;
-        this.frontRightDrive = frontRightDrive;
-        this.backLeftTurn = backLeftTurn;
-        this.backLeftDrive = backLeftDrive;
-        this.backRightTurn = backRightTurn;
-        this.backRightDrive = backRightDrive;
+        this.frontLeft = frontLeft
 
-        this.driveBase = new SwerveDifferentialDriveBase(frontLeftTurn, frontLeftDrive, frontRightTurn, frontRightDrive,
-                backLeftTurn, backLeftDrive, backRightTurn, backRightDrive, gyroscope);
+        this.driveBase = new SwerveDifferentialDriveBase(frontLeft, frontRight, backLeft, backRight, gyroscope);
 
         this.frontLeftTurnEncoder = frontLeftTurnEncoder;
         this.frontLeftDriveEncoder = frontLeftDriveEncoder;
@@ -129,25 +115,6 @@ public class SwerveDifferentialDrive extends Module {
 
         setDefaultAction(idle);
     }
-
-    public SwerveDifferentialDrive( SpeedController frontLeftTurn, SpeedController frontLeftDrive,
-                                    SpeedController frontRightTurn, SpeedController frontRightDrive,
-                                    SpeedController backLeftTurn, SpeedController backLeftDrive,
-                                    SpeedController backRightTurn, SpeedController backRightDrive,
-                                    Encoder frontLeftTurnEncoder, Encoder frontLeftDriveEncoder,
-                                    Encoder frontRightTurnEncoder, Encoder frontRightDriveEncoder,
-                                    Encoder backLeftTurnEncoder, Encoder backLeftDriveEncoder,
-                                    Encoder backRightTurnEncoder, Encoder backRightDriveEncoder,
-                                    Gyro gyroscope, Accelerometer accelerometer ) {
-        this(new RampMotor(frontLeftTurn), new RampMotor(frontLeftDrive),
-                new RampMotor(frontRightTurn), new RampMotor(frontRightDrive),
-                new RampMotor(backLeftTurn), new RampMotor(backLeftDrive),
-                new RampMotor(backRightTurn), new RampMotor(backRightDrive),
-                frontLeftTurnEncoder, frontLeftDriveEncoder, frontRightTurnEncoder, frontRightDriveEncoder,
-                backLeftTurnEncoder, backLeftDriveEncoder, backRightTurnEncoder, backRightDriveEncoder,
-                gyroscope, accelerometer);
-    }
-
 
     public class Idle extends Action {
         public Idle() {
@@ -232,45 +199,37 @@ public class SwerveDifferentialDrive extends Module {
      */
     private class SwerveDifferentialDriveBase extends RobotDriveBase {
 
-        private final SpeedController frontLeftTurn;
-        private final SpeedController frontLeftDrive;
-        private final SpeedController frontRightTurn;
-        private final SpeedController frontRightDrive;
-        private final SpeedController backLeftTurn;
-        private final SpeedController backLeftDrive;
-        private final SpeedController backRightTurn;
-        private final SpeedController backRightDrive;
+        private final SwerveUnit frontLeft;
+        private final SwerveUnit frontRight;
+        private final SwerveUnit backLeft;
+        private final SwerveUnit backRight;
 
         private final Gyro gyro;
 
-        public SwerveDifferentialDriveBase(SpeedController frontLeftTurn, SpeedController frontLeftDrive,
-                                           SpeedController frontRightTurn, SpeedController frontRightDrive,
-                                           SpeedController backLeftTurn, SpeedController backLeftDrive,
-                                           SpeedController backRightTurn, SpeedController backRightDrive,
-                                           Gyro gyro) {
+        private final ExtendablePIDController frontLeftTurnPID;
+        private final ExtendablePIDController frontRightTurnPID;
+        private final ExtendablePIDController backLeftTurnPID;
+        private final ExtendablePIDController backRightTurnPID;
 
-            verifyMotors(frontLeftTurn, frontLeftDrive, frontRightTurn, frontRightDrive, backLeftTurn, backLeftDrive,
-                    backRightTurn, backRightDrive);
+        public SwerveDifferentialDriveBase(SwerveUnit frontLeft, SwerveUnit frontRight, SwerveUnit backLeft,
+                                           SwerveUnit backRight, Gyro gyro) {
 
-            this.frontLeftTurn = frontLeftTurn;
-            this.frontLeftDrive = frontLeftDrive;
-            this.frontRightTurn = frontRightTurn;
-            this.frontRightDrive = frontRightDrive;
-            this.backLeftTurn = backLeftTurn;
-            this.backLeftDrive = backLeftTurn;
-            this.backRightTurn = backLeftTurn;
-            this.backRightDrive = backLeftTurn;
+            this.frontLeft = frontLeft;
+            this.frontRight = frontRight;
+            this.backLeft = backLeft;
+            this.backRight = backRight;
 
             this.gyro = gyro;
 
-            addChild(frontLeftTurn);
-            addChild(frontLeftDrive);
-            addChild(frontRightTurn);
-            addChild(frontRightDrive);
-            addChild(backLeftTurn);
-            addChild(backLeftDrive);
-            addChild(backRightTurn);
-            addChild(backRightDrive);
+            this.frontLeftTurnPID = new ExtendablePIDController();
+            this.frontRightTurnPID = new ExtendablePIDController();
+            this.backLeftTurnPID = new ExtendablePIDController();
+            this.backRightTurnPID = new ExtendablePIDController();
+
+            addChild(frontLeft);
+            addChild(frontRight);
+            addChild(backLeft);
+            addChild(backRight);
 
             setName("SwerveDifferentialDrive");
         }
@@ -294,6 +253,14 @@ public class SwerveDifferentialDrive extends Module {
             } else if( spin < -1.0 ) {
                 spin = -1.0;
             }
+
+            double vectorAngle = Math.atan2(vector.y, vector.x);
+
+
+            // Used to determine the preference for the angle of the wheels, when trading between driving in a
+            // straight line, and spinning in place
+            double drivePower = Math.min(vector.magnitude(), vector.magnitude() / (vector.magnitude() + spin));
+            double spinPower = Math.min(spin, spin / (vector.magnitude() + spin));
 
             feed();
         }
@@ -329,6 +296,17 @@ public class SwerveDifferentialDrive extends Module {
             // Calculates current difference in angle
 
             feed();
+        }
+
+        /**
+         * Useful for autonomous turns, may not be useful...
+         *
+         * @param center imaginary "center" of the circle to revolve around
+         * @param endAngle direction the robot should face relative to the start
+         * @param clicks distance to travel in encoder clicks
+         */
+        public void arbitraryCircleDrive(Vector2d center, double endAngle, double clicks) {
+
         }
 
         @Override

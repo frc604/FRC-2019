@@ -1,7 +1,6 @@
 package com._604robotics.robotnik.prefabs.devices;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
 public class TalonPWMEncoder implements Encoder {
