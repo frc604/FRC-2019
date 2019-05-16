@@ -4,19 +4,15 @@ import com._604robotics.robotnik.Module;
 import com._604robotics.robotnik.Output;
 import com._604robotics.robotnik.Action;
 import com._604robotics.robotnik.Input;
-import com._604robotics.robotnik.prefabs.controller.ExtendablePIDController;
 import com._604robotics.robotnik.prefabs.devices.SwerveUnit;
-import com._604robotics.robotnik.prefabs.devices.wrappers.RampMotor;
-import com._604robotics.robotnik.utils.PIDValues;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.drive.RobotDriveBase;
 import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
-public class SwerveDifferentialDrive extends Module {
+public class SwerveDrive extends Module {
     /* To copy paste:
         frontLeftTurn
         frontLeftDrive
@@ -35,18 +31,7 @@ public class SwerveDifferentialDrive extends Module {
     private final SwerveUnit backRight;
     //</editor-fold>
 
-    final SwerveDifferentialDriveBase driveBase;
-
-    //<editor-fold desc="Encoders"
-    private final Encoder frontLeftTurnEncoder;
-    private final Encoder frontLeftDriveEncoder;
-    private final Encoder frontRightTurnEncoder;
-    private final Encoder frontRightDriveEncoder;
-    private final Encoder backLeftTurnEncoder;
-    private final Encoder backLeftDriveEncoder;
-    private final Encoder backRightTurnEncoder;
-    private final Encoder backRightDriveEncoder;
-    //</editor-fold>
+    final SwerveDriveBase driveBase;
 
     //<editor-fold desc="Sensors"
     private final Gyro gyroscope;
@@ -64,35 +49,26 @@ public class SwerveDifferentialDrive extends Module {
     //</editor-fold>
 
     //<editor-fold desc="Drive Encoder Outputs"
-    public final Output<Integer> frontLeftTurnClicks;
-    public final Output<Integer> frontLeftDriveClicks;
-    public final Output<Integer> frontRightTurnClicks;
-    public final Output<Integer> frontRightDriveClicks;
-    public final Output<Integer> backLeftTurnClicks;
-    public final Output<Integer> backLeftDriveClicks;
-    public final Output<Integer> backRightTurnClicks;
-    public final Output<Integer> backRightDriveClicks;
+    public final Output<Double> frontLeftTurnClicks;
+    public final Output<Double> frontLeftDriveClicks;
+    public final Output<Double> frontRightTurnClicks;
+    public final Output<Double> frontRightDriveClicks;
+    public final Output<Double> backLeftTurnClicks;
+    public final Output<Double> backLeftDriveClicks;
+    public final Output<Double> backRightTurnClicks;
+    public final Output<Double> backRightDriveClicks;
     //</editor-fold>
 
-    public SwerveDifferentialDrive(SwerveUnit frontLeft, SwerveUnit frontRight, SwerveUnit backLeft, SwerveUnit backRight,
-                                   Encoder frontLeftTurnEncoder, Encoder frontLeftDriveEncoder, Encoder frontRightTurnEncoder,
-                                   Encoder frontRightDriveEncoder, Encoder backLeftTurnEncoder, Encoder backLeftDriveEncoder,
-                                   Encoder backRightTurnEncoder, Encoder backRightDriveEncoder, Gyro gyroscope,
-                                   Accelerometer accelerometer ) {
-        super(SwerveDifferentialDrive.class);
+    public SwerveDrive(SwerveUnit frontLeft, SwerveUnit frontRight, SwerveUnit backLeft, SwerveUnit backRight,
+                       Gyro gyroscope, Accelerometer accelerometer) {
+        super(SwerveDrive.class);
 
-        this.frontLeft = frontLeft
+        this.frontLeft = frontLeft;
+        this.frontRight = frontRight;
+        this.backLeft = backLeft;
+        this.backRight = backRight;
 
-        this.driveBase = new SwerveDifferentialDriveBase(frontLeft, frontRight, backLeft, backRight, gyroscope);
-
-        this.frontLeftTurnEncoder = frontLeftTurnEncoder;
-        this.frontLeftDriveEncoder = frontLeftDriveEncoder;
-        this.frontRightTurnEncoder = frontRightTurnEncoder;
-        this.frontRightDriveEncoder = frontRightDriveEncoder;
-        this.backLeftTurnEncoder = backLeftTurnEncoder;
-        this.backLeftDriveEncoder = backLeftDriveEncoder;
-        this.backRightTurnEncoder = backRightTurnEncoder;
-        this.backRightDriveEncoder = backRightDriveEncoder;
+        this.driveBase = new SwerveDriveBase(frontLeft, frontRight, backLeft, backRight, gyroscope);
 
         this.gyroscope = gyroscope;
         this.accelerometer = accelerometer;
@@ -102,23 +78,28 @@ public class SwerveDifferentialDrive extends Module {
         this.zAccel = addOutput("Z Accelleration", accelerometer::getZ);
         this.horizGyro = addOutput("Gyro", gyroscope::getAngle);
 
-        this.frontLeftTurnClicks = addOutput("Front Left Turn Clicks", frontLeftTurnEncoder::get);
-        this.frontLeftDriveClicks = addOutput("Front Left Drive Clicks", frontLeftDriveEncoder::get);
-        this.frontRightTurnClicks = addOutput("Front Left Right Clicks", frontRightTurnEncoder::get);
-        this.frontRightDriveClicks = addOutput("Front Right Drive Clicks", frontRightDriveEncoder::get);
-        this.backLeftTurnClicks = addOutput("Back Left Turn Clicks", backLeftTurnEncoder::get);
-        this.backLeftDriveClicks = addOutput("Back Left Drive Clicks", backLeftDriveEncoder::get);
-        this.backRightTurnClicks = addOutput("Back Left Right Clicks", backRightTurnEncoder::get);
-        this.backRightDriveClicks = addOutput("Back Right Drive Clicks", backRightDriveEncoder::get);
+        this.frontLeftTurnClicks = addOutput("Front Left Turn Clicks", frontLeft::getTurnClicks);
+        this.frontLeftDriveClicks = addOutput("Front Left Drive Clicks", frontLeft::getDriveClicks);
+        this.frontRightTurnClicks = addOutput("Front Left Right Clicks", frontRight::getTurnClicks);
+        this.frontRightDriveClicks = addOutput("Front Right Drive Clicks", frontRight::getDriveClicks);
+        this.backLeftTurnClicks = addOutput("Back Left Turn Clicks", backLeft::getTurnClicks);
+        this.backLeftDriveClicks = addOutput("Back Left Drive Clicks", backLeft::getDriveClicks);
+        this.backRightTurnClicks = addOutput("Back Left Right Clicks", backRight::getTurnClicks);
+        this.backRightDriveClicks = addOutput("Back Right Drive Clicks", backRight::getDriveClicks);
 
         this.driveBase.setDeadband(0.04);
 
         setDefaultAction(idle);
     }
 
+    public SwerveDrive(SwerveUnit frontLeft, SwerveUnit frontRight, SwerveUnit backLeft, SwerveUnit backRight,
+                       Gyro gyroscope) {
+        this(frontLeft, frontRight, backLeft, backRight, gyroscope, new BuiltInAccelerometer());
+    }
+
     public class Idle extends Action {
         public Idle() {
-            super(SwerveDifferentialDrive.this, Idle.class);
+            super(SwerveDrive.this, Idle.class);
         }
 
         @Override
@@ -135,7 +116,7 @@ public class SwerveDifferentialDrive extends Module {
         public final Input<Double> driveY;
 
         public RobotRelative() {
-            super(SwerveDifferentialDrive.this, RobotRelative.class);
+            super(SwerveDrive.this, RobotRelative.class);
 
             spinPower = addInput("spinPower", 0.0, true);
             driveX = addInput("driveX", 0.0, true);
@@ -157,7 +138,7 @@ public class SwerveDifferentialDrive extends Module {
         public final Input<Double> driveY;
 
         public FieldRelative() {
-            super(SwerveDifferentialDrive.this, FieldRelative.class);
+            super(SwerveDrive.this, FieldRelative.class);
 
             angle = addInput("angle", 0.0, true);
             driveX = addInput("driveX", 0.0, true);
@@ -174,30 +155,22 @@ public class SwerveDifferentialDrive extends Module {
     public FieldRelative fieldRelative = new FieldRelative();
 
     public synchronized void resetSensors() {
-        frontLeftTurnEncoder.reset();
-        frontLeftDriveEncoder.reset();
-        frontRightTurnEncoder.reset();
-        frontRightDriveEncoder.reset();
-        backLeftTurnEncoder.reset();
-        backLeftDriveEncoder.reset();
-        backRightTurnEncoder.reset();
-        backRightDriveEncoder.reset();
+        frontLeft.resetDriveEncoder();
+        frontLeft.resetTurnEncoder();
+        frontRight.resetDriveEncoder();
+        frontRight.resetTurnEncoder();
+        backLeft.resetDriveEncoder();
+        backLeft.resetTurnEncoder();
+        backRight.resetDriveEncoder();
+        backRight.resetTurnEncoder();
 
         gyroscope.reset();
     }
 
     /**
-     * Represents a swerve drive base that uses differential motor gearing. When the motors are run against each other,
-     * the module will spin. When run in the same direction, the wheel spins. Thank mechanical for awesome gearing to
-     * make this happen.
-     *
-     * Some basic vector math and power scaling allows for turning while driving.
-     *
-     * The advantage of this is the additional power that can be utilized when driving and *not* spinning in circles.
-     * Imagine: a swerve drive beating a tank drive because of having two motors per wheel. Of course, this is not close
-     * to being garunteed, due to having only four wheels total, but it is nice to think about.
+     * Represents a swerve drive base that uses 4 modules total.
      */
-    private class SwerveDifferentialDriveBase extends RobotDriveBase {
+    private class SwerveDriveBase extends RobotDriveBase {
 
         private final SwerveUnit frontLeft;
         private final SwerveUnit frontRight;
@@ -206,13 +179,8 @@ public class SwerveDifferentialDrive extends Module {
 
         private final Gyro gyro;
 
-        private final ExtendablePIDController frontLeftTurnPID;
-        private final ExtendablePIDController frontRightTurnPID;
-        private final ExtendablePIDController backLeftTurnPID;
-        private final ExtendablePIDController backRightTurnPID;
-
-        public SwerveDifferentialDriveBase(SwerveUnit frontLeft, SwerveUnit frontRight, SwerveUnit backLeft,
-                                           SwerveUnit backRight, Gyro gyro) {
+        public SwerveDriveBase(SwerveUnit frontLeft, SwerveUnit frontRight, SwerveUnit backLeft,
+                               SwerveUnit backRight, Gyro gyro) {
 
             this.frontLeft = frontLeft;
             this.frontRight = frontRight;
@@ -221,17 +189,12 @@ public class SwerveDifferentialDrive extends Module {
 
             this.gyro = gyro;
 
-            this.frontLeftTurnPID = new ExtendablePIDController();
-            this.frontRightTurnPID = new ExtendablePIDController();
-            this.backLeftTurnPID = new ExtendablePIDController();
-            this.backRightTurnPID = new ExtendablePIDController();
-
             addChild(frontLeft);
             addChild(frontRight);
             addChild(backLeft);
             addChild(backRight);
 
-            setName("SwerveDifferentialDrive");
+            setName("SwerveDriveBase");
         }
 
         /**
@@ -254,13 +217,36 @@ public class SwerveDifferentialDrive extends Module {
                 spin = -1.0;
             }
 
-            double vectorAngle = Math.atan2(vector.y, vector.x);
-
-
             // Used to determine the preference for the angle of the wheels, when trading between driving in a
             // straight line, and spinning in place
             double drivePower = Math.min(vector.magnitude(), vector.magnitude() / (vector.magnitude() + spin));
             double spinPower = Math.min(spin, spin / (vector.magnitude() + spin));
+
+            // If vector = 0, then spin in place
+            // Positive is clockwise, from top-down
+            frontLeft.setAngle(Math.toRadians(45));
+            frontRight.setAngle(Math.toRadians(135));
+            backLeft.setAngle(Math.toRadians(225));
+            backRight.setAngle(Math.toRadians(315));
+            setAllDrive(spin);
+
+            // If spin = 0, then align to vector
+            /* Controller axis example:
+            -+#++
+            #####
+            --#+- */
+            // +,+ = 45
+            // +,- = 135
+            // -,+ = 225
+            // -,- = 315
+            double vectorAngle = Math.atan2(vector.y, vector.x);
+            frontLeft.setAngle(vectorAngle);
+            frontRight.setAngle(vectorAngle);
+            backLeft.setAngle(vectorAngle);
+            backRight.setAngle(vectorAngle);
+            setAllDrive(vector.magnitude());
+
+            // So, to get both, we need to use a ratio. Such as the power.
 
             feed();
         }
@@ -285,7 +271,8 @@ public class SwerveDifferentialDrive extends Module {
          * @param angle desired angle of the robot relative to starting angle in radians
          */
         public void startRelativeDrive(Vector2d vector, double angle) {
-            if( gyro == null ) {
+            if( gyro != null ) {
+                robotRelativeDrive(vector, angle); // Default to robot relative if no gyro
                 throw new RuntimeException("Gyro needed for relative swerve drive");
             }
 
@@ -311,35 +298,24 @@ public class SwerveDifferentialDrive extends Module {
 
         @Override
         public void stopMotor() {
-            frontLeftTurn.stopMotor();
-            frontLeftDrive.stopMotor();
-            frontRightTurn.stopMotor();
-            frontRightDrive.stopMotor();
-            backLeftTurn.stopMotor();
-            backLeftDrive.stopMotor();
-            backRightTurn.stopMotor();
-            backRightDrive.stopMotor();
+            frontLeft.stopMotor();
+            frontRight.stopMotor();
+            backLeft.stopMotor();
+            backRight.stopMotor();
 
             feed();
         }
 
-        private void verifyMotors(SpeedController... motors) {
-            int numNull = 0;
-
-            for( SpeedController s : motors ) {
-                if( s == null ) {
-                    numNull++;
-                }
-            }
-
-            if( numNull > 0 ) {
-                throw new NullPointerException(numNull + " swerve motors");
-            }
+        private void setAllDrive(double power) {
+            frontLeft.setDrive(power);
+            frontRight.setDrive(power);
+            backLeft.setDrive(power);
+            backRight.setAngle(power);
         }
 
         @Override
         public String getDescription() {
-            return "SwerveDifferentialDrive";
+            return "SwerveDriveBase";
         }
 
         @Override
@@ -348,14 +324,14 @@ public class SwerveDifferentialDrive extends Module {
             builder.setSafeState(this::stopMotor);
             builder.setActuator(true);
 
-            builder.addDoubleProperty("Front Left Turn Speed", frontLeftTurn::get, frontLeftTurn::set);
-            builder.addDoubleProperty("Front Left Drive Speed", frontLeftDrive::get, frontLeftDrive::set);
-            builder.addDoubleProperty("Front Right Turn Speed", frontRightTurn::get, frontRightTurn::set);
-            builder.addDoubleProperty("Front Right Drive Speed", frontRightDrive::get, frontRightDrive::set);
-            builder.addDoubleProperty("Back Left Turn Speed", backLeftTurn::get, backLeftTurn::set);
-            builder.addDoubleProperty("Back Left Drive Speed", backLeftDrive::get, backLeftDrive::set);
-            builder.addDoubleProperty("Back Right Turn Speed", backRightTurn::get, backRightTurn::set);
-            builder.addDoubleProperty("Back Right Drive Speed", backRightDrive::get, backRightDrive::set);
+            builder.addDoubleProperty("Front Left Turn Angle", frontLeft::getAngle, frontLeft::setAngle);
+            builder.addDoubleProperty("Front Left Drive Power", frontLeft::getDrive, frontLeft::setDrive);
+            builder.addDoubleProperty("Front Right Turn Angle", frontRight::getAngle, frontRight::setAngle);
+            builder.addDoubleProperty("Front Right Drive Power", frontRight::getDrive, frontRight::setDrive);
+            builder.addDoubleProperty("Back Left Turn Angle", backLeft::getAngle, backLeft::setAngle);
+            builder.addDoubleProperty("Back Left Drive Power", backLeft::getDrive, backLeft::setDrive);
+            builder.addDoubleProperty("Back Right Turn Angle", backRight::getAngle, backRight::setAngle);
+            builder.addDoubleProperty("Back Right Drive Power", backRight::getDrive, backRight::setDrive);
 
         }
     }

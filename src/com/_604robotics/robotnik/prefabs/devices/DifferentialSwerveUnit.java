@@ -12,6 +12,12 @@ import edu.wpi.first.wpilibj.SpeedController;
  *
  * <p>This module also assumes that a 0 degree turn is the same as a 180 degree turn, and will run the motors backwards
  * as a method to more quickly align.</p>
+ *
+ * Some basic vector math and power scaling allows for turning while driving.
+ *
+ * The advantage of this is the additional power that can be utilized when driving and *not* spinning in circles.
+ * Imagine: a swerve drive beating a tank drive because of having two motors per wheel. Of course, this is not close
+ * to being garunteed, due to having only four wheels total, but it is nice to think about.
  */
 public class DifferentialSwerveUnit extends SwerveUnit {
     private final RampMotor drive;
