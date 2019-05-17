@@ -250,6 +250,7 @@ public class TeleopMode extends Coordinator {
         private final Drive.TankDrive tank;
         private final Drive.Idle idle;
         private CurrentDrive currentDrive;
+        private CurrentDrive selectedDrive;
         private Toggle inverted;
 
         public DriveManager () {
@@ -282,22 +283,27 @@ public class TeleopMode extends Coordinator {
             switch (robot.dashboard.driveMode.get()){
                 case OFF:
                     currentDrive=CurrentDrive.IDLE;
+                    selectedDrive=CurrentDrive.IDLE;
                     break;
                 case ARCADE:
                     currentDrive=CurrentDrive.ARCADE;
+                    selectedDrive=CurrentDrive.ARCADE;
                     break;
                 case TANK:
                     currentDrive=CurrentDrive.TANK;
+                    selectedDrive=CurrentDrive.TANK;
                     break;
                 case DYNAMIC:
                     // Dynamic Drive mode detection logic
                     if (currentDrive == CurrentDrive.TANK) {
                         if (Math.abs(rightY) <= 0.2 && Math.abs(rightX) > 0.3) {
                             currentDrive = CurrentDrive.ARCADE;
+                            selectedDrive=CurrentDrive.ARCADE;
                         }
                     } else { // currentDrive == CurrentDrive.ARCADE
                         if (Math.abs(rightX) <= 0.2 && Math.abs(rightY) > 0.3) {
                             currentDrive = CurrentDrive.TANK;
+                            
                         }
                     }
                     break;
@@ -345,6 +351,7 @@ public class TeleopMode extends Coordinator {
                 armManager.disableArm = false;
                 robot.powermonitor.updateCompressor(true);
                 robot.tilter.stow.activate();
+                currentDrive = selectedDrive;
             }
 
             //Limelight Activation Code
@@ -360,7 +367,7 @@ public class TeleopMode extends Coordinator {
                     autoCenterManager.run();
                 } else {
                     robot.limelight.scan.activate();
-                    currentDrive = CurrentDrive.ARCADE;
+                    currentDrive = selectedDrive;
                 }
                 
             } else {
