@@ -219,8 +219,17 @@ public class SwerveDrive extends Module {
 
             // Used to determine the preference for the angle of the wheels, when trading between driving in a
             // straight line, and spinning in place
-            double drivePower = Math.min(vector.magnitude(), vector.magnitude() / (vector.magnitude() + spin));
-            double spinPower = Math.min(spin, spin / (vector.magnitude() + spin));
+            double drivePower = 0.0;
+            double spinPower = 0.0;
+            if( vector.magnitude() <= 0.0 ) {
+                spinPower = 1.0;
+            } else if( spin <= 0.0 ) {
+                drivePower = 1.0;
+            } else {
+                // This would have a divide by 0 exception otherwise
+                drivePower = Math.min(vector.magnitude(), vector.magnitude() / (vector.magnitude() + spin));
+                spinPower = Math.min(spin, spin / (vector.magnitude() + spin));
+            }
 
             // If vector = 0, then spin in place
             // Positive is clockwise, from top-down
