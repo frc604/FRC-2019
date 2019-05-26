@@ -53,6 +53,6 @@ public class Ports {
     
     /* CAN Motors */
     public static final int COMPRESSOR = 0; // AKA PCM
-    public static final int PDP_MODULE = 1;
+    public static final int PDP_MODULE = 9;
     
 }

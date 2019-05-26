@@ -63,7 +63,7 @@ public class PowerMonitor extends Module {
         panel = new PowerDistributionPanel(PDPPortID);
         compressor = new Compressor(compressorID);
         // Set up outputs
-        compCurrent = addOutput("Compressor Current", () -> compressor.getCompressorCurrent());
+        /*compCurrent = addOutput("Compressor Current", () -> compressor.getCompressorCurrent());*/
         totalPortCurrent=addOutput("Total Port Current", () -> /*panel.getTotalCurrent()*/ -1.0);
         totalCurrent=addOutput("Total Current", () -> /*panel.getTotalCurrent()+compressor.getCompressorCurrent()*/ -1.0);
         batteryVoltage=addOutput("Battery Voltage", () -> /*panel.getVoltage()*/ -1.0);
