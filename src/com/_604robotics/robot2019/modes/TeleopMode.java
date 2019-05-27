@@ -239,13 +239,22 @@ public class TeleopMode extends Coordinator {
         private BenchTalon talon6;
         private BenchTalon talon7;
         private BenchTalon talon8;
+        private BenchTalon talon9;
+        private BenchTalon talon10;
+        private BenchTalon talon11;
+        private BenchTalon talon12;
+        private BenchTalon talon13;
+        private BenchTalon talon14;
 
         private BenchVictor victor4;
         private BenchVictor victor5;
+        private BenchVictor victor15;
+        private BenchVictor victor16;
 
 
-        private int period = 5;
-        private int status1period = 200;
+        private int period = 10;
+        private int period2 = 5;
+        private int status1period = 10;
         private int status2period = 20;
 
         public BenchManager () {
@@ -255,9 +264,17 @@ public class TeleopMode extends Coordinator {
             talon6 = new BenchTalon(6, period, status1period, status2period);
             talon7 = new BenchTalon(7, period, status1period, status2period);
             talon8 = new BenchTalon(8, period, status1period, status2period);
+            talon9 = new BenchTalon(9, period2, status1period, status2period);
+            talon10 = new BenchTalon(10, period2, status1period, status2period);
+            talon11 = new BenchTalon(11, period2, status1period, status2period);
+            talon12 = new BenchTalon(12, period2, status1period, status2period);
+            talon13 = new BenchTalon(13, period2, status1period, status2period);
+            talon14 = new BenchTalon(14, period2, status1period, status2period);
 
             victor4 = new BenchVictor(4, period, status1period, status2period);
             victor5 = new BenchVictor(5, period, status1period, status2period);
+            victor15 = new BenchVictor(15, period2, status1period, status2period);
+            victor16 = new BenchVictor(16, period2, status1period, status2period);
         }
 
         public void run() {
@@ -267,9 +284,17 @@ public class TeleopMode extends Coordinator {
             talon6.move(0.5);
             talon7.move(0.5);
             talon8.move(0.5);
+            talon9.move(0.5);
+            talon10.move(0.5);
+            talon11.move(0.5);
+            talon12.move(0.5);
+            talon13.move(0.5);
+            talon14.move(0.5);
 
             victor4.move(0.5);
             victor5.move(0.5);
+            victor15.move(0.5);
+            victor16.move(0.5);
         }
     }
 
