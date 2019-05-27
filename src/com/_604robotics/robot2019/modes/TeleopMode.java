@@ -243,18 +243,21 @@ public class TeleopMode extends Coordinator {
         private BenchVictor victor4;
         private BenchVictor victor5;
 
+
         private int period = 5;
+        private int status1period = 200;
+        private int status2period = 20;
 
         public BenchManager () {
-            talon1 = new BenchTalon(1, period);
-            talon2 = new BenchTalon(2, period);
-            talon3 = new BenchTalon(3, period);
-            talon6 = new BenchTalon(6, period);
-            talon7 = new BenchTalon(7, period);
-            talon8 = new BenchTalon(8, period);
+            talon1 = new BenchTalon(1, period, status1period, status2period);
+            talon2 = new BenchTalon(2, period, status1period, status2period);
+            talon3 = new BenchTalon(3, period, status1period, status2period);
+            talon6 = new BenchTalon(6, period, status1period, status2period);
+            talon7 = new BenchTalon(7, period, status1period, status2period);
+            talon8 = new BenchTalon(8, period, status1period, status2period);
 
-            victor4 = new BenchVictor(4, period);
-            victor5 = new BenchVictor(5, period);
+            victor4 = new BenchVictor(4, period, status1period, status2period);
+            victor5 = new BenchVictor(5, period, status1period, status2period);
         }
 
         public void run() {
