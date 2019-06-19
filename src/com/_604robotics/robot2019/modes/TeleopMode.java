@@ -365,7 +365,14 @@ public class TeleopMode extends Coordinator {
                     currentDrive = CurrentDrive.MANUAL; //Disable manual control so the PID can take over
                     arcade.movePower.set(leftY); //Still allow driver to control forward/backwards movement
                     autoCenterManager.run();
+                    if ( autoCenterManager.anglePID.onTarget() ) {
+                        driver.rumble.setEnabled(true);
+                        driver.rumble.setRumble(1);
+                    } else {
+                        driver.rumble.setEnabled(false);
+                    }
                 } else {
+                    driver.rumble.setEnabled(false);
                     robot.limelight.scan.activate();
                     currentDrive = selectedDrive;
                 }
@@ -693,7 +700,6 @@ public class TeleopMode extends Coordinator {
 
         public void run() {
             robot.limelight.scan.activate();
-
             if( robot.limelight.limelightHasTargets.get() ) {
                 anglePID.setEnabled(true);
                 System.out.println(anglePID.get());
