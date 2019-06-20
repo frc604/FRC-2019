@@ -618,8 +618,12 @@ public class TeleopMode extends Coordinator {
                     if( hatchTime.hasPeriodPassed(Calibration.HATCH_BACK_TIME) ) {
                         sliderForward.update(sliderForward.isInOnState());
                         hatchTime.stopAndReset();
+                        driver.rumble.setEnabled(false);
                         autoState++;
 
+                    } else {
+                        driver.rumble.setEnabled(true);
+                        driver.rumble.setRumble(1);
                     }
                     break;
                 case ( 4 ):
