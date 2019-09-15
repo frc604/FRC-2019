@@ -18,6 +18,8 @@ dependencies {
     nativeLib files("lib/rio/libpathfinderjava.so")
     compile fileTree(include: '*.jar', dir: 'lib')
     simulation "edu.wpi.first.halsim:halsim_lowfi:${wpi.wpilibVersion}:${wpi.platforms.desktop}@zip"
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.2")\
 }
 
 sourceSets {
@@ -50,6 +52,13 @@ deploy {
             directory = '/home/lvuser/deploy'
         }
     }
+}
+
+test {
+    useJUnitPlatform {
+
+    }
+
 }
 
 // Fat Jar with manifest

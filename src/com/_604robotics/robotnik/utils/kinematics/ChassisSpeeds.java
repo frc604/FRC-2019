@@ -7,6 +7,7 @@
 
 package com._604robotics.robotnik.utils.kinematics;
 
+
 import com._604robotics.robotnik.utils.geometry.Rotation2d;
 
 /**
@@ -41,7 +42,6 @@ public class ChassisSpeeds {
    * Constructs a ChassisSpeeds with zeros for dx, dy, and theta.
    */
   public ChassisSpeeds() {
-
   }
 
   /**
@@ -56,7 +56,6 @@ public class ChassisSpeeds {
     this.vxMetersPerSecond = vxMetersPerSecond;
     this.vyMetersPerSecond = vyMetersPerSecond;
     this.omegaRadiansPerSecond = omegaRadiansPerSecond;
-
   }
 
   /**
@@ -82,7 +81,5 @@ public class ChassisSpeeds {
         -vxMetersPerSecond * robotAngle.getSin() + vyMetersPerSecond * robotAngle.getCos(),
         omegaRadiansPerSecond
     );
-
   }
-
 }
