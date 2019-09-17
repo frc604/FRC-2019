@@ -5,10 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package com._604robotics.robotnik.tests;
-
 import com._604robotics.robotnik.prefabs.controller.RamseteController;
-import com._604robotics.robotnik.tests.SampleTrajectory;
 import com._604robotics.robotnik.utils.kinematics.ChassisSpeeds;
 
 import org.junit.jupiter.api.Test;

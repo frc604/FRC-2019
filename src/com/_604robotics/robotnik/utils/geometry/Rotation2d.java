@@ -25,7 +25,6 @@ public class Rotation2d {
     m_value = 0.0;
     m_cos = 1.0;
     m_sin = 0.0;
-
   }
 
   /**
@@ -38,7 +37,6 @@ public class Rotation2d {
     m_value = value;
     m_cos = Math.cos(value);
     m_sin = Math.sin(value);
-
   }
 
   /**
@@ -54,14 +52,11 @@ public class Rotation2d {
     if (magnitude > 1e-6) {
       m_sin = y / magnitude;
       m_cos = x / magnitude;
-
     } else {
       m_sin = 0.0;
       m_cos = 1.0;
-
     }
     m_value = Math.atan2(m_sin, m_cos);
-
   }
 
   /**
@@ -72,7 +67,6 @@ public class Rotation2d {
    */
   public static Rotation2d fromDegrees(double degrees) {
     return new Rotation2d(Math.toRadians(degrees));
-
   }
 
   /**
@@ -87,7 +81,6 @@ public class Rotation2d {
    */
   public Rotation2d plus(Rotation2d other) {
     return rotateBy(other);
-
   }
 
   /**
@@ -102,7 +95,6 @@ public class Rotation2d {
    */
   public Rotation2d minus(Rotation2d other) {
     return rotateBy(other.unaryMinus());
-
   }
 
   /**
@@ -113,7 +105,16 @@ public class Rotation2d {
    */
   public Rotation2d unaryMinus() {
     return new Rotation2d(-m_value);
+  }
 
+  /**
+   * Multiplies the current rotation by a scalar.
+   *
+   * @param scalar The scalar.
+   * @return The new scaled Rotation2d.
+   */
+  public Rotation2d times(double scalar) {
+    return new Rotation2d(m_value * scalar);
   }
 
   /**
@@ -132,7 +133,6 @@ public class Rotation2d {
         m_cos * other.m_cos - m_sin * other.m_sin,
         m_cos * other.m_sin + m_sin * other.m_cos
     );
-
   }
 
   /*
@@ -142,7 +142,6 @@ public class Rotation2d {
    */
   public double getRadians() {
     return m_value;
-
   }
 
   /**
@@ -152,7 +151,6 @@ public class Rotation2d {
    */
   public double getDegrees() {
     return Math.toDegrees(m_value);
-
   }
 
   /**
@@ -162,7 +160,6 @@ public class Rotation2d {
    */
   public double getCos() {
     return m_cos;
-
   }
 
   /**
@@ -172,7 +169,6 @@ public class Rotation2d {
    */
   public double getSin() {
     return m_sin;
-
   }
 
   /**
@@ -182,7 +178,6 @@ public class Rotation2d {
    */
   public double getTan() {
     return m_sin / m_cos;
-
   }
 
   /**
@@ -195,16 +190,12 @@ public class Rotation2d {
   public boolean equals(Object obj) {
     if (obj instanceof Rotation2d) {
       return Math.abs(((Rotation2d) obj).m_value - m_value) < 1E-9;
-
     }
     return false;
-
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(m_value);
-
   }
-  
 }

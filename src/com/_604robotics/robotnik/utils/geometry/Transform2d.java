@@ -30,7 +30,6 @@ public class Transform2d {
             .rotateBy(initial.getRotation().unaryMinus());
 
     m_rotation = last.getRotation().minus(initial.getRotation());
-
   }
 
   /**
@@ -42,7 +41,6 @@ public class Transform2d {
   public Transform2d(Translation2d translation, Rotation2d rotation) {
     m_translation = translation;
     m_rotation = rotation;
-
   }
 
   /**
@@ -51,7 +49,16 @@ public class Transform2d {
   public Transform2d() {
     m_translation = new Translation2d();
     m_rotation = new Rotation2d();
+  }
 
+  /**
+   * Scales the transform by the scalar.
+   *
+   * @param scalar The scalar.
+   * @return The scaled Transform2d.
+   */
+  public Transform2d times(double scalar) {
+    return new Transform2d(m_translation.times(scalar), m_rotation.times(scalar));
   }
 
   /**
@@ -61,7 +68,6 @@ public class Transform2d {
    */
   public Translation2d getTranslation() {
     return m_translation;
-
   }
 
   /**
@@ -71,7 +77,6 @@ public class Transform2d {
    */
   public Rotation2d getRotation() {
     return m_rotation;
-
   }
 
   /**
@@ -86,15 +91,11 @@ public class Transform2d {
       return ((Transform2d) obj).m_translation.equals(m_translation)
           && ((Transform2d) obj).m_rotation.equals(m_rotation);
     }
-
     return false;
-
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(m_translation, m_rotation);
-    
   }
-
 }

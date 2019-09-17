@@ -23,7 +23,6 @@ public class Pose2d {
   public Pose2d() {
     m_translation = new Translation2d();
     m_rotation = new Rotation2d();
-
   }
 
   /**
@@ -35,7 +34,6 @@ public class Pose2d {
   public Pose2d(Translation2d translation, Rotation2d rotation) {
     m_translation = translation;
     m_rotation = rotation;
-
   }
 
   /**
@@ -50,7 +48,6 @@ public class Pose2d {
   public Pose2d(double x, double y, Rotation2d rotation) {
     m_translation = new Translation2d(x, y);
     m_rotation = rotation;
-
   }
 
   /**
@@ -67,7 +64,17 @@ public class Pose2d {
    */
   public Pose2d plus(Transform2d other) {
     return transformBy(other);
+  }
 
+  /**
+   * Returns the Transform2d that maps the one pose to another.
+   *
+   * @param other The initial pose of the transformation.
+   * @return The transform that maps the other pose to the current pose.
+   */
+  public Transform2d minus(Pose2d other) {
+    final var pose = this.relativeTo(other);
+    return new Transform2d(pose.getTranslation(), pose.getRotation());
   }
 
   /**
@@ -77,7 +84,6 @@ public class Pose2d {
    */
   public Translation2d getTranslation() {
     return m_translation;
-
   }
 
   /**
@@ -87,7 +93,6 @@ public class Pose2d {
    */
   public Rotation2d getRotation() {
     return m_rotation;
-
   }
 
   /**
@@ -99,8 +104,7 @@ public class Pose2d {
    */
   public Pose2d transformBy(Transform2d other) {
     return new Pose2d(m_translation.plus(other.getTranslation().rotateBy(m_rotation)),
-            m_rotation.plus(other.getRotation()));
-
+        m_rotation.plus(other.getRotation()));
   }
 
   /**
@@ -117,7 +121,6 @@ public class Pose2d {
   public Pose2d relativeTo(Pose2d other) {
     var transform = new Transform2d(other, this);
     return new Pose2d(transform.getTranslation(), transform.getRotation());
-
   }
 
   /**
@@ -155,17 +158,42 @@ public class Pose2d {
     if (Math.abs(dtheta) < 1E-9) {
       s = 1.0 - 1.0 / 6.0 * dtheta * dtheta;
       c = 0.5 * dtheta;
-
     } else {
       s = sinTheta / dtheta;
       c = (1 - cosTheta) / dtheta;
-
     }
     var transform = new Transform2d(new Translation2d(dx * s - dy * c, dx * c + dy * s),
-            new Rotation2d(cosTheta, sinTheta));
+        new Rotation2d(cosTheta, sinTheta));
 
     return this.plus(transform);
+  }
 
+  /**
+   * Returns a Twist2d that maps this pose to the end pose. If c is the output
+   * of a.Log(b), then a.Exp(c) would yield b.
+   *
+   * @param end The end pose for the transformation.
+   * @return The twist that maps this to end.
+   */
+  public Twist2d log(Pose2d end) {
+    final var transform = end.relativeTo(this);
+    final var dtheta = transform.getRotation().getRadians();
+    final var halfDtheta = dtheta / 2.0;
+
+    final var cosMinusOne = transform.getRotation().getCos() - 1;
+
+    double halfThetaByTanOfHalfDtheta;
+    if (Math.abs(cosMinusOne) < 1E-9) {
+      halfThetaByTanOfHalfDtheta = 1.0 - 1.0 / 12.0 * dtheta * dtheta;
+    } else {
+      halfThetaByTanOfHalfDtheta = -(halfDtheta * transform.getRotation().getSin()) / cosMinusOne;
+    }
+
+    Translation2d translationPart = transform.getTranslation().rotateBy(
+        new Rotation2d(halfThetaByTanOfHalfDtheta, -halfDtheta)
+    ).times(Math.hypot(halfThetaByTanOfHalfDtheta, halfDtheta));
+
+    return new Twist2d(translationPart.getX(), translationPart.getY(), dtheta);
   }
 
   /**
@@ -179,16 +207,12 @@ public class Pose2d {
     if (obj instanceof Pose2d) {
       return ((Pose2d) obj).m_translation.equals(m_translation)
           && ((Pose2d) obj).m_rotation.equals(m_rotation);
-
     }
     return false;
-
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(m_translation, m_rotation);
-
   }
-  
 }

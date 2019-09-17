@@ -28,6 +28,12 @@ sourceSets {
             srcDirs = ["src"]
         }
     }
+    
+    test {
+        java {
+            srcDirs = ["testing"]
+        }
+    }
 }
 
 deploy {
@@ -58,7 +64,6 @@ test {
     useJUnitPlatform {
 
     }
-
 }
 
 // Fat Jar with manifest

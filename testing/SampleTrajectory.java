@@ -5,8 +5,6 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package com._604robotics.robotnik.tests;
-
 import java.util.Arrays;
 
 final class SampleTrajectory {

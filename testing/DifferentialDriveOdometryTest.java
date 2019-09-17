@@ -5,12 +5,13 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package com._604robotics.robotnik.utils.kinematics;
-
 import org.junit.jupiter.api.Test;
 
 import com._604robotics.robotnik.utils.geometry.Pose2d;
 import com._604robotics.robotnik.utils.geometry.Rotation2d;
+import com._604robotics.robotnik.utils.kinematics.DifferentialDriveKinematics;
+import com._604robotics.robotnik.utils.kinematics.DifferentialDriveOdometry;
+import com._604robotics.robotnik.utils.kinematics.DifferentialDriveWheelSpeeds;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

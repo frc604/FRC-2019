@@ -5,8 +5,6 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package com._604robotics.robotnik.tests;
-
 import org.junit.jupiter.api.Test;
 
 import com._604robotics.robotnik.utils.geometry.Rotation2d;
