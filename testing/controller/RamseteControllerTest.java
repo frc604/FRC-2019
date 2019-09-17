@@ -4,6 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
+package controller;
 
 import com._604robotics.robotnik.prefabs.controller.RamseteController;
 import com._604robotics.robotnik.utils.kinematics.ChassisSpeeds;

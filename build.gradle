@@ -18,8 +18,13 @@ dependencies {
     nativeLib files("lib/rio/libpathfinderjava.so")
     compile fileTree(include: '*.jar', dir: 'lib')
     simulation "edu.wpi.first.halsim:halsim_lowfi:${wpi.wpilibVersion}:${wpi.platforms.desktop}@zip"
+    
+    //Testing
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.2")\
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.2")
+    
+    //Linear Algebra Stuffs
+    compile group: 'org.ejml', name: 'ejml-all', version: '0.38'
 }
 
 sourceSets {

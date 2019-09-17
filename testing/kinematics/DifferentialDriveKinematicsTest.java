@@ -4,6 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
+package kinematics;
 
 import org.junit.jupiter.api.Test;
 
