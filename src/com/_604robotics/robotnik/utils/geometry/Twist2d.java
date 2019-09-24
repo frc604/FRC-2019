@@ -34,7 +34,6 @@ public class Twist2d {
   public double dtheta;
 
   public Twist2d() {
-
   }
 
   /**
@@ -47,7 +46,6 @@ public class Twist2d {
     this.dx = dx;
     this.dy = dy;
     this.dtheta = dtheta;
-
   }
 
   /**
@@ -62,16 +60,12 @@ public class Twist2d {
       return Math.abs(((Twist2d) obj).dx - dx) < 1E-9
           && Math.abs(((Twist2d) obj).dy - dy) < 1E-9
           && Math.abs(((Twist2d) obj).dtheta - dtheta) < 1E-9;
-
     }
     return false;
-
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(dx, dy, dtheta);
-
   }
-  
 }

@@ -9,6 +9,7 @@ package com._604robotics.robotnik.prefabs.controller;
 
 import com._604robotics.robotnik.utils.geometry.Pose2d;
 import com._604robotics.robotnik.utils.kinematics.ChassisSpeeds;
+import com._604robotics.robotnik.utils.trajectory.Trajectory;
 
 /**
  * Ramsete is a nonlinear time-varying feedback controller for unicycle models
@@ -59,7 +60,6 @@ public class RamseteController {
   public RamseteController(double b, double zeta) {
     m_b = b;
     m_zeta = zeta;
-
   }
 
   /**
@@ -73,7 +73,6 @@ public class RamseteController {
     return Math.abs(eTranslate.getX()) < tolTranslate.getX()
            && Math.abs(eTranslate.getY()) < tolTranslate.getY()
            && Math.abs(eRotate.getRadians()) < tolRotate.getRadians();
-
   }
 
   /**
@@ -84,7 +83,6 @@ public class RamseteController {
    */
   public void setTolerance(Pose2d poseTolerance) {
     m_poseTolerance = poseTolerance;
-
   }
 
   /**
@@ -93,31 +91,26 @@ public class RamseteController {
    * <p>The reference pose, linear velocity, and angular velocity should come
    * from a drivetrain trajectory.
    *
-   * @param currentPose              The current pose.
-   * @param poseRef                  The desired pose.
-   * @param linearVelocityRefMeters  The desired linear velocity in meters.
-   * @param angularVelocityRefMeters The desired angular velocity in meters.
+   * @param currentPose  The current pose.
+   * @param desiredState The desired pose, linear velocity, and angular velocity
+   *                     from a trajectory.
    */
   @SuppressWarnings("LocalVariableName")
-  public ChassisSpeeds calculate(Pose2d currentPose,
-                                 Pose2d poseRef,
-                                 double linearVelocityRefMeters,
-                                 double angularVelocityRefMeters) {
-    m_poseError = poseRef.relativeTo(currentPose);
+  public ChassisSpeeds calculate(Pose2d currentPose, Trajectory.State desiredState) {
+    m_poseError = desiredState.poseMeters.relativeTo(currentPose);
 
     // Aliases for equation readability
     double eX = m_poseError.getTranslation().getX();
     double eY = m_poseError.getTranslation().getY();
     double eTheta = m_poseError.getRotation().getRadians();
-    double vRef = linearVelocityRefMeters;
-    double omegaRef = angularVelocityRefMeters;
+    double vRef = desiredState.velocityMetersPerSecond;
+    double omegaRef = desiredState.velocityMetersPerSecond * desiredState.curvatureRadPerMeter;
 
     double k = 2.0 * m_zeta * Math.sqrt(Math.pow(omegaRef, 2) + m_b * Math.pow(vRef, 2));
 
     return new ChassisSpeeds(vRef * m_poseError.getRotation().getCos() + k * eX,
                              0.0,
                              omegaRef + k * eTheta + m_b * vRef * sinc(eTheta) * eY);
-                             
   }
 
   /**
@@ -129,10 +122,8 @@ public class RamseteController {
   private static double sinc(double x) {
     if (Math.abs(x) < 1e-9) {
       return 1.0 - 1.0 / 6.0 * x * x;
-
     } else {
       return Math.sin(x) / x;
-
     }
   }
 }

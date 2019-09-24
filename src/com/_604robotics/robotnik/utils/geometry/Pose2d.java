@@ -169,6 +169,26 @@ public class Pose2d {
   }
 
   /**
+   * Checks equality between this Pose2d and another object.
+   *
+   * @param obj The other object.
+   * @return Whether the two objects are equal or not.
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof Pose2d) {
+      return ((Pose2d) obj).m_translation.equals(m_translation)
+          && ((Pose2d) obj).m_rotation.equals(m_rotation);
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(m_translation, m_rotation);
+  }
+
+  /**
    * Returns a Twist2d that maps this pose to the end pose. If c is the output
    * of a.Log(b), then a.Exp(c) would yield b.
    *
@@ -194,25 +214,5 @@ public class Pose2d {
     ).times(Math.hypot(halfThetaByTanOfHalfDtheta, halfDtheta));
 
     return new Twist2d(translationPart.getX(), translationPart.getY(), dtheta);
-  }
-
-  /**
-   * Checks equality between this Pose2d and another object.
-   *
-   * @param obj The other object.
-   * @return Whether the two objects are equal or not.
-   */
-  @Override
-  public boolean equals(Object obj) {
-    if (obj instanceof Pose2d) {
-      return ((Pose2d) obj).m_translation.equals(m_translation)
-          && ((Pose2d) obj).m_rotation.equals(m_rotation);
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(m_translation, m_rotation);
   }
 }

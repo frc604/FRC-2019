@@ -71,12 +71,8 @@ public class Calibration {
 
     @Unreal("Values must be updated when the real robot is designed")
     public static final AutonMovement.DriveTrainProperties DRIVE_PROPERTIES
-    = new AutonMovement.DriveTrainProperties(490, 26.64, 2.5, 20.767, 8.323);
+    = new AutonMovement.DriveTrainProperties(4096, 3.81 * 2, 0.0508, 3.0, 2* Math.PI);
     // second to last = coefficient, second value = offset
-    static {
-        System.out.println("Clicks over inches is "+DRIVE_PROPERTIES.getClicksOverInches());
-        System.out.println("Clicks over degrees is "+DRIVE_PROPERTIES.getDegreesOverClicks());
-    }
 
     /* Marionette */
     public static final boolean AUTO_APPEND_TIMESTAMP = true;

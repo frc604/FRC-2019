@@ -4,16 +4,17 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-package controller;
 
-import com._604robotics.robotnik.prefabs.controller.RamseteController;
-import com._604robotics.robotnik.utils.kinematics.ChassisSpeeds;
+package controller;
 
 import org.junit.jupiter.api.Test;
 
 import com._604robotics.robotnik.utils.geometry.Pose2d;
 import com._604robotics.robotnik.utils.geometry.Rotation2d;
 import com._604robotics.robotnik.utils.geometry.Twist2d;
+import com._604robotics.robotnik.utils.trajectory.Trajectory;
+
+import com._604robotics.robotnik.prefabs.controller.RamseteController;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,7 +46,12 @@ class RamseteControllerTest {
         desiredOmega = boundRadians((m_trajectory[i + 1][3] - trajectoryPoint[3]) / dt);
       }
 
-      var output = controller.calculate(robotPose, desiredPose, desiredV, desiredOmega);
+      double curvature = 0.0;
+      if (desiredV != 0.0) {
+        curvature = desiredOmega / desiredV;
+      }
+      var desiredState = new Trajectory.State(0.0, desiredV, 0.0, desiredPose, curvature);
+      var output = controller.calculate(robotPose, desiredState);
       robotPose = robotPose.exp(new Twist2d(output.vxMetersPerSecond * dt, 0,
           output.omegaRadiansPerSecond * dt));
     }
