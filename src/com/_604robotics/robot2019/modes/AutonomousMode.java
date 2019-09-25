@@ -23,15 +23,15 @@ import edu.wpi.first.wpilibj.Timer;
 import java.io.IOException;
 import java.util.List;
 
-public class AutonomousModeRamsete extends Coordinator {
-    private static final Logger logger = new Logger(AutonomousModeRamsete.class);
+public class AutonomousMode extends Coordinator {
+    private static final Logger logger = new Logger(AutonomousMode.class);
 
     private final com._604robotics.robot2019.Robot2019 robot;
     public String primaryFileName;
     public String secondaryFileName;
     private Coordinator selectedModeMacro;
 
-    public AutonomousModeRamsete(Robot2019 robot) {
+    public AutonomousMode(Robot2019 robot) {
         this.robot = robot;
     }
 
