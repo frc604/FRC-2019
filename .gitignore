@@ -167,3 +167,6 @@ out
 
 # Library files
 !lib/*
+
+#FalconDashbaord
+settings.json
