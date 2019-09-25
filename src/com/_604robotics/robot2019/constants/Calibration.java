@@ -82,18 +82,10 @@ public class Calibration {
 
     /* Pathfinder */
     @Unreal("Values must be updated when the real robot is designed")
-    public final class Pathfinder {
-        public static final double ROBOT_WIDTH = 0.66;
-        public static final double KP = 2;
-        public static final double KI = 0;
-        public static final double KD = 0.0;
-        public static final double KV = 1.0/2.3;
-        public static final double KA = 0.03;
-        public static final double K_KAPPA = 0.09;
-        public static final double K_PTHETA_0 = 2.8;
-        public static final double K_PTHETA_DECAY = 0.7;
-        public static final double K_DTHETA_0 = 0.02;
-        public static final double K_DTHETA_DECAY = 0.3;
+    public final class RamsetePathFollower {
+        public static final double b = 1;
+        public static final double zeta = 0.5;
+        public static final double dt = 0.1; //Seconds
     }
 
     public static final Trajectory.Config PATHFINDER_CONFIG = new Trajectory.Config(
