@@ -1,0 +1,3 @@
+[submodule "FalconDashboard"]
+	path = FalconDashboard
+	url = https://github.com/FRC5190/FalconDashboard.git
