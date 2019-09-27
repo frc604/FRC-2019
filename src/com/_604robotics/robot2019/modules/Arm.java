@@ -57,7 +57,7 @@ public class Arm extends Module {
 
         pid.setEncoderPeriod(Calibration.Arm.CLICKS_FULL_ROTATION);
         pid.setFeedforwardZeroOffset(Calibration.Arm.HORIZONTAL_POSITION);
-        pid.setOutputRange(-0.5,.5); //-.45,.4, -.7, .7
+        pid.setOutputRange(-0.65, 0.65); //-0.5 0.5
         pidError = addOutput("PID Error", () -> this.pid.getError());
 
         setDefaultAction(move);

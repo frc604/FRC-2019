@@ -128,6 +128,9 @@ public class TeleopMode extends Coordinator {
     private boolean manipX= false;
     private boolean manipY= false;
     private boolean manipDPad = false;
+
+    private boolean hatchCollisionChecker;
+    private boolean armCollisionChecker;
     //</editor-fold>
 
     public void startPlayback (InputRecording recording) {
@@ -148,6 +151,9 @@ public class TeleopMode extends Coordinator {
         }
 
         robot.intake.speed.set(0);
+        hatchCollisionChecker = false;
+        armCollisionChecker = false;
+
     }
 
     @Override
@@ -465,6 +471,12 @@ public class TeleopMode extends Coordinator {
                 arm.setpoint.setpoint.set(0.0);
             }
 
+            if ( arm.leftEncoderClicks.get() >= 1300 ){
+                armCollisionChecker = true;
+            } else {
+                armCollisionChecker = false;
+            }
+
             if ( manipBack ) {
                 arm.resetEncoder();
             }
@@ -493,7 +505,7 @@ public class TeleopMode extends Coordinator {
                 
 
                 // Check setpoints
-                if( manipA ) {
+                if( manipA && !hatchCollisionChecker ) {
                     // Low position // ARMSETPOINTS
                     arm.setpoint.setpoint.set(Calibration.Arm.LOW_SETPOINT);
                     arm.setpoint.activate();
@@ -505,15 +517,15 @@ public class TeleopMode extends Coordinator {
                     // Back Scoring Rocket
                     arm.setpoint.setpoint.set(Calibration.Arm.BACK_ROCKET_SETPOINT);
                     arm.setpoint.activate();
-                } else if( manipX ) {
+                } else if( manipX && !hatchCollisionChecker ) {
                     // Vertical position
                     arm.setpoint.setpoint.set(Calibration.Arm.ROCKET_SETPOINT);
                     arm.setpoint.activate();
-                } else if( manipRightBumper) {
+                } else if( manipRightBumper ) {
                     //Back Scoring Cargo
-					arm.setpoint.setpoint.set(Calibration.Arm.BACK_CARGO_SETPOINT);
+                    arm.setpoint.setpoint.set(Calibration.Arm.BACK_CARGO_SETPOINT);
                     arm.setpoint.activate();
-				} else {
+                } else {
                     // Check thumbsticks
                     if( manipLeftJoystickY != 0 ) {
                         // Set arm rate to joystick
@@ -561,6 +573,12 @@ public class TeleopMode extends Coordinator {
 
         public void run() {
 
+            if ( robot.slider.isForward.get() ){
+                hatchCollisionChecker = true;
+            } else {
+                hatchCollisionChecker = false;
+            }
+
             if( driverA ) {
                 hookToggle.update(driverA);
             } else {
@@ -579,10 +597,12 @@ public class TeleopMode extends Coordinator {
                 sliderForward.update(false);
             }
 
-            if( sliderForward.isInOnState()) {
-                robot.slider.front.activate();
-            } else if( sliderForward.isInOffState() ) {
-                robot.slider.back.activate();
+            if ( !armCollisionChecker ){
+                if( sliderForward.isInOnState() ) {
+                    robot.slider.front.activate();
+                } else if( sliderForward.isInOffState() ) {
+                    robot.slider.back.activate();
+                }
             }
 
             switch (autoState) {
@@ -670,10 +690,10 @@ public class TeleopMode extends Coordinator {
             rotation = new PIDOutput() {
                 @Override
                 public synchronized void pidWrite(double output) {
-                    if( output >= 0.535 ) {
-                        output = 0.535;
-                    } else if( output <= -0.535 ) {
-                        output = -0.535;
+                    if( output >= 0.56 ) {
+                        output = 0.56;
+                    } else if( output <= -0.56 ) {
+                        output = -0.56;
                     }
                     driveManager.arcade.rotatePower.set(output);
                 }
@@ -685,7 +705,7 @@ public class TeleopMode extends Coordinator {
                     //TODO Find out why this was running in the main loop
                 }
             };
-            anglePID = new ExtendablePIDController(-0.05, 0, -0.3, new Limelight.HorizontalError(robot.limelight,0), rotation, 0.025);
+            anglePID = new ExtendablePIDController(-0.07, 0, -0.3, new Limelight.HorizontalError(robot.limelight,0), rotation, 0.025);
             anglePID.setAbsoluteTolerance(Calibration.LIMELIGHT_ANGLE_TOLERANCE);
             distPID = new ExtendablePIDController(0.5, 0, 0, new Limelight.DistanceError(robot.limelight, 18), drive);
             distPID.setAbsoluteTolerance(Calibration.LIMELIGHT_DIST_TOLERANCE);
