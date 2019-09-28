@@ -433,12 +433,12 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
-            if( driverRightTrigger != 0.0 ) {
-                speed.set(-driverRightTrigger); // Intake
+            if( driverLeftTrigger != 0.0 ) {
+                speed.set(-driverLeftTrigger); // Intake
                 //Negative is Intake
 
-            } else if( driverLeftTrigger != 0.0 ){
-                speed.set( Math.min(driverLeftTrigger, 0.80) ); // Outtake
+            } else if( driverRightTrigger != 0.0 ){
+                speed.set( Math.min(driverRightTrigger, 0.80) ); // Outtake
                 //Clamping output to reduce outake speed
 
             } else if( manipLeftTrigger != 0.0 ) {
@@ -614,7 +614,7 @@ public class TeleopMode extends Coordinator {
 
             switch (autoState) {
                 case( 0 ):
-                    if ( driverB || manipRightJoystickY != 0.0 ){
+                    if ( driverX || manipRightJoystickY != 0.0 ){
                         autoState++;
                     }
                     break;
@@ -643,7 +643,7 @@ public class TeleopMode extends Coordinator {
 
                     } else {
                         driver.rumble.setEnabled(true);
-                        driver.rumble.setRumble(1);
+                        driver.rumble.setRumble( (float) 0.2);
                     }
                     break;
                 case ( 4 ):
@@ -654,7 +654,7 @@ public class TeleopMode extends Coordinator {
             if ( autoState == 0 ) {
                 switch (intakeState) {
                     case( 0 ):
-                        if ( driverX ){
+                        if ( driverB ){
                             intakeState++;
                         }
                         break;
