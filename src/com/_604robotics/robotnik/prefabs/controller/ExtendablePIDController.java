@@ -242,23 +242,6 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
   }
 
   /**
-   * Free the PID object.
-   */
-  @Override
-  public void free() {
-    super.free();
-    m_controlLoop.cancel();
-    m_thisMutex.lock();
-    try {
-      m_pidOutput = null;
-      m_pidInput = null;
-      m_controlLoop = null;
-    } finally {
-      m_thisMutex.unlock();
-    }
-  }
-
-  /**
    * Read the input, calculate the output accordingly, and write to the output. This should only be
    * called by the PIDTask and is created during initialization.
    */

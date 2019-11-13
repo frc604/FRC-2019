@@ -6,14 +6,16 @@ import com._604robotics.robotnik.Action;
 import com._604robotics.robotnik.Input;
 import com._604robotics.robotnik.Module;
 import com._604robotics.robotnik.Output;
-import com._604robotics.robotnik.prefabs.controller.RotatingArmPIDController;
+import com._604robotics.robotnik.prefabs.controller.ProfiliedRotatingArmPIDController;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import com._604robotics.robotnik.prefabs.devices.RedundantEncoder;
 import com._604robotics.robotnik.prefabs.devices.TalonPWMEncoder;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-public class Arm extends Module {
-    private RotatingArmPIDController pid;
+public class ProfiliedArm extends Module {
+    private ProfiliedRotatingArmPIDController pid;
+    private TrapezoidProfile.Constraints constraints;
 
     private WPI_TalonSRX leftMotor;
     private WPI_TalonSRX rightMotor;
@@ -28,8 +30,8 @@ public class Arm extends Module {
     public Output<Double> leftEncoderClicks;
     public Output<Double> redundantEncoderClicks;
 
-    public Arm() {
-        super(Arm.class);
+    public ProfiliedArm() {
+        super(ProfiliedArm.class);
 
         leftMotor = new WPI_TalonSRX(Ports.ARM_LEFT_MOTOR);
         rightMotor = new WPI_TalonSRX(Ports.ARM_RIGHT_MOTOR);
@@ -37,27 +39,21 @@ public class Arm extends Module {
         rightMotor.setInverted(true);
         rightMotor.set(ControlMode.Follower, Ports.ARM_LEFT_MOTOR);
 
-		//rightEncoder = new TalonPWMEncoder(leftMotor);
+    
         leftEncoder = new TalonPWMEncoder(rightMotor);
 		leftEncoder.setInverted(false);
-
         leftEncoder.zero();
-        //redundantEncoder = new RedundantEncoder(leftEncoder, rightEncoder);
-        //redundantEncoder.setMinimum(Calibration.Arm.MIN_ENCODER_VAL);
-        //redundantEncoder.setMaximum(Calibration.Arm.MAX_ENCODER_VAL);
 
         holdPoint = addInput("Setpoint", 300.0);
-
-        //rightEncoderClicks = addOutput("Right Encoder Clicks", () -> rightEncoder.getPosition());
         leftEncoderClicks = addOutput("Left Encoder Clicks", () -> leftEncoder.getPosition());
-        //redundantEncoderClicks = addOutput("Redundant Encoder Clicks", () -> redundantEncoder.getValue());
+
+        constraints = new TrapezoidProfile.Constraints(, );
 
         this.pid = new RotatingArmPIDController(Calibration.Arm.kP, Calibration.Arm.kI, Calibration.Arm.kD,
-            Calibration.Arm.kF);
+            Calibration.Arm.kF, constraints);
 
         pid.setEncoderPeriod(Calibration.Arm.CLICKS_FULL_ROTATION);
         pid.setFeedforwardZeroOffset(Calibration.Arm.HORIZONTAL_POSITION);
-        pid.setOutputRange(-0.65, 0.65); //-0.5 0.5
 
         setDefaultAction(move);
     }
@@ -65,32 +61,24 @@ public class Arm extends Module {
     public class Hold extends Action {
 
         public Hold() {
-            super(Arm.this, Hold.class);
+            super(ProfiliedArm.this, Hold.class);
             holdPoint = addInput("Hold Point", 300.0, true); // TODO low priority move forward
         }
-
-        @Override
-        public void begin() {}
 
         @Override
         public void run() {
             leftMotor.set(pid.calculate(leftEncoderClicks.get(), holdPoint.get()));
         }
 
-        @Override
-        public void end() {}
     }
 
     public class Move extends Action {
         public Input<Double> inputPower;
 
         public Move() {
-            super(Arm.this, Move.class);
+            super(ProfiliedArm.this, Move.class);
             inputPower = addInput("Input Power", 0.0, true);
         }
-
-        @Override
-        public void begin() {}
 
         @Override
         public void run() {
@@ -102,20 +90,14 @@ public class Arm extends Module {
         public Input<Double> setpoint;
 
         public Setpoint() {
-            super(Arm.this, Setpoint.class);
+            super(ProfiliedArm.this, Setpoint.class);
             setpoint = addInput("Setpoint", 0.0, true);
         }
-
-        @Override
-        public void begin() {}
 
         @Override
         public void run() {
             leftMotor.set(pid.calculate(leftEncoderClicks.get(), setpoint.get()));
         }
-
-        @Override
-        public void end() {}
     }
 
     public void resetEncoder() {

@@ -1,32 +1,32 @@
 package com._604robotics.robotnik.prefabs.controller;
 
-import edu.wpi.first.wpilibj.controller.PIDController;
-
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 
 /**
- * <p>Subclass of PIDController that has a feedforward for rotating arms.</p>
- * This subclass requires an PIDSource as the PIDSource and uses only continuous error.
- * Zero is assumed to be horizontal. Users are responsible for properly zeroing the PIDSource beforehand.
+ * <p>
+ * Subclass of ProfiliedPIDController that has a feedforward for rotating arms.
+ * </p>
+ * This subclass requires an PIDSource as the PIDSource and uses only continuous
+ * error. Zero is assumed to be horizontal. Users are responsible for properly
+ * zeroing the PIDSource beforehand.
  */
-public class RotatingArmPIDController extends PIDController {
+public class ProfiliedRotatingArmPIDController extends ProfiledPIDController {
     private double encoderPeriod = 360;
     private double zeroOffset = 0;
     private double m_kf = 0.0;
     private double m_maxOutput = 1.0;
     private double m_minOutput = -1.0;
 
-    public RotatingArmPIDController(double Kp, double Ki, double Kd, double Kf, double period) {
-        super(Kp, Ki, Kd, period);
+    public ProfiliedRotatingArmPIDController(double Kp, double Ki, double Kd, double Kf,
+        TrapezoidProfile.Constraints constraints, double period) {
+        super(Kp, Ki, Kd, constraints, period);
         this.m_kf = Kf;
     }
 
-    public RotatingArmPIDController(double Kp, double Ki, double Kd, double Kf) {
-        super(Kp, Ki, Kd, 0.02);
+    public ProfiliedRotatingArmPIDController(double Kp, double Ki, double Kd, double Kf, TrapezoidProfile.Constraints constraints) {
+        super(Kp, Ki, Kd, constraints, 0.02);
         this.m_kf = Kf;
-    }
-
-    public RotatingArmPIDController(double Kp, double Ki, double Kd) {
-        super(Kp, Ki, Kd, 0.02);
     }
 
     public double getEncoderPeriod() {
