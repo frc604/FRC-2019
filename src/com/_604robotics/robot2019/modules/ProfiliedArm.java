@@ -47,9 +47,9 @@ public class ProfiliedArm extends Module {
         holdPoint = addInput("Setpoint", 300.0);
         leftEncoderClicks = addOutput("Left Encoder Clicks", () -> leftEncoder.getPosition());
 
-        constraints = new TrapezoidProfile.Constraints(, );
+        constraints = new TrapezoidProfile.Constraints(4000, 900);
 
-        this.pid = new RotatingArmPIDController(Calibration.Arm.kP, Calibration.Arm.kI, Calibration.Arm.kD,
+        this.pid = new ProfiliedRotatingArmPIDController(Calibration.Arm.kP, Calibration.Arm.kI, Calibration.Arm.kD,
             Calibration.Arm.kF, constraints);
 
         pid.setEncoderPeriod(Calibration.Arm.CLICKS_FULL_ROTATION);

@@ -8,6 +8,7 @@ import com._604robotics.robot2019.constants.Calibration;
 import com._604robotics.robot2019.modules.Arm;
 import com._604robotics.robot2019.modules.Drive;
 import com._604robotics.robot2019.modules.Intake;
+import com._604robotics.robot2019.modules.ProfiliedArm;
 import com._604robotics.robot2019.modules.Dashboard.DriveMode;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
@@ -458,7 +459,7 @@ public class TeleopMode extends Coordinator {
     }
 
     private class ArmManager {
-        private Arm arm;
+        private ProfiliedArm arm;
         private Toggle hardstopToggle;
         protected boolean disableArm;
         private Toggle manualHardstop;
