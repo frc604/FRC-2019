@@ -10,14 +10,17 @@ def TEAM = 604
 def ROBOT_CLASS = "com._604robotics.robot2019.Robot2019"
 
 dependencies {
+
+    compile wpi.deps.wpilib()
+    testCompile 'junit:junit:4.12'
     compile wpi.deps.wpilib()
     compile wpi.deps.vendor.java()
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
+    simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
     // compile ctre()
     nativeLib files("lib/rio/libpathfinderjava.so")
     compile fileTree(include: '*.jar', dir: 'lib')
-    simulation "edu.wpi.first.halsim:halsim_lowfi:${wpi.wpilibVersion}:${wpi.platforms.desktop}@zip"
 }
 
 sourceSets {

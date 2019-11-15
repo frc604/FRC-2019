@@ -4,5 +4,6 @@
         "titleBar.activeBackground": "#10474D",
         "titleBar.activeForeground": "#F5FCFD"
     },
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "wpilib.stopSimulationOnEntry": false
 }
