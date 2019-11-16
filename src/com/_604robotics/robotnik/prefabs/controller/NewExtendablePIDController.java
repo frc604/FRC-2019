@@ -11,6 +11,7 @@
 package com._604robotics.robotnik.prefabs.controller;
 
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
+import edu.wpi.first.hal.util.BoundaryException;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Timer;
@@ -57,6 +58,9 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   // Minimum input - limit setpoint to this
   private double m_minimumInput;
 
+  private double m_maximumOutput = 1;
+  private double m_minimumOutput = -1;
+
   // Input range - difference between maximum and minimum
   private double m_inputRange;
 
@@ -83,8 +87,8 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   private double m_setpoint;
   private double m_result = 0.0;
 
-  private DoubleConsumer m_pidOutput;
-  private DoubleSupplier m_pidSource;
+  protected DoubleConsumer m_pidOutput;
+  protected DoubleSupplier m_pidSource;
 
   private DoubleSupplier m_origSource;
   
@@ -407,6 +411,26 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
     }
   }
 
+
+  /**
+   * Sets the minimum and maximum values to write.
+   *
+   * @param minimumOutput the minimum percentage to write to the output
+   * @param maximumOutput the maximum percentage to write to the output
+   */
+  public void setOutputRange(double minimumOutput, double maximumOutput) {
+    m_thisMutex.lock();
+    try {
+      if (minimumOutput > maximumOutput) {
+        throw new BoundaryException("Lower bound is greater than upper bound");
+      }
+      m_minimumOutput = minimumOutput;
+      m_maximumOutput = maximumOutput;
+    } finally {
+      m_thisMutex.unlock();
+    }
+  }
+
   /**
    * Sets the minimum and maximum values for the integrator.
    *
@@ -509,6 +533,9 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
       double maximumIntegral;
       double minimumIntegral;
 
+      double maximumOutput;
+      double minimumOutput;
+
       // Storage for function input-outputs
       double positionError;
       double velocityError;
@@ -521,12 +548,14 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
         P = m_Kp;
         I = m_Ki;
         D = m_Kd;
-        F = m_Kf;
 
         period = m_period;
 
         maximumIntegral = m_maximumIntegral;
         minimumIntegral = m_minimumIntegral;
+
+        maximumOutput = m_maximumOutput;
+        minimumOutput = m_minimumOutput;
 
         totalError = m_totalError;
         positionError = getContinuousError(m_setpoint - input);
@@ -547,7 +576,10 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
 
       result = calculateProportional(P, positionError)
               + calculateIntegral(I, totalError)
-              + calculateDerivative(D, velocityError) + F;
+              + calculateDerivative(D, velocityError) + calculateFeedForward();
+
+      result = MathUtils.clamp(result, minimumOutput, maximumOutput);
+
 
       // Ensures m_enabled check and pidWrite() call occur atomically
       m_pidOutputMutex.lock();
@@ -593,6 +625,15 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   
   protected synchronized double calculateDerivative(double d, double derror) {
     return d*derror;
+  }
+
+  protected synchronized double calculateFeedForward() {
+    m_thisMutex.lock();
+    try {
+      return m_Kf;
+    } finally {
+      m_thisMutex.unlock();
+    }
   }
 
   @Override

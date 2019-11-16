@@ -13,6 +13,7 @@ import com._604robotics.robot2019.modules.Dashboard.DriveMode;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
 import com._604robotics.robotnik.prefabs.controller.ExtendablePIDController;
+import com._604robotics.robotnik.prefabs.controller.NewExtendablePIDController;
 import com._604robotics.robotnik.prefabs.flow.Toggle;
 import com._604robotics.robotnik.prefabs.inputcontroller.xbox.XboxController;
 import com._604robotics.robotnik.prefabs.modules.Limelight;
@@ -372,7 +373,7 @@ public class TeleopMode extends Coordinator {
                     currentDrive = CurrentDrive.MANUAL; //Disable manual control so the PID can take over
                     arcade.movePower.set(leftY); //Still allow driver to control forward/backwards movement
                     autoCenterManager.run();
-                    if ( autoCenterManager.anglePID.onTarget() ) {
+                    if ( autoCenterManager.anglePID.atSetpoint() ) {
                         driver.rumble.setEnabled(true);
                         driver.rumble.setRumble(1);
                     } else {
@@ -459,7 +460,7 @@ public class TeleopMode extends Coordinator {
     }
 
     private class ArmManager {
-        private ProfiliedArm arm;
+        private Arm arm;
         private Toggle hardstopToggle;
         protected boolean disableArm;
         private Toggle manualHardstop;
@@ -693,34 +694,17 @@ public class TeleopMode extends Coordinator {
     }
 
     private class AutoCenterManager {
-        private ExtendablePIDController anglePID;
-        private ExtendablePIDController distPID;
-        private PIDOutput rotation;
-        private PIDOutput drive;
-
+        private NewExtendablePIDController anglePID;
+        private NewExtendablePIDController distPID;
+    
         public AutoCenterManager() {
-            rotation = new PIDOutput() {
-                @Override
-                public synchronized void pidWrite(double output) {
-                    if( output >= 0.56 ) {
-                        output = 0.56;
-                    } else if( output <= -0.56 ) {
-                        output = -0.56;
-                    }
-                    driveManager.arcade.rotatePower.set(output);
-                }
-            };
-            drive = new PIDOutput() {
-                @Override
-                public synchronized void pidWrite(double output) {
-                    //driveManager.arcade.movePower.set(output);
-                    //TODO Find out why this was running in the main loop
-                }
-            };
-            anglePID = new ExtendablePIDController(-0.07, 0, -0.3, new Limelight.HorizontalError(robot.limelight,0), rotation, 0.025);
-            anglePID.setAbsoluteTolerance(Calibration.LIMELIGHT_ANGLE_TOLERANCE);
-            distPID = new ExtendablePIDController(0.5, 0, 0, new Limelight.DistanceError(robot.limelight, 18), drive);
-            distPID.setAbsoluteTolerance(Calibration.LIMELIGHT_DIST_TOLERANCE);
+            anglePID = new NewExtendablePIDController(-0.07, 0, -0.3, new Limelight.HorizontalError(robot.limelight, 0)::pidGet,            driveManager.arcade.rotatePower::set, 0.005);
+        
+            anglePID.setTolerance(Calibration.LIMELIGHT_ANGLE_TOLERANCE);
+            anglePID.setOutputRange(-0.7, 0.7);
+
+            distPID = new NewExtendablePIDController(0.5, 0, 0, new Limelight.DistanceError(robot.limelight, 18)::pidGet, driveManager.arcade.rotatePower::set);
+            distPID.setTolerance(Calibration.LIMELIGHT_DIST_TOLERANCE);
         }
 
         public void run() {
