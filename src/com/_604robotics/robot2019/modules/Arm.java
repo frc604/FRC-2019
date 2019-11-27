@@ -53,11 +53,12 @@ public class Arm extends Module {
         //redundantEncoderClicks = addOutput("Redundant Encoder Clicks", () -> redundantEncoder.getValue());
 
         this.pid = new RotatingArmPIDController(Calibration.Arm.kP, Calibration.Arm.kI, Calibration.Arm.kD,
-            Calibration.Arm.kF);
+            Calibration.Arm.kF, leftEncoder::getPosition, leftMotor::set);
+
+        pid.setOutputRange(-0.65, 0.65);
 
         pid.setEncoderPeriod(Calibration.Arm.CLICKS_FULL_ROTATION);
         pid.setFeedforwardZeroOffset(Calibration.Arm.HORIZONTAL_POSITION);
-        pid.setOutputRange(-0.65, 0.65); //-0.5 0.5
 
         setDefaultAction(move);
     }
@@ -70,15 +71,19 @@ public class Arm extends Module {
         }
 
         @Override
-        public void begin() {}
-
-        @Override
-        public void run() {
-            leftMotor.set(pid.calculate(leftEncoderClicks.get(), holdPoint.get()));
+        public void begin() {
+            pid.setEnabled(true);
         }
 
         @Override
-        public void end() {}
+        public void run() {
+            pid.setSetpoint(holdPoint.get());
+        }
+
+        @Override
+        public void end() {
+            pid.setEnabled(false);
+        }
     }
 
     public class Move extends Action {
@@ -90,7 +95,9 @@ public class Arm extends Module {
         }
 
         @Override
-        public void begin() {}
+        public void begin() {
+            pid.setEnabled(false);
+        }
 
         @Override
         public void run() {
@@ -107,15 +114,19 @@ public class Arm extends Module {
         }
 
         @Override
-        public void begin() {}
-
-        @Override
-        public void run() {
-            leftMotor.set(pid.calculate(leftEncoderClicks.get(), setpoint.get()));
+        public void begin() {
+            pid.setEnabled(true);
         }
 
         @Override
-        public void end() {}
+        public void run() {
+            pid.setSetpoint(setpoint.get());
+        }
+
+        @Override
+        public void end() {
+            pid.setEnabled(false);
+        }
     }
 
     public void resetEncoder() {
