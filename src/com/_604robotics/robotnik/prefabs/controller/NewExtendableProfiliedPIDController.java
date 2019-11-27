@@ -14,8 +14,12 @@ import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpiutil.math.MathUtils;
 
 import java.util.TimerTask;
@@ -25,92 +29,43 @@ import java.util.function.DoubleSupplier;
 
 import static edu.wpi.first.wpilibj.util.ErrorMessages.requireNonNullParam;
 
-
 /**
  * Implements a PID control loop.
  */
-public class NewExtendablePIDController implements Sendable, AutoCloseable {
+public class NewExtendableProfiliedPIDController implements Sendable {
   private static int instances;
 
-  // Factor for "proportional" control
-  private double m_Kp;
-
-  // Factor for "integral" control
-  private double m_Ki;
-
-  // Factor for "derivative" control
-  private double m_Kd;
-
-  // Factor for "feedforward" term
-  private double m_Kf;
-
-  // The period (in seconds) of the loop that calls the controller
-  private final double m_period;
-
-  // Maximum integral value
-  private double m_maximumIntegral = 1.0;
-
-  // Minimum integral value
-  private double m_minimumIntegral = -1.0;
-
-  // Maximum input - limit setpoint to this
-  private double m_maximumInput;
-
-  // Minimum input - limit setpoint to this
-  private double m_minimumInput;
-
-  // Input range - difference between maximum and minimum
-  private double m_inputRange;
-
-  // Do the endpoints wrap around? eg. Absolute encoder
-  private boolean m_continuous;
+  private PIDController m_controller;
+  private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
+  private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
+  private TrapezoidProfile.Constraints m_constraints;
 
   // Is the pid controller enabled
   private boolean m_enabled = false;
-
-  // The error at the time of the most recent call to calculate()
-  private double m_positionError;
-  private double m_velocityError;
-
-  // The error at the time of the second-most-recent call to calculate() (used to compute velocity)
-  private double m_prevError;
-
-  // The sum of the errors for use in the integral calc
-  private double m_totalError;
 
   // The percentage or absolute error that is considered at setpoint.
   private double m_positionTolerance = 0.05;
   private double m_velocityTolerance = Double.POSITIVE_INFINITY;
 
-  // Supplied setpoint
-  private double m_setpoint;
+  private double m_Kf = 0;
 
-  // Last calculated result of the controller
   private double m_result = 0.0;
 
-  // Output consumer
   private DoubleConsumer m_pidOutput;
-  
-  // Source supplier
   private DoubleSupplier m_pidSource;
 
-  // Orginal source of the conroller, usedul 
   private DoubleSupplier m_origSource;
-  
-  // Thread lock for the controller
-  ReentrantLock m_thisMutex = new ReentrantLock();
 
-  // Thread lock for wrting to the output
+  ReentrantLock m_thisMutex = new ReentrantLock();
   ReentrantLock m_pidOutputMutex = new ReentrantLock();
 
-  // Contorl loop timer, used to schedule the controller calculate though a TimerTask
   java.util.Timer m_controlLoop;
+  Timer m_setpointTimer;
 
-  // Timer task used to schedule controller
   private class PIDTask extends TimerTask {
-    private NewExtendablePIDController m_controller;
+    private NewExtendableProfiliedPIDController m_controller;
 
-    PIDTask(NewExtendablePIDController controller) {
+    PIDTask(NewExtendableProfiliedPIDController controller) {
       requireNonNullParam(controller, "controller", "Given PIDController was null");
 
       m_controller = controller;
@@ -118,80 +73,50 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
 
     @Override
     public void run() {
-      // Running calcuate on measurment and setpoint
       m_controller.calculate();
     }
   }
 
-  /**
-   * Allocates a NewExtendablePIDController with the given constants for Kp, Ki, and Kd and a default period of
-   * 0.02 seconds with no feedforward.
-   *
-   * @param Kp The proportional coefficient.
-   * @param Ki The integral coefficient.
-   * @param Kd The derivative coefficient.
-   * @param pidSource A lambda supplying the controller measurment.
-   * @param pidSource A lambda consuming the contller output.
-   */
-  public NewExtendablePIDController(double Kp, double Ki, double Kd, DoubleSupplier pidSource,
-  DoubleConsumer pidOutput) {
-    this(Kp, Ki, Kd, 0.0, 0.02, pidSource, pidOutput);
+  public NewExtendableProfiliedPIDController(double Kp, double Ki, double Kd,
+    TrapezoidProfile.Constraints constraints, DoubleSupplier source, DoubleConsumer output) {
+    this(Kp, Ki, Kd, 0.0, constraints, 0.02, source, output);
+  }
+
+  public NewExtendableProfiliedPIDController(double Kp, double Ki, double Kd,
+    TrapezoidProfile.Constraints constraints, double period,  DoubleSupplier source, DoubleConsumer output) {
+    this(Kp, Ki, Kd, 0.0, constraints, period, source, output);
   }
 
   /**
-   * Allocates a NewExtendablePIDController with the given constants for Kp, Ki, kD, and period with no feedforward.
-   *
-   * @param Kp The proportional coefficient.
-   * @param Ki The integral coefficient.
-   * @param Kd The derivative coefficient.
-   * @param pidSource A lambda supplying the controller measurment.
-   * @param pidSource A lambda consuming the contller output.
-   * @param period The period of the conller in seconds.
-   */
-  public NewExtendablePIDController(double Kp, double Ki, double Kd, DoubleSupplier pidSource,
-  DoubleConsumer pidOutput, double period) {
-    this(Kp, Ki, Kd, 0.0, period, pidSource, pidOutput);
-  }
-
-  /**
-   * Allocates a NewExtendablePIDController with the given constants for Kp, Ki, Kd, and Kf and a default period of
-   * 0.02 seconds.
+   * Allocates a NewExtendablePIDController with the given constants for Kp, Ki,
+   * and Kd and a default period of 0.02 seconds.
    *
    * @param Kp The proportional coefficient.
    * @param Ki The integral coefficient.
    * @param Kd The derivative coefficient.
    * @param Kf The feedforward term.
-   * @param pidSource A lambda supplying the controller measurment.
-   * @param pidSource A lambda consuming the contller output.
    */
-  public NewExtendablePIDController(double Kp, double Ki, double Kd, double Kf, DoubleSupplier pidSource,
-  DoubleConsumer pidOutput) {
-    this(Kp, Ki, Kd, Kf, 0.02, pidSource, pidOutput);
+  public NewExtendableProfiliedPIDController(double Kp, double Ki, double Kd, double period,
+    TrapezoidProfile.Constraints constraints, DoubleSupplier source, DoubleConsumer output) {
+    this(Kp, Ki, Kd, 0.0, constraints,period,  source, output);
   }
 
   /**
-   * Allocates a NewExtendablePIDController with the given constants for Kp, Ki, Kd, Kf, and period.
+   * Allocates a NewExtendablePIDController with the given constants for Kp, Ki,
+   * and Kd.
    *
-   * @param Kp The proportional coefficient.
-   * @param Ki The integral coefficient.
-   * @param Kd The derivative coefficient.
-   * @param Kf The feedforward term.
-   * @param period The period of the conller in seconds.
-   * @param pidSource A lambda supplying the controller measurment.
-   * @param pidSource A lambda consuming the contller output.
+   * @param Kp     The proportional coefficient.
+   * @param Ki     The integral coefficient.
+   * @param Kd     The derivative coefficient.
+   * @param period The period between controller updates in seconds.
    */
-  public NewExtendablePIDController(double Kp, double Ki, double Kd, double Kf, double period, DoubleSupplier source,
-  DoubleConsumer output) {
+  public NewExtendableProfiliedPIDController(double Kp, double Ki, double Kd, double Kf,
+      TrapezoidProfile.Constraints constraints, double period, DoubleSupplier source, DoubleConsumer output) {
+    requireNonNullParam(constraints, "contraints", "NewExtendableProfiledPIDContoller");
+    requireNonNullParam(source, "source", "NewExtendableProfiledPIDContoller");
+    requireNonNullParam(output, "output", "NewExtendableProfiledPIDContoller");
 
-    // Making sure null supplier and consumers arent passed in.
-    requireNonNullParam(source, "pidSource", "Null PIDSource was given");
-    requireNonNullParam(output, "pidOutput", "Null PIDOutput was given");
-
-    m_Kp = Kp;
-    m_Ki = Ki;
-    m_Kd = Kd;
-
-    m_period = period;
+    m_controller = new PIDController(Kp, Ki, Kd, period);
 
     m_pidSource = source;
     m_pidOutput = output;
@@ -199,9 +124,10 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
     m_origSource = source;
 
     m_controlLoop = new java.util.Timer();
+    m_setpointTimer = new Timer();
+    m_setpointTimer.start();
 
-    // Scheduling controller calaute
-    m_controlLoop.schedule(new PIDTask(this), 0L, (long) (m_period * 1000));
+    m_controlLoop.schedule(new PIDTask(this), 0L, (long) (m_controller.getPeriod() * 1000));
 
     instances++;
     SendableRegistry.addLW(this, "PIDController", instances);
@@ -209,7 +135,6 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
     HAL.report(tResourceType.kResourceType_PIDController, instances);
   }
 
-  @Override
   public void close() {
     SendableRegistry.remove(this);
     m_controlLoop.cancel();
@@ -226,7 +151,8 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   /**
    * Sets the PID Controller gain parameters.
    *
-   * <p>Set the proportional, integral, and differential coefficients.
+   * <p>
+   * Set the proportional, integral, and differential coefficients.
    *
    * @param Kp The proportional coefficient.
    * @param Ki The integral coefficient.
@@ -236,9 +162,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   public void setPID(double Kp, double Ki, double Kd) {
     m_thisMutex.lock();
     try {
-      m_Kp = Kp;
-      m_Ki = Ki;
-      m_Kd = Kd;
+      m_controller.setPID(Kp, Ki, Kd);
     } finally {
       m_thisMutex.unlock();
     }
@@ -253,7 +177,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   public void setP(double Kp) {
     m_thisMutex.lock();
     try {
-      m_Kp = Kp;
+      m_controller.setP(Kp);
     } finally {
       m_thisMutex.unlock();
     }
@@ -268,7 +192,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   public void setI(double Ki) {
     m_thisMutex.lock();
     try {
-      m_Ki = Ki;
+      m_controller.setI(Ki);
     } finally {
       m_thisMutex.unlock();
     }
@@ -283,7 +207,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   public void setD(double Kd) {
     m_thisMutex.lock();
     try {
-      m_Kd = Kd;
+      m_controller.setD(Kd);
     } finally {
       m_thisMutex.unlock();
     }
@@ -306,7 +230,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   public double getP() {
     m_thisMutex.lock();
     try {
-      return m_Kp;
+      return m_controller.getP();
     } finally {
       m_thisMutex.unlock();
     }
@@ -320,7 +244,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   public double getI() {
     m_thisMutex.lock();
     try {
-      return m_Ki;
+      return m_controller.getI();
     } finally {
       m_thisMutex.unlock();
     }
@@ -334,7 +258,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   public double getD() {
     m_thisMutex.lock();
     try {
-      return m_Kd;
+      return m_controller.getD();
     } finally {
       m_thisMutex.unlock();
     }
@@ -357,25 +281,35 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   public double getPeriod() {
     m_thisMutex.lock();
     try {
-      return m_period;
+      return m_controller.getPeriod();
     } finally {
       m_thisMutex.unlock();
     }
   }
 
   /**
-   * Sets the setpoint for the PIDController.
+   * Sets the goal for the PIDController.
    *
-   * @param setpoint The desired setpoint.
+   * @param setpoint The goal state.
    */
-  public void setSetpoint(double setpoint) {
+  public void setGoal(TrapezoidProfile.State goal) {
     m_thisMutex.lock();
     try {
-      if (m_maximumInput > m_minimumInput) {
-        m_setpoint = MathUtils.clamp(setpoint, m_minimumInput, m_maximumInput);
-      } else {
-        m_setpoint = setpoint;
-      }
+      m_goal = goal;
+    } finally {
+      m_thisMutex.unlock();
+    }
+  }
+
+  /**
+   * Sets the goal for the PIDController.
+   *
+   * @param setpoint The goal position.
+   */
+  public void setGoal(double goal) {
+    m_thisMutex.lock();
+    try {
+      m_goal = new TrapezoidProfile.State(goal, 0);
     } finally {
       m_thisMutex.unlock();
     }
@@ -386,29 +320,49 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
    *
    * @return The current setpoint.
    */
-  public double getSetpoint() {
+  public TrapezoidProfile.State getGoal() {
     m_thisMutex.lock();
     try {
-      return m_setpoint;
+      return m_goal;
     } finally {
       m_thisMutex.unlock();
     }
   }
 
   /**
-   * Returns true if the error is within the percentage of the total input range, determined by
-   * SetTolerance. This asssumes that the maximum and minimum input were set using SetInput.
+   * Returns true if the error is within the percentage of the total input range,
+   * determined by SetTolerance. This asssumes that the maximum and minimum input
+   * were set using SetInput.
    *
-   * <p>This will return false until at least one input value has been computed.
+   * <p>
+   * This will return false until at least one input value has been computed.
+   *
+   * @return Whether the error is within the acceptable bounds.
+   */
+  public boolean atGoal() {
+    m_thisMutex.lock();
+    try {
+      return atSetpoint() && m_goal.equals(m_setpoint);
+    } finally {
+      m_thisMutex.unlock();
+    }
+  }
+
+  /**
+   * Returns true if the error is within the percentage of the total input range,
+   * determined by SetTolerance. This asssumes that the maximum and minimum input
+   * were set using SetInput.
+   *
+   * <p>
+   * This will return false until at least one input value has been computed.
    *
    * @return Whether the error is within the acceptable bounds.
    */
   public boolean atSetpoint() {
     m_thisMutex.lock();
     try {
-      return Math.abs(m_positionError) < m_positionTolerance
-          && Math.abs(m_velocityError) < m_velocityTolerance;
-    } finally { 
+      return m_controller.atSetpoint();
+    } finally {
       m_thisMutex.unlock();
     }
   }
@@ -416,9 +370,10 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   /**
    * Enables continuous input.
    *
-   * <p>Rather then using the max and min input range as constraints, it considers
-   * them to be the same point and automatically calculates the shortest route
-   * to the setpoint.
+   * <p>
+   * Rather then using the max and min input range as constraints, it considers
+   * them to be the same point and automatically calculates the shortest route to
+   * the setpoint.
    *
    * @param minimumInput The minimum value expected from the input.
    * @param maximumInput The maximum value expected from the input.
@@ -426,8 +381,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   public void enableContinuousInput(double minimumInput, double maximumInput) {
     m_thisMutex.lock();
     try {
-      m_continuous = true;
-      setInputRange(minimumInput, maximumInput);
+      m_controller.enableContinuousInput(minimumInput, maximumInput);
     } finally {
       m_thisMutex.unlock();
     }
@@ -439,7 +393,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   public void disableContinuousInput() {
     m_thisMutex.lock();
     try {
-      m_continuous = false;
+      m_controller.disableContinuousInput();
     } finally {
       m_thisMutex.unlock();
     }
@@ -448,7 +402,8 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   /**
    * Sets the minimum and maximum values for the integrator.
    *
-   * <p>When the cap is reached, the integrator value is added to the controller
+   * <p>
+   * When the cap is reached, the integrator value is added to the controller
    * output rather than the integrator value times the integral gain.
    *
    * @param minimumIntegral The minimum value of the integrator.
@@ -457,8 +412,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   public void setIntegratorRange(double minimumIntegral, double maximumIntegral) {
     m_thisMutex.lock();
     try {
-      m_minimumIntegral = minimumIntegral;
-      m_maximumIntegral = maximumIntegral;
+      m_controller.setIntegratorRange(minimumIntegral, maximumIntegral);
     } finally {
       m_thisMutex.unlock();
     }
@@ -482,8 +436,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   public void setTolerance(double positionTolerance, double velocityTolerance) {
     m_thisMutex.lock();
     try {
-      m_positionTolerance = positionTolerance;
-      m_velocityTolerance = velocityTolerance;
+      m_controller.setTolerance(positionTolerance, velocityTolerance);
     } finally {
       m_thisMutex.unlock();
     }
@@ -497,7 +450,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   public double getPositionError() {
     m_thisMutex.lock();
     try {
-      return getContinuousError(m_positionError);
+      return m_controller.getPositionError();
     } finally {
       m_thisMutex.unlock();
     }
@@ -509,7 +462,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   public double getVelocityError() {
     m_thisMutex.lock();
     try {
-      return m_velocityError;
+      return m_controller.getPositionError();
     } finally {
       m_thisMutex.unlock();
     }
@@ -537,55 +490,28 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
     if (enabled) {
       double input;
 
-      double P;
-      double I;
-      double D;
-      double F;
+      TrapezoidProfile.Constraints constraints;
+      TrapezoidProfile.State goal;
+      TrapezoidProfile.State setpoint;
 
-      double period;
-
-      double maximumIntegral;
-      double minimumIntegral;
-
-      // Storage for function input-outputs
-      double positionError;
-      double velocityError;
-      double totalError;
+      double result;
 
       m_thisMutex.lock();
       try {
         input = m_pidSource.getAsDouble();
 
-        P = m_Kp;
-        I = m_Ki;
-        D = m_Kd;
-        F = m_Kf;
 
-        period = m_period;
+        constraints = m_constraints;
+        goal = m_goal;
+        setpoint = m_setpoint;
 
-        maximumIntegral = m_maximumIntegral;
-        minimumIntegral = m_minimumIntegral;
-
-        totalError = m_totalError;
-        positionError = getContinuousError(m_setpoint - input);
-        velocityError = (m_positionError - m_prevError) / m_period;
-
+        var profile = new TrapezoidProfile(m_constraints, m_goal, m_setpoint);
+        setpoint = profile.calculate(m_controller.getPeriod());
         
+        result = m_controller.calculate(input, setpoint.position);
       } finally {
         m_thisMutex.unlock();
       }
-
-      // Storage for function outputs
-      double result;
-
-      if (I != 0) {
-        totalError = MathUtils.clamp(totalError + positionError * period,
-            minimumIntegral / I, maximumIntegral / I);
-      }
-
-      result = calculateProportional(P, positionError)
-              + calculateIntegral(I, totalError)
-              + calculateDerivative(D, velocityError) + F;
 
       // Ensures m_enabled check and pidWrite() call occur atomically
       m_pidOutputMutex.lock();
@@ -609,89 +535,21 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
 
       m_thisMutex.lock();
       try {
-        m_prevError = positionError;
-        m_totalError = totalError;
         m_result = result;
-        m_positionError = positionError;
-        m_velocityError = velocityError;
       } finally {
         m_thisMutex.unlock();
       }
     }
   }
 
-
-  protected synchronized double calculateProportional(double p, double error) {
-    return p*error;
-  }
-  
-  protected synchronized double calculateIntegral(double i, double totalerror) {
-    return i*totalerror;
-  }
-  
-  protected synchronized double calculateDerivative(double d, double derror) {
-    return d*derror;
-  }
-
   @Override
   public void initSendable(SendableBuilder builder) {
-    builder.setSmartDashboardType("PIDController");
-    builder.setSafeState(this::reset);
+    builder.setSmartDashboardType("ProfiledPIDController");
     builder.addDoubleProperty("p", this::getP, this::setP);
     builder.addDoubleProperty("i", this::getI, this::setI);
     builder.addDoubleProperty("d", this::getD, this::setD);
-    builder.addDoubleProperty("f", this::getF, this::setF);
-    builder.addDoubleProperty("setpoint", this::getSetpoint, this::setSetpoint);
+    builder.addDoubleProperty("goal", () -> getGoal().position, this::setGoal);
     builder.addBooleanProperty("enabled", this::isEnabled, this::setEnabled);
-  }
-
-  /**
-   * Wraps error around for continuous inputs. The original error is returned if continuous mode is
-   * disabled.
-   *
-   * @param error The current error of the PID controller.
-   * @return Error for continuous inputs.
-   */
-  protected double getContinuousError(double error) {
-    m_thisMutex.lock();
-    try {
-      if (m_continuous && m_inputRange > 0) {
-        error %= m_inputRange;
-        if (Math.abs(error) > m_inputRange / 2) {
-          if (error > 0) {
-              return error - m_inputRange;
-            } else {
-              return error + m_inputRange;
-            }
-          }
-        }
-        return error;
-    } finally {
-      m_thisMutex.unlock();
-    }
-  }
-
-  /**
-   * Sets the minimum and maximum values expected from the input.
-   *
-   * @param minimumInput The minimum value expected from the input.
-   * @param maximumInput The maximum value expected from the input.
-   */
-  private void setInputRange(double minimumInput, double maximumInput) {
-    this.m_thisMutex.lock();
-    try {
-      m_minimumInput = minimumInput;
-      m_maximumInput = maximumInput;
-      m_inputRange = maximumInput - minimumInput;
-
-      // Clamp setpoint to new input
-      if (m_maximumInput > m_minimumInput) {
-        m_setpoint = MathUtils.clamp(m_setpoint, m_minimumInput, m_maximumInput);
-      }
-
-    } finally {
-      m_thisMutex.unlock();
-    }
   }
 
   /**
@@ -714,9 +572,8 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
 
     m_thisMutex.lock();
     try {
-      m_prevError = 0;
-      m_totalError = 0;
       m_result = 0;
+      m_controller.reset();
     } finally {
       m_thisMutex.unlock();
     }
