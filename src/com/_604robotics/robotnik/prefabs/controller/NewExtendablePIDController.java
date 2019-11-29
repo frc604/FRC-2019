@@ -104,7 +104,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   // Thread lock for the controller
   ReentrantLock m_thisMutex = new ReentrantLock();
 
-  // Thread lock for wrting to the output
+  // Thread lock for writing to the output
   ReentrantLock m_pidOutputMutex = new ReentrantLock();
 
   // Contorl loop timer, used to schedule the controller calculate though a TimerTask

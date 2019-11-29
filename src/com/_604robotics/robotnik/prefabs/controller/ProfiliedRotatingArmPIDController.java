@@ -1,6 +1,8 @@
 package com._604robotics.robotnik.prefabs.controller;
 
-import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import java.util.function.DoubleConsumer;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 
 /**
@@ -11,7 +13,7 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
  * error. Zero is assumed to be horizontal. Users are responsible for properly
  * zeroing the PIDSource beforehand.
  */
-public class ProfiliedRotatingArmPIDController extends ProfiledPIDController {
+public class ProfiliedRotatingArmPIDController extends NewExtendableProfiliedPIDController {
     private double encoderPeriod = 360;
     private double zeroOffset = 0;
     private double m_kf = 0.0;
@@ -19,13 +21,13 @@ public class ProfiliedRotatingArmPIDController extends ProfiledPIDController {
     private double m_minOutput = -1.0;
 
     public ProfiliedRotatingArmPIDController(double Kp, double Ki, double Kd, double Kf,
-        TrapezoidProfile.Constraints constraints, double period) {
-        super(Kp, Ki, Kd, constraints, period);
+        TrapezoidProfile.Constraints constraints, double period, DoubleSupplier source, DoubleConsumer output) {
+        super(Kp, Ki, Kd, period, constraints, source, output);
         this.m_kf = Kf;
     }
 
-    public ProfiliedRotatingArmPIDController(double Kp, double Ki, double Kd, double Kf, TrapezoidProfile.Constraints constraints) {
-        super(Kp, Ki, Kd, constraints, 0.02);
+    public ProfiliedRotatingArmPIDController(double Kp, double Ki, double Kd, double Kf, TrapezoidProfile.Constraints constraints, DoubleSupplier source, DoubleConsumer output) {
+        super(Kp, Ki, Kd, 0.02, constraints, source, output);
         this.m_kf = Kf;
     }
 
@@ -47,35 +49,29 @@ public class ProfiliedRotatingArmPIDController extends ProfiledPIDController {
     }
 
     /**
+     * <p>Overriden feed forward part of PIDController.</p>
+     *
      * This is a physically based model which multiplies feed forward coefficient by cosine.
      * The feedforward calculates the expected torque needed to hold an arm steady, scaled to motor power.
      *
      *  @return the feed forward value
      */
-    protected double calculateFeedForward(double measurment) {
+    @Override
+    protected double calculateFeedForward() {
         // Calculate cosine for torque factor
         double angle;
         double fValue;
-        angle = measurment - zeroOffset;
-        fValue = m_kf;
-
+        m_thisMutex.lock();
+        try {
+            angle = m_pidSource.getAsDouble() - zeroOffset;
+            fValue = getF();
+        } finally {
+            m_thisMutex.unlock();
+        }
         // Cosine is periodic so sawtooth wraparound is not a concern
         angle/=encoderPeriod;
         angle*=(2*Math.PI);
         double cosine = Math.cos(angle);
         return fValue * cosine;
     }
-
-    @Override
-    public double calculate(double measurment, double setpoint) {
-        if ( m_kf == 0.0 ) {
-            return clamp(super.calculate(measurment, setpoint), m_minOutput, m_maxOutput);
-        } else {
-            return clamp(super.calculate(measurment, setpoint) + calculateFeedForward(measurment), m_minOutput, m_maxOutput);
-        }
-    }
-
-    protected static double clamp(double value, double low, double high) {
-        return Math.max(low, Math.min(value, high));
-      }
 }

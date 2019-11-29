@@ -9,10 +9,10 @@ import com._604robotics.robot2019.modules.Arm;
 import com._604robotics.robot2019.modules.Drive;
 import com._604robotics.robot2019.modules.Intake;
 import com._604robotics.robot2019.modules.ProfiliedArm;
+import com._604robotics.robot2019.modules.Arm;
 import com._604robotics.robot2019.modules.Dashboard.DriveMode;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
-import com._604robotics.robotnik.prefabs.controller.ExtendablePIDController;
 import com._604robotics.robotnik.prefabs.controller.NewExtendablePIDController;
 import com._604robotics.robotnik.prefabs.flow.Toggle;
 import com._604robotics.robotnik.prefabs.inputcontroller.xbox.XboxController;
@@ -460,7 +460,7 @@ public class TeleopMode extends Coordinator {
     }
 
     private class ArmManager {
-        private Arm arm;
+        private ProfiliedArm arm;
         private Toggle hardstopToggle;
         protected boolean disableArm;
         private Toggle manualHardstop;

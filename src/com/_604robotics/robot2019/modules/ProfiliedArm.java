@@ -50,8 +50,10 @@ public class ProfiliedArm extends Module {
         constraints = new TrapezoidProfile.Constraints(4000, 900);
 
         this.pid = new ProfiliedRotatingArmPIDController(Calibration.Arm.kP, Calibration.Arm.kI, Calibration.Arm.kD,
-            Calibration.Arm.kF, constraints);
+            Calibration.Arm.kF, constraints, 0.02, leftEncoder::getPosition, leftMotor::set);
 
+        pid.setTolerance(0.05);
+        pid.disableContinuousInput();
         pid.setEncoderPeriod(Calibration.Arm.CLICKS_FULL_ROTATION);
         pid.setFeedforwardZeroOffset(Calibration.Arm.HORIZONTAL_POSITION);
 
@@ -66,10 +68,19 @@ public class ProfiliedArm extends Module {
         }
 
         @Override
-        public void run() {
-            leftMotor.set(pid.calculate(leftEncoderClicks.get(), holdPoint.get()));
+        public void begin() {
+            pid.setEnabled(true);
         }
 
+        @Override
+        public void run() {
+            pid.setGoal(holdPoint.get());
+        }
+
+        @Override
+        public void end() {
+            pid.setEnabled(false);
+        }
     }
 
     public class Move extends Action {
@@ -78,6 +89,11 @@ public class ProfiliedArm extends Module {
         public Move() {
             super(ProfiliedArm.this, Move.class);
             inputPower = addInput("Input Power", 0.0, true);
+        }
+
+        @Override
+        public void begin() {
+            pid.setEnabled(false);
         }
 
         @Override
@@ -95,8 +111,18 @@ public class ProfiliedArm extends Module {
         }
 
         @Override
+        public void begin() {
+            pid.setEnabled(true);
+        }
+
+        @Override
         public void run() {
-            leftMotor.set(pid.calculate(leftEncoderClicks.get(), setpoint.get()));
+            pid.setGoal(setpoint.get());
+        }
+
+        @Override
+        public void end() {
+            pid.setEnabled(false);
         }
     }
 

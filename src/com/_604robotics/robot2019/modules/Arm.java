@@ -48,6 +48,8 @@ public class Arm extends Module {
 
         holdPoint = addInput("Setpoint", 300.0);
 
+        //pidError = addOutput("PIDError", () -> pid.getPositionError());
+
         //rightEncoderClicks = addOutput("Right Encoder Clicks", () -> rightEncoder.getPosition());
         leftEncoderClicks = addOutput("Left Encoder Clicks", () -> leftEncoder.getPosition());
         //redundantEncoderClicks = addOutput("Redundant Encoder Clicks", () -> redundantEncoder.getValue());
