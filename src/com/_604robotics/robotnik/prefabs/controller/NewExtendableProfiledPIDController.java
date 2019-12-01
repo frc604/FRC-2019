@@ -11,10 +11,9 @@
 package com._604robotics.robotnik.prefabs.controller;
 
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
-import edu.wpi.first.hal.util.BoundaryException;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.hal.util.BoundaryException;
 import edu.wpi.first.wpilibj.Sendable;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
@@ -29,9 +28,9 @@ import static edu.wpi.first.wpilibj.util.ErrorMessages.requireNonNullParam;
 
 
 /**
- * Implements a PID control loop.
+ * Implements a Motion Profiled PID control loop.
  */
-public class NewExtendableProfiliedPIDController implements Sendable, AutoCloseable {
+public class NewExtendableProfiledPIDController implements Sendable, AutoCloseable {
   private static int instances;
 
   // Factor for "proportional" control
@@ -90,33 +89,36 @@ public class NewExtendableProfiliedPIDController implements Sendable, AutoClosea
   // Last calculated result of the controller
   private double m_result = 0.0;
 
+  // Goal and setpoint states for the PIDController.
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
   private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
+
+  // Motion Profile constraints.
   private TrapezoidProfile.Constraints m_constraints = new TrapezoidProfile.Constraints();
 
-  // Output consumer
+  // Output consumer.
   protected DoubleConsumer m_pidOutput;
   
-  // Source supplier
+  // Source supplier.
   protected DoubleSupplier m_pidSource;
 
-  // Orginal source of the conroller, usedul 
+  // Original source of the controller, if it changes.
   private DoubleSupplier m_origSource;
   
-  // Thread lock for the controller
+  // Thread lock for the controller.
   ReentrantLock m_thisMutex = new ReentrantLock();
 
-  // Thread lock for writing to the output
+  // Thread lock for writing to the output.
   ReentrantLock m_pidOutputMutex = new ReentrantLock();
 
-  // Contorl loop timer, used to schedule the controller calculate though a TimerTask
+  // Control loop timer, used to schedule the controller calculate though a TimerTask.
   java.util.Timer m_controlLoop;
 
-  // Timer task used to schedule controller
+  // Timer task used to schedule controller.
   private class PIDTask extends TimerTask {
-    private NewExtendableProfiliedPIDController m_controller;
+    private NewExtendableProfiledPIDController m_controller;
 
-    PIDTask(NewExtendableProfiliedPIDController controller) {
+    PIDTask(NewExtendableProfiledPIDController controller) {
       requireNonNullParam(controller, "controller", "Given PIDController was null");
 
       m_controller = controller;
@@ -124,33 +126,59 @@ public class NewExtendableProfiliedPIDController implements Sendable, AutoClosea
 
     @Override
     public void run() {
-      // Running calcuate on measurment and setpoint
+      // Running calculate on measurement and setpoint
       m_controller.calculate();
     }
   }
 
-  public NewExtendableProfiliedPIDController(double Kp, double Ki, double Kd,
-    TrapezoidProfile.Constraints constraints, DoubleSupplier source, DoubleConsumer output) {
-    this(Kp, Ki, Kd, 0.0, constraints, 0.02, source, output);
-  }
-
-  public NewExtendableProfiliedPIDController(double Kp, double Ki, double Kd,
-    TrapezoidProfile.Constraints constraints, double period,  DoubleSupplier source, DoubleConsumer output) {
-    this(Kp, Ki, Kd, 0.0, constraints, period, source, output);
+  /**
+   * Allocates a NewExtendableProfiledPIDController with the given constants for Kp, Ki, Kd, and motion profile constrains
+   * and a default period of 0.02 seconds with no feedforward.
+   *
+   * @param Kp The proportional coefficient.
+   * @param Ki The integral coefficient.
+   * @param Kd The derivative coefficient.
+   * @param constraints The motion profile constraints.
+   * @param pidSource A lambda supplying the controller measurement.
+   * @param pidOutput A lambda consuming the controller output.
+   */
+  public NewExtendableProfiledPIDController(double Kp, double Ki, double Kd,
+    TrapezoidProfile.Constraints constraints, DoubleSupplier pidSource, DoubleConsumer pidOutput) {
+    this(Kp, Ki, Kd, 0.0, constraints, 0.02, pidSource, pidOutput);
   }
 
   /**
-   * Allocates a NewExtendablePIDController with the given constants for Kp, Ki,
-   * and Kd and a default period of 0.02 seconds.
+   * Allocates a NewExtendableProfiledPIDController with the given constants for Kp, Ki, Kd,
+   * motion profile constrains, and period with no feedforward.
+   *
+   * @param Kp The proportional coefficient.
+   * @param Ki The integral coefficient.
+   * @param Kd The derivative coefficient.
+   * @param constraints The motion profile constraints.
+   * @param period The period of the controller.
+   * @param pidSource A lambda supplying the controller measurement.
+   * @param pidOutput A lambda consuming the controller output.
+   */
+  public NewExtendableProfiledPIDController(double Kp, double Ki, double Kd,
+    TrapezoidProfile.Constraints constraints, double period,  DoubleSupplier pidSource, DoubleConsumer pidOutput) {
+    this(Kp, Ki, Kd, 0.0, constraints, period, pidSource, pidOutput);
+  }
+
+  /**
+   * Allocates a NewExtendableProfiledPIDController with the given constants for Kp, Ki, Kd,
+   * motion profile constrains, and period with no feedforward.
    *
    * @param Kp The proportional coefficient.
    * @param Ki The integral coefficient.
    * @param Kd The derivative coefficient.
    * @param Kf The feedforward term.
+   * @param constraints The motion profile constraints.
+   * @param pidSource A lambda supplying the controller measurement.
+   * @param pidOutput A lambda consuming the controller output.
    */
-  public NewExtendableProfiliedPIDController(double Kp, double Ki, double Kd, double period,
-    TrapezoidProfile.Constraints constraints, DoubleSupplier source, DoubleConsumer output) {
-    this(Kp, Ki, Kd, 0.0, constraints,period,  source, output);
+  public NewExtendableProfiledPIDController(double Kp, double Ki, double Kd, double Kf,
+    TrapezoidProfile.Constraints constraints, DoubleSupplier pidSource, DoubleConsumer pidOutput) {
+    this(Kp, Ki, Kd, Kf, constraints, 0.02,  pidSource, pidOutput);
   }
 
 
@@ -161,38 +189,41 @@ public class NewExtendableProfiliedPIDController implements Sendable, AutoClosea
    * @param Ki The integral coefficient.
    * @param Kd The derivative coefficient.
    * @param Kf The feedforward term.
-   * @param period The period of the conller in seconds.
-   * @param pidSource A lambda supplying the controller measurment.
-   * @param pidSource A lambda consuming the contller output.
+   * @param constraints The motion profile constraints.
+   * @param period The period of the controller in seconds.
+   * @param pidSource A lambda supplying the controller measurement.
+   * @param pidSource A lambda consuming the controller output.
    */
-  public NewExtendableProfiliedPIDController(double Kp, double Ki, double Kd, double Kf,
-      TrapezoidProfile.Constraints constraints, double period, DoubleSupplier source, DoubleConsumer output) {
+  public NewExtendableProfiledPIDController(double Kp, double Ki, double Kd, double Kf,
+      TrapezoidProfile.Constraints constraints, double period, DoubleSupplier pidSource, DoubleConsumer pidOutput) {
 
-    // Making sure null supplier and consumers arent passed in.
-    requireNonNullParam(constraints, "contraints", "NewExtendableProfiledPIDContoller");
-    requireNonNullParam(source, "source", "NewExtendableProfiledPIDContoller");
-    requireNonNullParam(output, "output", "NewExtendableProfiledPIDContoller");
+    // Making sure null supplier and consumers are not passed in.
+    requireNonNullParam(constraints, "constraints", "NewExtendableProfiledPIDContoller");
+    requireNonNullParam(pidSource, "source", "NewExtendableProfiledPIDContoller");
+    requireNonNullParam(pidOutput, "output", "NewExtendableProfiledPIDContoller");
 
     m_Kp = Kp;
     m_Ki = Ki;
     m_Kd = Kd;
 
+    m_Kf = Kf;
+
     m_period = period;
 
     m_constraints = constraints;
 
-    m_pidSource = source;
-    m_pidOutput = output;
+    m_pidSource = pidSource;
+    m_pidOutput = pidOutput;
 
-    m_origSource = source;
+    m_origSource = pidSource;
 
     m_controlLoop = new java.util.Timer();
 
-    // Scheduling controller calaute
+    // Scheduling controller calculate
     m_controlLoop.schedule(new PIDTask(this), 0L, (long) (m_period * 1000));
 
     instances++;
-    SendableRegistry.addLW(this, "ProfiliedPIDController", instances);
+    SendableRegistry.addLW(this, "ProfiledPIDController", instances);
 
     HAL.report(tResourceType.kResourceType_PIDController, instances);
   }
@@ -277,6 +308,11 @@ public class NewExtendableProfiliedPIDController implements Sendable, AutoClosea
     }
   }
 
+  /**
+   * Sets the Feedforward term.
+   *
+   * @param Kf feedforward term
+   */
   public void setF(double Kf) {
     m_thisMutex.lock();
     try {
@@ -328,6 +364,11 @@ public class NewExtendableProfiliedPIDController implements Sendable, AutoClosea
     }
   }
 
+  /**
+   * Get the Feedforward term.
+   *
+   * @return feedforward term
+   */
   public double getF() {
     m_thisMutex.lock();
     try {
@@ -395,7 +436,7 @@ public class NewExtendableProfiliedPIDController implements Sendable, AutoClosea
 
   /**
    * Returns true if the error is within the percentage of the total input range,
-   * determined by SetTolerance. This asssumes that the maximum and minimum input
+   * determined by SetTolerance. This assumes that the maximum and minimum input
    * were set using SetInput.
    *
    * <p>
@@ -413,10 +454,40 @@ public class NewExtendableProfiliedPIDController implements Sendable, AutoClosea
   }
 
   /**
+   * Sets the constraints for the controller motion profile.
+   *
+   * @param constraints The constraints
+   */
+  public void setConstraints(TrapezoidProfile.Constraints constraints) {
+    m_thisMutex.lock();
+    try {
+      m_constraints = constraints;
+    } finally {
+      m_thisMutex.unlock();
+    }
+  }
+
+  /**
+   * Returns the set constraints for the controller motion profile.
+   *
+   * @return The motion profile constraints.
+   */
+  public TrapezoidProfile.Constraints getConstraints() {
+    m_thisMutex.lock();
+    try {
+      return m_constraints;
+    } finally {
+      m_thisMutex.unlock();
+    }
+  }
+
+  /**
    * Returns true if the error is within the percentage of the total input range, determined by
-   * SetTolerance. This asssumes that the maximum and minimum input were set using SetInput.
+   * SetTolerance. This assumes that the maximum and minimum input were set using SetInput.
    *
    * <p>This will return false until at least one input value has been computed.
+   * 
+   * <p>Does not return if the MotionProfile is at the end use {@link this#atGoal()} for that.
    *
    * @return Whether the error is within the acceptable bounds.
    */
@@ -552,11 +623,6 @@ public class NewExtendableProfiliedPIDController implements Sendable, AutoClosea
     }
   }
 
-  /**
-   * Returns the next output of the PID controller.
-   *
-   * @param measurement The current measurement of the process variable.
-   */
   protected void calculate() {
     if (m_origSource == null || m_pidOutput == null) {
       return;
@@ -614,10 +680,9 @@ public class NewExtendableProfiliedPIDController implements Sendable, AutoClosea
 
         totalError = m_totalError;
 
+        // Making the motion profile and finding the controller setpoint.
         profile = new TrapezoidProfile(m_constraints, m_goal, m_setpoint);
         setpoint = profile.calculate(m_period);
-
-        System.out.println(setpoint.position);
 
         positionError = getContinuousError(setpoint.position - input);
         velocityError = (m_positionError - m_prevError) / m_period;
@@ -630,15 +695,18 @@ public class NewExtendableProfiliedPIDController implements Sendable, AutoClosea
       // Storage for function outputs
       double result;
 
+      // Clamping the Integral coefficient
       if (I != 0) {
         totalError = MathUtils.clamp(totalError + positionError * period,
             minimumIntegral / I, maximumIntegral / I);
       }
 
+      // Calculating the result
       result = calculateProportional(P, positionError)
               + calculateIntegral(I, totalError)
               + calculateDerivative(D, velocityError) + calculateFeedForward();
 
+      // Clamping the result
       result = MathUtils.clamp(result, minimumOutput, maximumOutput);
 
 
@@ -676,7 +744,7 @@ public class NewExtendableProfiliedPIDController implements Sendable, AutoClosea
     }
   }
 
-
+  // Separating calculate for each term so controller can be extended
   protected synchronized double calculateProportional(double p, double error) {
     return p*error;
   }
@@ -707,6 +775,10 @@ public class NewExtendableProfiliedPIDController implements Sendable, AutoClosea
     builder.addDoubleProperty("d", this::getD, this::setD);
     builder.addDoubleProperty("f", this::getF, this::setF);
     builder.addDoubleProperty("goal", () -> getGoal().position, this::setGoal);
+    builder.addDoubleProperty("maxVelocity", () -> getConstraints().maxVelocity,
+      (maxVelocity) -> setConstraints(new TrapezoidProfile.Constraints(maxVelocity, getConstraints().maxAcceleration)));
+    builder.addDoubleProperty("maxAcceleration", () -> getConstraints().maxAcceleration,
+      (maxAcceleration) -> setConstraints(new TrapezoidProfile.Constraints(getConstraints().maxVelocity, maxAcceleration)));
     builder.addBooleanProperty("enabled", this::isEnabled, this::setEnabled);
   }
 
@@ -751,7 +823,8 @@ public class NewExtendableProfiliedPIDController implements Sendable, AutoClosea
 
       // Clamp setpoint to new input
       if (m_maximumInput > m_minimumInput) {
-        m_setpoint = new TrapezoidProfile.State(MathUtils.clamp(m_setpoint.position, m_minimumInput, m_maximumInput), 0);
+        m_setpoint = new TrapezoidProfile.State(MathUtils.clamp(
+          m_setpoint.position, m_minimumInput, m_maximumInput), m_setpoint.velocity);
       }
 
     } finally {

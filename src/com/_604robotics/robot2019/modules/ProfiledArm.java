@@ -6,15 +6,15 @@ import com._604robotics.robotnik.Action;
 import com._604robotics.robotnik.Input;
 import com._604robotics.robotnik.Module;
 import com._604robotics.robotnik.Output;
-import com._604robotics.robotnik.prefabs.controller.ProfiliedRotatingArmPIDController;
+import com._604robotics.robotnik.prefabs.controller.ProfiledRotatingArmPIDController;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import com._604robotics.robotnik.prefabs.devices.RedundantEncoder;
 import com._604robotics.robotnik.prefabs.devices.TalonPWMEncoder;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-public class ProfiliedArm extends Module {
-    private ProfiliedRotatingArmPIDController pid;
+public class ProfiledArm extends Module {
+    private ProfiledRotatingArmPIDController pid;
     private TrapezoidProfile.Constraints constraints;
 
     private WPI_TalonSRX leftMotor;
@@ -30,8 +30,8 @@ public class ProfiliedArm extends Module {
     public Output<Double> leftEncoderClicks;
     public Output<Double> redundantEncoderClicks;
 
-    public ProfiliedArm() {
-        super(ProfiliedArm.class);
+    public ProfiledArm() {
+        super(ProfiledArm.class);
 
         leftMotor = new WPI_TalonSRX(Ports.ARM_LEFT_MOTOR);
         rightMotor = new WPI_TalonSRX(Ports.ARM_RIGHT_MOTOR);
@@ -49,7 +49,7 @@ public class ProfiliedArm extends Module {
 
         constraints = new TrapezoidProfile.Constraints(4000, 900);
 
-        this.pid = new ProfiliedRotatingArmPIDController(Calibration.Arm.kP, Calibration.Arm.kI, Calibration.Arm.kD,
+        this.pid = new ProfiledRotatingArmPIDController(Calibration.Arm.kP, Calibration.Arm.kI, Calibration.Arm.kD,
             Calibration.Arm.kF, constraints, 0.02, leftEncoder::getPosition, leftMotor::set);
 
         pid.setTolerance(0.05);
@@ -63,7 +63,7 @@ public class ProfiliedArm extends Module {
     public class Hold extends Action {
 
         public Hold() {
-            super(ProfiliedArm.this, Hold.class);
+            super(ProfiledArm.this, Hold.class);
             holdPoint = addInput("Hold Point", 300.0, true); // TODO low priority move forward
         }
 
@@ -87,7 +87,7 @@ public class ProfiliedArm extends Module {
         public Input<Double> inputPower;
 
         public Move() {
-            super(ProfiliedArm.this, Move.class);
+            super(ProfiledArm.this, Move.class);
             inputPower = addInput("Input Power", 0.0, true);
         }
 
@@ -106,7 +106,7 @@ public class ProfiliedArm extends Module {
         public Input<Double> setpoint;
 
         public Setpoint() {
-            super(ProfiliedArm.this, Setpoint.class);
+            super(ProfiledArm.this, Setpoint.class);
             setpoint = addInput("Setpoint", 0.0, true);
         }
 

@@ -7,26 +7,26 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 
 /**
  * <p>
- * Subclass of ProfiliedPIDController that has a feedforward for rotating arms.
+ * Subclass of ProfiledPIDController that has a feedforward for rotating arms.
  * </p>
  * This subclass requires an PIDSource as the PIDSource and uses only continuous
  * error. Zero is assumed to be horizontal. Users are responsible for properly
  * zeroing the PIDSource beforehand.
  */
-public class ProfiliedRotatingArmPIDController extends NewExtendableProfiliedPIDController {
+public class ProfiledRotatingArmPIDController extends NewExtendableProfiledPIDController {
     private double encoderPeriod = 360;
     private double zeroOffset = 0;
     private double m_kf = 0.0;
     private double m_maxOutput = 1.0;
     private double m_minOutput = -1.0;
 
-    public ProfiliedRotatingArmPIDController(double Kp, double Ki, double Kd, double Kf,
+    public ProfiledRotatingArmPIDController(double Kp, double Ki, double Kd, double Kf,
         TrapezoidProfile.Constraints constraints, double period, DoubleSupplier source, DoubleConsumer output) {
         super(Kp, Ki, Kd, period, constraints, source, output);
         this.m_kf = Kf;
     }
 
-    public ProfiliedRotatingArmPIDController(double Kp, double Ki, double Kd, double Kf, TrapezoidProfile.Constraints constraints, DoubleSupplier source, DoubleConsumer output) {
+    public ProfiledRotatingArmPIDController(double Kp, double Ki, double Kd, double Kf, TrapezoidProfile.Constraints constraints, DoubleSupplier source, DoubleConsumer output) {
         super(Kp, Ki, Kd, 0.02, constraints, source, output);
         this.m_kf = Kf;
     }

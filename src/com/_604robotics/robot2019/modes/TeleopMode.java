@@ -5,21 +5,16 @@ import com._604robotics.marionette.InputRecorder;
 import com._604robotics.marionette.InputRecording;
 import com._604robotics.marionette.MarionetteJoystick;
 import com._604robotics.robot2019.constants.Calibration;
-import com._604robotics.robot2019.modules.Arm;
 import com._604robotics.robot2019.modules.Drive;
 import com._604robotics.robot2019.modules.Intake;
-import com._604robotics.robot2019.modules.ProfiliedArm;
-import com._604robotics.robot2019.modules.Arm;
-import com._604robotics.robot2019.modules.Dashboard.DriveMode;
+import com._604robotics.robot2019.modules.ProfiledArm;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
 import com._604robotics.robotnik.prefabs.controller.NewExtendablePIDController;
+import com._604robotics.robotnik.prefabs.flow.SmartTimer;
 import com._604robotics.robotnik.prefabs.flow.Toggle;
 import com._604robotics.robotnik.prefabs.inputcontroller.xbox.XboxController;
 import com._604robotics.robotnik.prefabs.modules.Limelight;
-import edu.wpi.first.wpilibj.PIDOutput;
-import edu.wpi.first.wpilibj.Timer;
-import com._604robotics.robotnik.prefabs.flow.SmartTimer;
 
 import java.io.IOException;
 
@@ -460,7 +455,7 @@ public class TeleopMode extends Coordinator {
     }
 
     private class ArmManager {
-        private ProfiliedArm arm;
+        private ProfiledArm arm;
         private Toggle hardstopToggle;
         protected boolean disableArm;
         private Toggle manualHardstop;

@@ -11,10 +11,9 @@
 package com._604robotics.robotnik.prefabs.controller;
 
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
-import edu.wpi.first.hal.util.BoundaryException;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.hal.util.BoundaryException;
 import edu.wpi.first.wpilibj.Sendable;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpiutil.math.MathUtils;
@@ -92,25 +91,25 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   // Last calculated result of the controller
   private double m_result = 0.0;
 
-  // Output consumer
+  // Output consumer.
   protected DoubleConsumer m_pidOutput;
   
-  // Source supplier
+  // Source supplier.
   protected DoubleSupplier m_pidSource;
 
-  // Orginal source of the conroller, usedul 
+  // Original source of the controller, if it changes.
   private DoubleSupplier m_origSource;
   
-  // Thread lock for the controller
+  // Thread lock for the controller.
   ReentrantLock m_thisMutex = new ReentrantLock();
 
-  // Thread lock for writing to the output
+  // Thread lock for writing to the output.
   ReentrantLock m_pidOutputMutex = new ReentrantLock();
 
-  // Contorl loop timer, used to schedule the controller calculate though a TimerTask
+  // Control loop timer, used to schedule the controller calculate though a TimerTask
   java.util.Timer m_controlLoop;
 
-  // Timer task used to schedule controller
+  // Timer task used to schedule controller.
   private class PIDTask extends TimerTask {
     private NewExtendablePIDController m_controller;
 
@@ -122,7 +121,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
 
     @Override
     public void run() {
-      // Running calcuate on measurment and setpoint
+      // Running calculate on measurement and setpoint
       m_controller.calculate();
     }
   }
@@ -134,8 +133,8 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
    * @param Kp The proportional coefficient.
    * @param Ki The integral coefficient.
    * @param Kd The derivative coefficient.
-   * @param pidSource A lambda supplying the controller measurment.
-   * @param pidSource A lambda consuming the contller output.
+   * @param pidSource A lambda supplying the controller measurement.
+   * @param pidOutput A lambda consuming the controller output.
    */
   public NewExtendablePIDController(double Kp, double Ki, double Kd, DoubleSupplier pidSource,
   DoubleConsumer pidOutput) {
@@ -148,9 +147,9 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
    * @param Kp The proportional coefficient.
    * @param Ki The integral coefficient.
    * @param Kd The derivative coefficient.
-   * @param pidSource A lambda supplying the controller measurment.
-   * @param pidSource A lambda consuming the contller output.
-   * @param period The period of the conller in seconds.
+   * @param pidSource A lambda supplying the controller measurement.
+   * @param pidOutput A lambda consuming the controller output.
+   * @param period The period of the controller in seconds.
    */
   public NewExtendablePIDController(double Kp, double Ki, double Kd, DoubleSupplier pidSource,
   DoubleConsumer pidOutput, double period) {
@@ -165,8 +164,8 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
    * @param Ki The integral coefficient.
    * @param Kd The derivative coefficient.
    * @param Kf The feedforward term.
-   * @param pidSource A lambda supplying the controller measurment.
-   * @param pidSource A lambda consuming the contller output.
+   * @param pidSource A lambda supplying the controller measurement.
+   * @param pidOutput A lambda consuming the controller output.
    */
   public NewExtendablePIDController(double Kp, double Ki, double Kd, double Kf, DoubleSupplier pidSource,
   DoubleConsumer pidOutput) {
@@ -180,16 +179,16 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
    * @param Ki The integral coefficient.
    * @param Kd The derivative coefficient.
    * @param Kf The feedforward term.
-   * @param period The period of the conller in seconds.
-   * @param pidSource A lambda supplying the controller measurment.
-   * @param pidSource A lambda consuming the contller output.
+   * @param period The period of the controller in seconds.
+   * @param pidSource A lambda supplying the controller measurement.
+   * @param pidOutput A lambda consuming the controller output.
    */
-  public NewExtendablePIDController(double Kp, double Ki, double Kd, double Kf, double period, DoubleSupplier source,
-  DoubleConsumer output) {
+  public NewExtendablePIDController(double Kp, double Ki, double Kd, double Kf, double period, DoubleSupplier pidSource,
+  DoubleConsumer pidOutput) {
 
     // Making sure null supplier and consumers arent passed in.
-    requireNonNullParam(source, "pidSource", "Null PIDSource was given");
-    requireNonNullParam(output, "pidOutput", "Null PIDOutput was given");
+    requireNonNullParam(pidSource, "pidSource", "Null PIDSource was given");
+    requireNonNullParam(pidOutput, "pidOutput", "Null PIDOutput was given");
 
     m_Kp = Kp;
     m_Ki = Ki;
@@ -197,16 +196,17 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
 
     m_period = period;
 
-    m_pidSource = source;
-    m_pidOutput = output;
+    m_pidSource = pidSource;
+    m_pidOutput = pidOutput;
 
-    m_origSource = source;
+    m_origSource = pidSource;
 
     m_controlLoop = new java.util.Timer();
 
-    // Scheduling controller calaute
+    // Scheduling controller calculate
     m_controlLoop.schedule(new PIDTask(this), 0L, (long) (m_period * 1000));
 
+    // Adding instance of PIDController
     instances++;
     SendableRegistry.addLW(this, "PIDController", instances);
 
@@ -217,6 +217,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   public void close() {
     SendableRegistry.remove(this);
     m_controlLoop.cancel();
+
     m_thisMutex.lock();
     try {
       m_pidOutput = null;
@@ -293,6 +294,12 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
     }
   }
 
+  /**
+   * Sets the Feedforward term of the PID controller.
+   *
+   * @param Kf feedforward term
+   */
+  @SuppressWarnings("ParameterName")
   public void setF(double Kf) {
     m_thisMutex.lock();
     try {
@@ -344,6 +351,11 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
     }
   }
 
+  /**
+   * Get the Feedforward term.
+   *
+   * @return feedforward term
+   */
   public double getF() {
     m_thisMutex.lock();
     try {
@@ -401,7 +413,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
 
   /**
    * Returns true if the error is within the percentage of the total input range, determined by
-   * SetTolerance. This asssumes that the maximum and minimum input were set using SetInput.
+   * SetTolerance. This assumes that the maximum and minimum input were set using SetInput.
    *
    * <p>This will return false until at least one input value has been computed.
    *
@@ -539,18 +551,14 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
     }
   }
 
-  /**
-   * Returns the next output of the PID controller.
-   *
-   * @param measurement The current measurement of the process variable.
-   */
   protected void calculate() {
     if (m_origSource == null || m_pidOutput == null) {
       return;
     }
 
     boolean enabled;
-    
+
+    // Checking if controller is enabled or not.
     m_thisMutex.lock();
     try {
       enabled = m_enabled;
@@ -579,6 +587,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
       double velocityError;
       double totalError;
 
+      // Getting coefficients and parameters.
       m_thisMutex.lock();
       try {
         input = m_pidSource.getAsDouble();
@@ -607,15 +616,18 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
       // Storage for function outputs
       double result;
 
+      // Clamping Integral term
       if (I != 0) {
         totalError = MathUtils.clamp(totalError + positionError * period,
             minimumIntegral / I, maximumIntegral / I);
       }
 
+      // Calculating PIDController result
       result = calculateProportional(P, positionError)
               + calculateIntegral(I, totalError)
               + calculateDerivative(D, velocityError) + calculateFeedForward();
 
+      // Clamping output between minimum and maximum
       result = MathUtils.clamp(result, minimumOutput, maximumOutput);
 
 
@@ -652,7 +664,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
     }
   }
 
-
+  // Separating calculate for each term so controller can be extended
   protected synchronized double calculateProportional(double p, double error) {
     return p*error;
   }
@@ -750,6 +762,9 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
     }
   }
 
+  /**
+   * Resetting PIDController values.
+   */
   public void reset() {
     disable();
 
