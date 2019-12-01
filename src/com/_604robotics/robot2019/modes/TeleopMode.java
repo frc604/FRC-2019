@@ -265,6 +265,7 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
+            System.out.println("DRIVE");
             double leftY = driver.leftStick.y.get();
             double rightY = driver.rightStick.y.get();
             double rightX = driver.rightStick.x.get();

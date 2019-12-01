@@ -16,13 +16,15 @@ import com._604robotics.robotnik.utils.Pair;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
-public abstract class Robot extends RobotBase {
+public abstract class Robot extends IterativeRobot {
     public static double DEFAULT_REPORT_INTERVAL = 5;
+    private volatile boolean m_exit;
 
     private static final Logger logger = new Logger(Robot.class);
     
@@ -210,8 +212,17 @@ public abstract class Robot extends RobotBase {
                     Timer.delay(0.01);
                 }
             }
+
+            if (m_exit) {
+                break;
+            }
         } /* while loop */
     }
+
+    @Override
+    public void endCompetition(){
+        m_exit = true;
+    };
 
     private void printBanner (String banner) {
         byte[] compRaw=Base64.getDecoder().decode(banner);

@@ -6,10 +6,6 @@ import com._604robotics.robotnik.utils.annotations.Unreal;
 public class Ports {
     private Ports () {}
     
-    /* Solenoids */
-    //public static final int SHIFTER_A = 0;
-    //public static final int SHIFTER_B = 2;
-    
     /* Victor Motors */
     public static final int DRIVE_FRONT_LEFT_MOTOR = 1;
     public static final int DRIVE_MIDDLE_LEFT_MOTOR = 2;
@@ -48,8 +44,9 @@ public class Ports {
     /* Digital Inputs */
     public static final int ENCODER_LEFT_A = 1;
     public static final int ENCODER_LEFT_B = 0;
-    public static final int ENCODER_RIGHT_A = 2;
-    public static final int ENCODER_RIGHT_B = 3;
+    public static final int ENCODER_RIGHT_A = 3;
+    public static final int ENCODER_RIGHT_B = 2;
+    public static final int HORIZGYRO = 0;
     
     /* CAN Motors */
     public static final int COMPRESSOR = 0; // AKA PCM

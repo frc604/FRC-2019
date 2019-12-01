@@ -1,12 +1,14 @@
 package com._604robotics.robot2019.constants;
 
-import com._604robotics.robotnik.utils.AutonMovement;
+import com._604robotics.robot2019.modules.Drive;
+
 import com._604robotics.robotnik.utils.annotations.Unreal;
 import com._604robotics.robotnik.utils.annotations.Untested;
-import jaci.pathfinder.Trajectory;
+
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveKinematicsConstraint;
+import edu.wpi.first.wpilibj.util.Units;
 
 public class Calibration {
-    private Calibration () {}
 
     public static final double TELEOP_DRIVE_DEADBAND = 0.3;
     public static final double TELEOP_MANIP_DEADBAND = 0.2;
@@ -64,46 +66,38 @@ public class Calibration {
         public static final double SCALE_JOYSTICK = 0.6; // Multiply the input joystick by this
     }
 
+    public static final class Drive {
+        public static final boolean GYRO_REVERSED = false; 
+        public static final double TRACK_WIDTH = 0.5969;
+        public static final double WHEEL_DIAMETER = Units.inchesToMeters(5);
+        public static final double ENCODER_CPR = 245;
+        public static final double DISTANCE_PER_CLICK = 
+            (WHEEL_DIAMETER * Math.PI) / ENCODER_CPR;
+    }
+
+    public static class Auto {
+        public static final double RAMSETE_B = 2.0;
+        public static final double RAMSETE_ZETA = 0.7;
+        public static final double KS_VOLTS = 0.933;
+        public static final double KV_VOLT_SECONDS_PER_METER = 2.58;
+        public static final double KA_VOLT_SECONDS_SQUARED_PER_METER = 0.586;
+        public static final double KP_DRIVE_VELCOTIY = 1.55;
+
+        public static final double MAX_SPEED_METERS_PER_SECOND = 8;//10
+        public static final double MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1;//1.5
+        public static final double MAX_CENTRIPETAL_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 1;//1.5
+    }
+
     public static final double HATCH_PUSH_TIME = 0.5;
     public static final double HATCH_BACK_TIME = 0.5;
     public static final double HATCH_PULL_TIME = 0.5;
     public static final double HATCH_RELEASE_TIME = 0.5;
-
-    @Unreal("Values must be updated when the real robot is designed")
-    public static final AutonMovement.DriveTrainProperties DRIVE_PROPERTIES
-    = new AutonMovement.DriveTrainProperties(490, 26.64, 2.5, 20.767, 8.323);
-    // second to last = coefficient, second value = offset
-    static {
-        System.out.println("Clicks over inches is "+DRIVE_PROPERTIES.getClicksOverInches());
-        System.out.println("Clicks over degrees is "+DRIVE_PROPERTIES.getDegreesOverClicks());
-    }
 
     /* Marionette */
     public static final boolean AUTO_APPEND_TIMESTAMP = true;
 
     public static final String CUSTOM_PRIMARY = "single00.switchLeft.marionette";
     public static final String CUSTOM_SECONDARY = "half00.switchRight.marionette";
-
-    /* Pathfinder */
-    @Unreal("Values must be updated when the real robot is designed")
-    public final class Pathfinder {
-        public static final double ROBOT_WIDTH = 0.66;
-        public static final double KP = 2;
-        public static final double KI = 0;
-        public static final double KD = 0.0;
-        public static final double KV = 1.0/2.3;
-        public static final double KA = 0.03;
-        public static final double K_KAPPA = 0.09;
-        public static final double K_PTHETA_0 = 2.8;
-        public static final double K_PTHETA_DECAY = 0.7;
-        public static final double K_DTHETA_0 = 0.02;
-        public static final double K_DTHETA_DECAY = 0.3;
-    }
-
-    public static final Trajectory.Config PATHFINDER_CONFIG = new Trajectory.Config(
-            Trajectory.FitMethod.HERMITE_QUINTIC,
-            Trajectory.Config.SAMPLES_LOW,
-            0.025, 1.6, 1.1, 3.5 );
 
     @Untested("Currently matches value in PixyMon")
     public static final int PIXY_MAX_BLOCKS = 20; // May or may not have to match PixyMon settings...
