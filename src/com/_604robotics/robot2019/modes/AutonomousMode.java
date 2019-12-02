@@ -8,6 +8,7 @@ import com._604robotics.robot2019.auto.TrajectoryTracker;
 import com._604robotics.robot2019.macros.ArcadeTimedDriveMacro;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
+import com._604robotics.robotnik.prefabs.coordinators.SleepCoordinator;
 import com._604robotics.robotnik.prefabs.coordinators.StatefulCoordinator;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -52,14 +53,11 @@ public class AutonomousMode extends Coordinator {
 
 	@Override
 	public void begin () {
-		/*
 		switch (robot.dashboard.autonMode.get()) {
 			case MANUAL:
-				System.out.println("manual");
 				selectedModeMacro = robot.teleopMode;
 				break;
 			case FAILSAFE_FORWARD_12:
-				System.out.println("fail forward");
 				selectedModeMacro = new FallForwardMacro();
 				break;
 			case FAILSAFE_BACKWARD_12:
@@ -70,24 +68,24 @@ public class AutonomousMode extends Coordinator {
 				break;
 			case OFF:
 			default:
+				System.out.println("huh");
 				selectedModeMacro = null;
 				break;
-		}*/
+		}
 
-		selectedModeMacro = new FallForwardMacro();
+		System.out.println(selectedModeMacro);
 
 		if (selectedModeMacro != null) {
-			System.out.println("starting");
 			selectedModeMacro.start();
 		}
 	}
 
 	@Override
 	public boolean run () {
-		System.out.println(robot.dashboard.autonMode.get());
 		if (selectedModeMacro == null) {
 			return false;
 		}
+		robot.drive.updateOdometry();
 		return selectedModeMacro.execute();
 	}
 
@@ -150,9 +148,19 @@ public class AutonomousMode extends Coordinator {
 			addState("", new TrajectoryTracker(
 			trajectoryCreator.getTrajectory(
 			List.of(
-				new Pose2d(),
-				new Pose2d(3, 0, new Rotation2d(0))
+				new Pose2d(0, 0, new Rotation2d(0)),
+				new Pose2d(1.5, -1, new Rotation2d(0)),
+				new Pose2d(3, 0, new Rotation2d(Math.PI/2))
 			), false),
+			robot.drive));
+			addState("Waiting...", new SleepCoordinator(3));
+			addState("", new TrajectoryTracker(
+			trajectoryCreator.getTrajectory(
+			List.of(
+				robot.drive.getPose(),
+				new Pose2d(1.5, -0.5, Rotation2d.fromDegrees(90)),
+				new Pose2d(0, 0, new Rotation2d(0))
+			), true),
 			robot.drive));
 		}
 	}

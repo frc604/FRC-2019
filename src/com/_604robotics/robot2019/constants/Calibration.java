@@ -81,11 +81,11 @@ public class Calibration {
         public static final double KS_VOLTS = 0.933;
         public static final double KV_VOLT_SECONDS_PER_METER = 2.58;
         public static final double KA_VOLT_SECONDS_SQUARED_PER_METER = 0.586;
-        public static final double KP_DRIVE_VELCOTIY = 1.55;
+        public static final double KP_DRIVE_VELCOTIY = 1.5;
 
-        public static final double MAX_SPEED_METERS_PER_SECOND = 2;//10
-        public static final double MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 0.1;//1.5
-        public static final double MAX_CENTRIPETAL_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 0.1;//1.5
+        public static final double MAX_SPEED_METERS_PER_SECOND = 10;//10
+        public static final double MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 2;//1.5
+        public static final double MAX_CENTRIPETAL_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2;//1.5
     }
 
     public static final double HATCH_PUSH_TIME = 0.5;

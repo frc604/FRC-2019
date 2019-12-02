@@ -265,6 +265,7 @@ public class TeleopMode extends Coordinator {
         }
 
         public void run() {
+            robot.drive.updateOdometry();
             double leftY = driver.leftStick.y.get();
             double rightY = driver.rightStick.y.get();
             double rightX = driver.rightStick.x.get();
