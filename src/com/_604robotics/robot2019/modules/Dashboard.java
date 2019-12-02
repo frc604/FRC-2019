@@ -12,6 +12,9 @@ public class Dashboard extends DashboardModule {
     public final Input<Double> leftDriveRate = addDashboardInput("leftDriveRate", 0.0);
     public final Input<Double> rightDriveRate = addDashboardInput("rightDriveRate", 0.0);
     
+    public final Input<Double> leftDriveDistance = addDashboardInput("leftDriveDistance", 0.0);
+    public final Input<Double> rightDriveDistance = addDashboardInput("rightDriveDistance", 0.0);
+    
     public final Input<Double> xAccel = addDashboardInput("X Acceleration (g)", 0.0);
     public final Input<Double> yAccel = addDashboardInput("Y Acceleration (g)", 0.0);
     public final Input<Double> zAccel = addDashboardInput("Z Acceleration (g)", 0.0);

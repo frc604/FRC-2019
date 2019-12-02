@@ -7,6 +7,7 @@ import com._604robotics.robotnik.Input;
 import com._604robotics.robotnik.Module;
 import com._604robotics.robotnik.Output;
 import com._604robotics.robotnik.prefabs.devices.wrappers.RampMotor;
+import com._604robotics.robotnik.prefabs.modules.DashboardModule;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
@@ -56,10 +57,12 @@ public class Drive extends Module {
     public final Output<Double> leftClickRate = addOutput("leftClickRate", encoderLeft::getRate);
     public final Output<Double> rightClickRate = addOutput("rightClickRate", encoderRight::getRate);
 
+    public final Output<Double> leftDistance = addOutput("leftDistance", encoderLeft::getDistance);
+    public final Output<Double> rightDistance = addOutput("rightDistance", encoderRight::getDistance);
 
     /* Auton Methods */
     public double getHeading() {
-        var angle = horizGyro.getAngle() * (Calibration.Drive.GYRO_REVERSED ? -1.0 : 1.0);
+        var angle = -horizGyro.getAngle() * (Calibration.Drive.GYRO_REVERSED ? -1.0 : 1.0);
         return Math.IEEEremainder(angle, 360);
     }
 
@@ -192,7 +195,6 @@ public class Drive extends Module {
         encoderLeft.setDistancePerPulse(Calibration.Drive.DISTANCE_PER_CLICK);
         encoderRight.setDistancePerPulse(Calibration.Drive.DISTANCE_PER_CLICK);
         robotDrive.setDeadband(0.04);
-        horizGyro.calibrate();
         setDefaultAction(idle);
     }
 }

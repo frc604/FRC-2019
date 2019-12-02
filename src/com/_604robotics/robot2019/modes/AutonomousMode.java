@@ -52,12 +52,14 @@ public class AutonomousMode extends Coordinator {
 
 	@Override
 	public void begin () {
+		/*
 		switch (robot.dashboard.autonMode.get()) {
 			case MANUAL:
 				System.out.println("manual");
 				selectedModeMacro = robot.teleopMode;
 				break;
 			case FAILSAFE_FORWARD_12:
+				System.out.println("fail forward");
 				selectedModeMacro = new FallForwardMacro();
 				break;
 			case FAILSAFE_BACKWARD_12:
@@ -70,7 +72,9 @@ public class AutonomousMode extends Coordinator {
 			default:
 				selectedModeMacro = null;
 				break;
-		}
+		}*/
+
+		selectedModeMacro = new FallForwardMacro();
 
 		if (selectedModeMacro != null) {
 			System.out.println("starting");
@@ -80,6 +84,7 @@ public class AutonomousMode extends Coordinator {
 
 	@Override
 	public boolean run () {
+		System.out.println(robot.dashboard.autonMode.get());
 		if (selectedModeMacro == null) {
 			return false;
 		}
@@ -98,7 +103,7 @@ public class AutonomousMode extends Coordinator {
 		public FallBackMacro() {
 			super(FallBackMacro.class);
 			
-			addState("Pathfind back 144in", new PathReverse( Units.inchesToMeters( 144 ) ));
+			addState("Pathfind back 144in", new PathReverse( Units.inchesToMeters( 36 ) ));
 		}
 	}
 
@@ -106,7 +111,7 @@ public class AutonomousMode extends Coordinator {
 		public FallForwardMacro() {
 			super(FallForwardMacro.class);
 			
-			addState("Pathfind forward 144in", new PathStraight( Units.inchesToMeters( 144 ) ));
+			addState("Pathfind forward 144in", new PathStraight( Units.inchesToMeters( 36 ) ));
 		}
 	}
 
@@ -146,7 +151,7 @@ public class AutonomousMode extends Coordinator {
 			trajectoryCreator.getTrajectory(
 			List.of(
 				new Pose2d(),
-				new Pose2d(Units.feetToMeters(14), 0, new Rotation2d(0))
+				new Pose2d(3, 0, new Rotation2d(0))
 			), false),
 			robot.drive));
 		}

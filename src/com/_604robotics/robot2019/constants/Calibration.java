@@ -69,10 +69,10 @@ public class Calibration {
     public static final class Drive {
         public static final boolean GYRO_REVERSED = false; 
         public static final double TRACK_WIDTH = 0.5969;
-        public static final double WHEEL_DIAMETER = Units.inchesToMeters(5);
+        public static final double WHEEL_DIAMETER = 0.127;
         public static final double ENCODER_CPR = 245;
         public static final double DISTANCE_PER_CLICK = 
-            (WHEEL_DIAMETER * Math.PI) / ENCODER_CPR;
+            (WHEEL_DIAMETER * Math.PI) / (double) ENCODER_CPR;
     }
 
     public static class Auto {
@@ -83,9 +83,9 @@ public class Calibration {
         public static final double KA_VOLT_SECONDS_SQUARED_PER_METER = 0.586;
         public static final double KP_DRIVE_VELCOTIY = 1.55;
 
-        public static final double MAX_SPEED_METERS_PER_SECOND = 8;//10
-        public static final double MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1;//1.5
-        public static final double MAX_CENTRIPETAL_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 1;//1.5
+        public static final double MAX_SPEED_METERS_PER_SECOND = 2;//10
+        public static final double MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 0.1;//1.5
+        public static final double MAX_CENTRIPETAL_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 0.1;//1.5
     }
 
     public static final double HATCH_PUSH_TIME = 0.5;

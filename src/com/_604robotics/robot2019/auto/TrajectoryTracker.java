@@ -54,6 +54,8 @@ public class TrajectoryTracker extends Coordinator {
 
     @Override
 	public boolean run() {
+        m_drivetrain.updateOdometry();
+        System.out.println(m_drivetrain.getPose());
         double curTime = m_timer.get();
         double dt = curTime - m_prevTime;
 
