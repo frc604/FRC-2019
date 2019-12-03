@@ -53,6 +53,7 @@ public class AutonomousMode extends Coordinator {
 
 	@Override
 	public void begin () {
+		System.out.println(robot.dashboard.autonMode.get());
 		switch (robot.dashboard.autonMode.get()) {
 			case MANUAL:
 				selectedModeMacro = robot.teleopMode;
@@ -85,6 +86,7 @@ public class AutonomousMode extends Coordinator {
 		if (selectedModeMacro == null) {
 			return false;
 		}
+		System.out.println(robot.dashboard.autonMode.get());
 		robot.drive.updateOdometry();
 		return selectedModeMacro.execute();
 	}

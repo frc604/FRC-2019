@@ -14,7 +14,9 @@ import com._604robotics.robotnik.utils.Pair;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
     private static final Logger logger = new Logger(Robot.class);
@@ -145,7 +147,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         // This is called once when the robot first enters autonomous mode
-        loopInit("Autonomous", autonomousMode);;
+        loopInit("Autonomous", autonomousMode);
         
     }
 
@@ -182,9 +184,11 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         // This is called periodically while the robot is disabled
+        System.out.println("DISABLED_INIT");
         loopEnd(currentModeName, currentMode);
         currentMode = null;
         currentModeName = null;
+        loopInit("Disabled", null);
     }
 
     private void printBanner (String banner) {
