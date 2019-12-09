@@ -9,9 +9,9 @@ package com._604robotics.robotnik;
 
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.hal.NotifierJNI;
+import edu.wpi.first.wpilibj.RobotController;
 
 /**
  * TimedRobot implements the IterativeRobotBase robot program framework.
@@ -30,9 +30,7 @@ public class TimedRobot extends IterativeRobotBase {
   // The absolute expiration time
   private double m_expirationTime;
 
-  /**
-   * Constructor for TimedRobot.
-   */
+  /** Constructor for TimedRobot. */
   protected TimedRobot() {
     this(kDefaultPeriod);
   }
@@ -56,9 +54,7 @@ public class TimedRobot extends IterativeRobotBase {
     NotifierJNI.cleanNotifier(m_notifier);
   }
 
-  /**
-   * Provide an alternate "main loop" via startCompetition().
-   */
+  /** Provide an alternate "main loop" via startCompetition(). */
   @Override
   @SuppressWarnings("UnsafeFinalization")
   public void startCompetition() {
@@ -84,24 +80,18 @@ public class TimedRobot extends IterativeRobotBase {
     }
   }
 
-  /**
-   * Ends the main loop in startCompetition().
-   */
+  /** Ends the main loop in startCompetition(). */
   @Override
   public void endCompetition() {
     NotifierJNI.stopNotifier(m_notifier);
   }
 
-  /**
-   * Get time period between calls to Periodic() functions.
-   */
+  /** Get time period between calls to Periodic() functions. */
   public double getPeriod() {
     return m_period;
   }
 
-  /**
-   * Update the alarm hardware to reflect the next alarm.
-   */
+  /** Update the alarm hardware to reflect the next alarm. */
   @SuppressWarnings("UnsafeFinalization")
   private void updateAlarm() {
     NotifierJNI.updateNotifierAlarm(m_notifier, (long) (m_expirationTime * 1e6));

@@ -1,32 +1,31 @@
 package com._604robotics.robotnik;
 
 class OutputProxy<T> implements Output<T> {
-    private final String name;
-    private final Output<T> source;
-    private T value;
+  private final String name;
+  private final Output<T> source;
+  private T value;
 
-    public OutputProxy( String name, Output<T> source ) {
-        if( name.contains(",") ) {
-            throw new IllegalArgumentException("Output names may not contain commas");
-        }
-
-        this.name = name;
-        this.source = source;
-
-        update(); // Otherwise this.value is null
+  public OutputProxy(String name, Output<T> source) {
+    if (name.contains(",")) {
+      throw new IllegalArgumentException("Output names may not contain commas");
     }
 
-    public String getName() {
-        return name;
-    }
+    this.name = name;
+    this.source = source;
 
+    update(); // Otherwise this.value is null
+  }
 
-    @Override
-    public synchronized T get() {
-        return value;
-    }
+  public String getName() {
+    return name;
+  }
 
-    synchronized void update() {
-        value = source.get();
-    }
+  @Override
+  public synchronized T get() {
+    return value;
+  }
+
+  synchronized void update() {
+    value = source.get();
+  }
 }

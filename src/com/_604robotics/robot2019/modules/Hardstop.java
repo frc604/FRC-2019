@@ -8,45 +8,45 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class Hardstop extends Module {
-    private final DoubleSolenoid hardstop;
+  private final DoubleSolenoid hardstop;
 
-    public Output<Boolean> closed;
+  public Output<Boolean> closed;
 
-    public Hardstop() {
-        super(Hardstop.class);
+  public Hardstop() {
+    super(Hardstop.class);
 
-        hardstop = new DoubleSolenoid(Ports.HARDSTOP_A, Ports.HARDSTOP_B);
-		
-        open = new Open();
-        close = new Close();
+    hardstop = new DoubleSolenoid(Ports.HARDSTOP_A, Ports.HARDSTOP_B);
 
-        closed = addOutput("closed", () -> close.isRunning());
-		
-        setDefaultAction(close);
+    open = new Open();
+    close = new Close();
+
+    closed = addOutput("closed", () -> close.isRunning());
+
+    setDefaultAction(close);
+  }
+
+  public class Open extends Action {
+    public Open() {
+      super(Hardstop.this, Open.class);
     }
 
-    public class Open extends Action {
-        public Open() {
-            super(Hardstop.this, Open.class);
-        }
-		
-		@Override
-		public void run() {
-			hardstop.set(Value.kForward);
-		}
+    @Override
+    public void run() {
+      hardstop.set(Value.kForward);
+    }
+  }
+
+  public class Close extends Action {
+    public Close() {
+      super(Hardstop.this, Close.class);
     }
 
-    public class Close extends Action {
-        public Close() {
-            super(Hardstop.this, Close.class);
-        }
-		
-		@Override
-		public void run() {
-			hardstop.set(Value.kReverse);
-		}
+    @Override
+    public void run() {
+      hardstop.set(Value.kReverse);
     }
+  }
 
-    public Open open;
-    public Close close;
+  public Open open;
+  public Close close;
 }

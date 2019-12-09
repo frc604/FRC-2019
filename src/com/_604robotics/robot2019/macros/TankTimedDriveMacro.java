@@ -5,34 +5,38 @@ import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.prefabs.flow.SmartTimer;
 
 public abstract class TankTimedDriveMacro extends Coordinator {
-    private final SmartTimer timer = new SmartTimer();
+  private final SmartTimer timer = new SmartTimer();
 
-    private final Drive.TankDrive driveForward;
+  private final Drive.TankDrive driveForward;
 
-    public TankTimedDriveMacro ( com._604robotics.robot2019.Robot2019 robot) {
-        driveForward = robot.drive.new TankDrive();
-    }
+  public TankTimedDriveMacro(com._604robotics.robot2019.Robot2019 robot) {
+    driveForward = robot.drive.new TankDrive();
+  }
 
-    protected abstract double getLeftPower ();
-    protected abstract double getRightPower ();
-    protected abstract double getTime ();
+  protected abstract double getLeftPower();
 
-    @Override
-    protected void begin () {
-        timer.start();
-    }
+  protected abstract double getRightPower();
 
-    @Override
-    protected boolean run () {
-        return timer.runUntil(getTime(), () -> {
-            driveForward.leftPower.set(getLeftPower());
-            driveForward.rightPower.set(getRightPower());
-            driveForward.activate();
+  protected abstract double getTime();
+
+  @Override
+  protected void begin() {
+    timer.start();
+  }
+
+  @Override
+  protected boolean run() {
+    return timer.runUntil(
+        getTime(),
+        () -> {
+          driveForward.leftPower.set(getLeftPower());
+          driveForward.rightPower.set(getRightPower());
+          driveForward.activate();
         });
-    }
+  }
 
-    @Override
-    protected void end () {
-        timer.stopAndReset();
-    }
+  @Override
+  protected void end() {
+    timer.stopAndReset();
+  }
 }

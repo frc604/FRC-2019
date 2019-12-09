@@ -5,34 +5,38 @@ import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.prefabs.flow.SmartTimer;
 
 public abstract class ArcadeTimedDriveMacro extends Coordinator {
-    private final SmartTimer timer = new SmartTimer();
+  private final SmartTimer timer = new SmartTimer();
 
-    private final Drive.ArcadeDrive driveForward;
+  private final Drive.ArcadeDrive driveForward;
 
-    public ArcadeTimedDriveMacro ( com._604robotics.robot2019.Robot2019 robot) {
-        driveForward = robot.drive.new ArcadeDrive();
-    }
+  public ArcadeTimedDriveMacro(com._604robotics.robot2019.Robot2019 robot) {
+    driveForward = robot.drive.new ArcadeDrive();
+  }
 
-    protected abstract double getMovePower ();
-    protected abstract double getRotatePower ();
-    protected abstract double getTime ();
+  protected abstract double getMovePower();
 
-    @Override
-    protected void begin () {
-        timer.start();
-    }
+  protected abstract double getRotatePower();
 
-    @Override
-    protected boolean run () {
-        return timer.runUntil(getTime(), () -> {
-            driveForward.movePower.set(getMovePower());
-            driveForward.rotatePower.set(getRotatePower());
-            driveForward.activate();
+  protected abstract double getTime();
+
+  @Override
+  protected void begin() {
+    timer.start();
+  }
+
+  @Override
+  protected boolean run() {
+    return timer.runUntil(
+        getTime(),
+        () -> {
+          driveForward.movePower.set(getMovePower());
+          driveForward.rotatePower.set(getRotatePower());
+          driveForward.activate();
         });
-    }
+  }
 
-    @Override
-    protected void end () {
-        timer.stopAndReset();
-    }
+  @Override
+  protected void end() {
+    timer.stopAndReset();
+  }
 }

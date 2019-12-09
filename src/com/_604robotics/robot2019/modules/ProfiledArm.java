@@ -7,131 +7,137 @@ import com._604robotics.robotnik.Input;
 import com._604robotics.robotnik.Module;
 import com._604robotics.robotnik.Output;
 import com._604robotics.robotnik.prefabs.controller.ProfiledRotatingArmPIDController;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import com._604robotics.robotnik.prefabs.devices.RedundantEncoder;
 import com._604robotics.robotnik.prefabs.devices.TalonPWMEncoder;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 
 public class ProfiledArm extends Module {
-    private ProfiledRotatingArmPIDController pid;
-    private TrapezoidProfile.Constraints constraints;
+  private ProfiledRotatingArmPIDController pid;
+  private TrapezoidProfile.Constraints constraints;
 
-    private WPI_TalonSRX leftMotor;
-    private WPI_TalonSRX rightMotor;
+  private WPI_TalonSRX leftMotor;
+  private WPI_TalonSRX rightMotor;
 
-    private TalonPWMEncoder leftEncoder;
-    private RedundantEncoder redundantEncoder;
+  private TalonPWMEncoder leftEncoder;
+  private RedundantEncoder redundantEncoder;
 
-    public Input<Double> holdPoint;
+  public Input<Double> holdPoint;
 
-    public Output<Double> pidError;
-    public Output<Double> rightEncoderClicks;
-    public Output<Double> leftEncoderClicks;
-    public Output<Double> redundantEncoderClicks;
+  public Output<Double> pidError;
+  public Output<Double> rightEncoderClicks;
+  public Output<Double> leftEncoderClicks;
+  public Output<Double> redundantEncoderClicks;
 
-    public ProfiledArm() {
-        super(ProfiledArm.class);
+  public ProfiledArm() {
+    super(ProfiledArm.class);
 
-        leftMotor = new WPI_TalonSRX(Ports.ARM_LEFT_MOTOR);
-        rightMotor = new WPI_TalonSRX(Ports.ARM_RIGHT_MOTOR);
+    leftMotor = new WPI_TalonSRX(Ports.ARM_LEFT_MOTOR);
+    rightMotor = new WPI_TalonSRX(Ports.ARM_RIGHT_MOTOR);
 
-        rightMotor.setInverted(true);
-        rightMotor.set(ControlMode.Follower, Ports.ARM_LEFT_MOTOR);
+    rightMotor.setInverted(true);
+    rightMotor.set(ControlMode.Follower, Ports.ARM_LEFT_MOTOR);
 
-    
-        leftEncoder = new TalonPWMEncoder(rightMotor);
-		leftEncoder.setInverted(false);
-        leftEncoder.zero();
+    leftEncoder = new TalonPWMEncoder(rightMotor);
+    leftEncoder.setInverted(false);
+    leftEncoder.zero();
 
-        holdPoint = addInput("Setpoint", 300.0);
-        leftEncoderClicks = addOutput("Left Encoder Clicks", () -> leftEncoder.getPosition());
+    holdPoint = addInput("Setpoint", 300.0);
+    leftEncoderClicks = addOutput("Left Encoder Clicks", () -> leftEncoder.getPosition());
 
-        constraints = new TrapezoidProfile.Constraints(4000, 900);
+    constraints = new TrapezoidProfile.Constraints(4000, 900);
 
-        this.pid = new ProfiledRotatingArmPIDController(Calibration.Arm.kP, Calibration.Arm.kI, Calibration.Arm.kD,
-            Calibration.Arm.kF, constraints, 0.02, leftEncoder::getPosition, leftMotor::set);
+    this.pid =
+        new ProfiledRotatingArmPIDController(
+            Calibration.Arm.kP,
+            Calibration.Arm.kI,
+            Calibration.Arm.kD,
+            Calibration.Arm.kF,
+            constraints,
+            0.02,
+            leftEncoder::getPosition,
+            leftMotor::set);
 
-        pid.setTolerance(0.05);
-        pid.disableContinuousInput();
-        pid.setEncoderPeriod(Calibration.Arm.CLICKS_FULL_ROTATION);
-        pid.setFeedforwardZeroOffset(Calibration.Arm.HORIZONTAL_POSITION);
+    pid.setTolerance(0.05);
+    pid.disableContinuousInput();
+    pid.setEncoderPeriod(Calibration.Arm.CLICKS_FULL_ROTATION);
+    pid.setFeedforwardZeroOffset(Calibration.Arm.HORIZONTAL_POSITION);
 
-        setDefaultAction(move);
+    setDefaultAction(move);
+  }
+
+  public class Hold extends Action {
+
+    public Hold() {
+      super(ProfiledArm.this, Hold.class);
+      holdPoint = addInput("Hold Point", 300.0, true); // TODO low priority move forward
     }
 
-    public class Hold extends Action {
-
-        public Hold() {
-            super(ProfiledArm.this, Hold.class);
-            holdPoint = addInput("Hold Point", 300.0, true); // TODO low priority move forward
-        }
-
-        @Override
-        public void begin() {
-            pid.setEnabled(true);
-        }
-
-        @Override
-        public void run() {
-            pid.setGoal(holdPoint.get());
-        }
-
-        @Override
-        public void end() {
-            pid.setEnabled(false);
-        }
+    @Override
+    public void begin() {
+      pid.setEnabled(true);
     }
 
-    public class Move extends Action {
-        public Input<Double> inputPower;
-
-        public Move() {
-            super(ProfiledArm.this, Move.class);
-            inputPower = addInput("Input Power", 0.0, true);
-        }
-
-        @Override
-        public void begin() {
-            pid.setEnabled(false);
-        }
-
-        @Override
-        public void run() {
-            leftMotor.set(inputPower.get());
-        }
+    @Override
+    public void run() {
+      pid.setGoal(holdPoint.get());
     }
 
-    public class Setpoint extends Action {
-        public Input<Double> setpoint;
+    @Override
+    public void end() {
+      pid.setEnabled(false);
+    }
+  }
 
-        public Setpoint() {
-            super(ProfiledArm.this, Setpoint.class);
-            setpoint = addInput("Setpoint", 0.0, true);
-        }
+  public class Move extends Action {
+    public Input<Double> inputPower;
 
-        @Override
-        public void begin() {
-            pid.setEnabled(true);
-        }
-
-        @Override
-        public void run() {
-            pid.setGoal(setpoint.get());
-        }
-
-        @Override
-        public void end() {
-            pid.setEnabled(false);
-        }
+    public Move() {
+      super(ProfiledArm.this, Move.class);
+      inputPower = addInput("Input Power", 0.0, true);
     }
 
-    public void resetEncoder() {
-        leftEncoder.zero();
+    @Override
+    public void begin() {
+      pid.setEnabled(false);
     }
 
+    @Override
+    public void run() {
+      leftMotor.set(inputPower.get());
+    }
+  }
 
-    public Hold hold = new Hold();
-    public Move move = new Move();
-    public Setpoint setpoint = new Setpoint();
+  public class Setpoint extends Action {
+    public Input<Double> setpoint;
+
+    public Setpoint() {
+      super(ProfiledArm.this, Setpoint.class);
+      setpoint = addInput("Setpoint", 0.0, true);
+    }
+
+    @Override
+    public void begin() {
+      pid.setEnabled(true);
+    }
+
+    @Override
+    public void run() {
+      pid.setGoal(setpoint.get());
+    }
+
+    @Override
+    public void end() {
+      pid.setEnabled(false);
+    }
+  }
+
+  public void resetEncoder() {
+    leftEncoder.zero();
+  }
+
+  public Hold hold = new Hold();
+  public Move move = new Move();
+  public Setpoint setpoint = new Setpoint();
 }

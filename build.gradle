@@ -3,6 +3,7 @@ plugins {
     id "java"
     id "eclipse"
     id "idea"
+    id "com.diffplug.gradle.spotless" version "3.26.1"
     id "edu.wpi.first.GradleRIO" version "2020.1.1-beta-3"
 }
 
@@ -10,7 +11,6 @@ def TEAM = 604
 def ROBOT_CLASS = "com._604robotics.robot2019.Robot2019"
 
 dependencies {
-
     compile wpi.deps.wpilib()
     testCompile 'junit:junit:4.12'
     compile wpi.deps.wpilib()
@@ -53,6 +53,14 @@ deploy {
             directory = '/home/lvuser/deploy'
         }
     }
+}
+
+spotless {
+  java {
+    googleJavaFormat()
+
+    paddedCell()
+  }
 }
 
 // Fat Jar with manifest
