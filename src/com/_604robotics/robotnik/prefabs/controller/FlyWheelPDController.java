@@ -12,7 +12,7 @@ import java.util.function.DoubleSupplier;
  * internally, and requires a {@link edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward} with
  * Ks, and Kv coefficients.
  */
-public class FlyWheelPIDController extends NewExtendablePIDController {
+public class FlyWheelPDController extends NewExtendablePIDController {
   private final SimpleMotorFeedforward m_feedforward;
 
   /**
@@ -24,7 +24,7 @@ public class FlyWheelPIDController extends NewExtendablePIDController {
    * @param source A lambda supplying the controller measurement.
    * @param output A lambda consuming the controller output.
    */
-  public FlyWheelPIDController(
+  public FlyWheelPDController(
       double Kp, SimpleMotorFeedforward feedforward, DoubleSupplier source, DoubleConsumer output) {
     super(Kp, 0, 0, source, output);
     this.m_feedforward = feedforward;
@@ -40,7 +40,7 @@ public class FlyWheelPIDController extends NewExtendablePIDController {
    * @param source A lambda supplying the controller measurement.
    * @param output A lambda consuming the controller output.
    */
-  public FlyWheelPIDController(
+  public FlyWheelPDController(
       double Kp,
       double Kd,
       SimpleMotorFeedforward feedforward,
@@ -60,7 +60,7 @@ public class FlyWheelPIDController extends NewExtendablePIDController {
    * @param source A lambda supplying the controller measurement.
    * @param output A lambda consuming the controller output.
    */
-  public FlyWheelPIDController(
+  public FlyWheelPDController(
       double Kp,
       SimpleMotorFeedforward feedforward,
       double period,
@@ -81,7 +81,7 @@ public class FlyWheelPIDController extends NewExtendablePIDController {
    * @param source A lambda supplying the controller measurement.
    * @param output A lambda consuming the controller output.
    */
-  public FlyWheelPIDController(
+  public FlyWheelPDController(
       double Kp,
       double Kd,
       SimpleMotorFeedforward feedforward,
@@ -94,9 +94,9 @@ public class FlyWheelPIDController extends NewExtendablePIDController {
 
   /**
    * Overridden feed forward part of PIDController. This is a physically based model which
-   * calculates the feed forward term through from a {@link
+   * calculates the feed forward term through a {@link
    * edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward}. The feed forward accounts for static
-   * friction and friction during movement though the Ks, Kv, and Ka coefficients.
+   * friction and friction during movement and acceleration though the Ks, Kv, and Ka coefficients.
    *
    * @return the feed forward value
    */
