@@ -28,19 +28,19 @@ public class RotatingArmPIDController extends NewExtendablePIDController {
   }
 
   public RotatingArmPIDController(
-      double Kp, double Ki, double Kd, double Kf, DoubleSupplier source, DoubleConsumer output) {
-    super(Kp, Ki, Kd, Kf, source, output);
+      double Kp, double Ki, double Kd, double Kcos, DoubleSupplier source, DoubleConsumer output) {
+    super(Kp, Ki, Kd, Kcos, source, output);
   }
 
   public RotatingArmPIDController(
       double Kp,
       double Ki,
       double Kd,
-      double Kf,
+      double Kcos,
       DoubleSupplier source,
       DoubleConsumer output,
       double period) {
-    super(Kp, Ki, Kd, Kf, period, source, output);
+    super(Kp, Ki, Kd, Kcos, period, source, output);
   }
 
   public double getEncoderPeriod() {

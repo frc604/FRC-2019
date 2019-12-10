@@ -84,6 +84,9 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
   // Supplied setpoint
   private double m_setpoint;
 
+  // Last measurement used for calculation
+  private double m_prevMeasurement;
+
   // Last calculated result of the controller
   private double m_result = 0.0;
 
@@ -199,7 +202,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
       DoubleSupplier pidSource,
       DoubleConsumer pidOutput) {
 
-    // Making sure null supplier and consumers arent passed in.
+    // Making sure null supplier and consumers are not passed in.
     requireNonNullParam(pidSource, "pidSource", "Null PIDSource was given");
     requireNonNullParam(pidOutput, "pidOutput", "Null PIDOutput was given");
 
@@ -213,6 +216,8 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
     m_pidOutput = pidOutput;
 
     m_origSource = pidSource;
+
+    m_prevMeasurement = m_pidSource.getAsDouble();
 
     m_controlLoop = new java.util.Timer();
 
@@ -579,7 +584,6 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
       double P;
       double I;
       double D;
-      double F;
 
       double period;
 
@@ -663,6 +667,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
       try {
         m_prevError = positionError;
         m_totalError = totalError;
+        m_prevMeasurement = input;
         m_result = result;
         m_positionError = positionError;
         m_velocityError = velocityError;
@@ -750,6 +755,23 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
         m_setpoint = MathUtils.clamp(m_setpoint, m_minimumInput, m_maximumInput);
       }
 
+    } finally {
+      m_thisMutex.unlock();
+    }
+  }
+
+  /**
+   * Return the last sampled measurement of the controller.
+   *
+   * <p>Note:Mainly used for calculating acceleration based feedforward, not the controller output.
+   * See {@link this#get()}.
+   *
+   * @return the latest calculated output
+   */
+  public double getMeasurement() {
+    m_thisMutex.lock();
+    try {
+      return m_prevMeasurement;
     } finally {
       m_thisMutex.unlock();
     }

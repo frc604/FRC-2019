@@ -414,7 +414,7 @@ public class NewExtendableProfiledPIDController implements Sendable, AutoCloseab
   /**
    * Sets the setpoint for the PIDController.
    *
-   * @param setpoint The desired setpoint.
+   * @param goal The desired setpoint.
    */
   public void setGoal(TrapezoidProfile.State goal) {
     m_thisMutex.lock();
@@ -428,7 +428,7 @@ public class NewExtendableProfiledPIDController implements Sendable, AutoCloseab
   /**
    * Sets the goal for the PIDController.
    *
-   * @param setpoint The goal position.
+   * @param goal The goal position.
    */
   public void setGoal(double goal) {
     m_thisMutex.lock();
