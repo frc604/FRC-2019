@@ -10,7 +10,7 @@ import java.util.function.DoubleSupplier;
  * error. Typically, a flywheel controller only needs a proportional term, but an overload is
  * available if a derivative term is needed. The controller also handles feedforward calculation
  * internally, and requires a {@link edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward} with
- * Ks, and Kv coefficients.
+ * Ks, Kv, and Ka coefficients.
  */
 public class FlyWheelPDController extends NewExtendablePIDController {
   private final SimpleMotorFeedforward m_feedforward;
@@ -96,7 +96,8 @@ public class FlyWheelPDController extends NewExtendablePIDController {
    * Overridden feed forward part of PIDController. This is a physically based model which
    * calculates the feed forward term through a {@link
    * edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward}. The feed forward accounts for static
-   * friction and friction during movement and acceleration though the Ks, Kv, and Ka coefficients.
+   * friction and non-linearities during movement and acceleration though the Ks, Kv, and Ka
+   * coefficients.
    *
    * @return the feed forward value
    */

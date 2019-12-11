@@ -59,7 +59,7 @@ public class ProfiledRotatingArmPIDController extends NewExtendableProfiledPIDCo
   }
 
   /**
-   * Overriden feed forward part of PIDController. This is a physically based model which multiplies
+   * Overridden feed forward part of PIDController. This is a physically based model which multiplies
    * feed forward coefficient by cosine. The feedforward calculates the expected torque needed to
    * hold an arm steady, scaled to motor power.
    *

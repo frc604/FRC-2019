@@ -707,7 +707,7 @@ public class TeleopMode extends Coordinator {
               -0.07,
               0,
               -0.3,
-              new Limelight.HorizontalError(robot.limelight, 0)::pidGet,
+              robot.limelight.limelightX::get,
               driveManager.arcade.rotatePower::set,
               0.005);
 
@@ -719,7 +719,7 @@ public class TeleopMode extends Coordinator {
               0.5,
               0,
               0,
-              new Limelight.DistanceError(robot.limelight, 18)::pidGet,
+              robot.limelight::getDistance,
               driveManager.arcade.rotatePower::set);
       distPID.setTolerance(Calibration.LIMELIGHT_DIST_TOLERANCE);
     }
@@ -728,6 +728,7 @@ public class TeleopMode extends Coordinator {
       robot.limelight.scan.activate();
       if (robot.limelight.limelightHasTargets.get()) {
         anglePID.setEnabled(true);
+        anglePID.setSetpoint(0);
         System.out.println(anglePID.get());
       } else {
         this.end();
