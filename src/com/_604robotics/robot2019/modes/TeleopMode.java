@@ -716,11 +716,7 @@ public class TeleopMode extends Coordinator {
 
       distPID =
           new NewExtendablePIDController(
-              0.5,
-              0,
-              0,
-              robot.limelight::getDistance,
-              driveManager.arcade.rotatePower::set);
+              0.5, 0, 0, robot.limelight::getDistance, driveManager.arcade.rotatePower::set);
       distPID.setTolerance(Calibration.LIMELIGHT_DIST_TOLERANCE);
     }
 

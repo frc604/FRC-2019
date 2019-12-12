@@ -694,7 +694,7 @@ public class NewExtendableProfiledPIDController implements Sendable, AutoCloseab
         setpoint = profile.calculate(m_period);
 
         positionError = getContinuousError(setpoint.position - input);
-        velocityError = (m_positionError - m_prevError) / m_period;
+        velocityError = (positionError - m_prevError) / m_period;
 
       } finally {
         m_thisMutex.unlock();

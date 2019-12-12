@@ -9,13 +9,12 @@
 /*----------------------------------------------------------------------------*/
 package robotnik.prefabs.controller;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com._604robotics.robotnik.prefabs.controller.NewExtendablePIDController;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class NewExtendablePIDControllerTest {
   private NewExtendablePIDController m_controller;
@@ -24,7 +23,8 @@ class NewExtendablePIDControllerTest {
 
   @BeforeEach
   void setUp() {
-    m_controller = new NewExtendablePIDController(0, 0, 0, () -> m_measurement, (output) -> m_output = output);
+    m_controller =
+        new NewExtendablePIDController(0, 0, 0, () -> m_measurement, (output) -> m_output = output);
   }
 
   @Test
@@ -51,7 +51,7 @@ class NewExtendablePIDControllerTest {
     m_controller.setEnabled(true);
 
     waitForCalculate(1);
-    
+
     assertEquals(-0.1, m_output, 1e-5);
     m_controller.setEnabled(false);
   }
@@ -77,18 +77,17 @@ class NewExtendablePIDControllerTest {
     m_controller.setEnabled(true);
 
     m_controller.setSetpoint(0);
-    m_measurement  = 0;
+    m_measurement = 0;
 
     waitForCalculate(1);
 
     m_controller.setSetpoint(0);
-    m_measurement  = 0.0025;
+    m_measurement = 0.0025;
 
     waitForCalculate(1);
 
     assertEquals(-0.01 / m_controller.getPeriod(), m_output, 1e-5);
     m_controller.setEnabled(false);
-
   }
 
   private void waitForCalculate(double periods) {
