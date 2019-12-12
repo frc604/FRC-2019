@@ -617,7 +617,7 @@ public class NewExtendablePIDController implements Sendable, AutoCloseable {
 
         totalError = m_totalError;
         positionError = getContinuousError(m_setpoint - input);
-        velocityError = (m_positionError - m_prevError) / m_period;
+        velocityError = (positionError - m_prevError) / m_period;
 
       } finally {
         m_thisMutex.unlock();

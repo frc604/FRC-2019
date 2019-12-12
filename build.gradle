@@ -26,13 +26,19 @@ dependencies {
 
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
 
-    testCompile 'junit:junit:4.12'
+    testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
 }
 
 sourceSets {
     main {
         java {
             srcDirs = ["src"]
+        }
+    }
+
+    test {
+        java {
+            srcDirs = ["test"]
         }
     }
 }
@@ -60,6 +66,13 @@ deploy {
             targets << "roborio"
             directory = '/home/lvuser/deploy'
         }
+    }
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
     }
 }
 
