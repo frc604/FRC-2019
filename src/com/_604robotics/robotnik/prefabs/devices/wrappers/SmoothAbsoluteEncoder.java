@@ -1,10 +1,9 @@
 package com._604robotics.robotnik.prefabs.devices.wrappers;
 
 import com._604robotics.robotnik.prefabs.devices.AbsoluteEncoder;
-import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.PIDSourceType;
+import com._604robotics.robotnik.prefabs.devices.Encoder;
 
-public class SmoothAbsoluteEncoder implements PIDSource {
+public class SmoothAbsoluteEncoder implements Encoder {
   public final AbsoluteEncoder source;
   private int offset = 0;
   private double prevResult;
@@ -29,20 +28,7 @@ public class SmoothAbsoluteEncoder implements PIDSource {
   }
 
   @Override
-  public void setPIDSourceType(PIDSourceType pidSource) {
-    if (pidSource != PIDSourceType.kDisplacement) {
-      throw new IllegalArgumentException(
-          "SmoothAbsoluteEncoder wrapper class only allows PIDSourceType.kDisplacement");
-    }
-  }
-
-  @Override
-  public PIDSourceType getPIDSourceType() {
-    return PIDSourceType.kDisplacement;
-  }
-
-  @Override
-  public double pidGet() {
+  public double getValue() {
     // Choose 90 degree offsets
     // Larger offsets can introduce bugs with opposite directions
     // Nyquist limits also make further compensations pointless

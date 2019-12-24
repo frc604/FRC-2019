@@ -90,6 +90,23 @@ class NewExtendablePIDControllerTest {
     m_controller.setEnabled(false);
   }
 
+  @Test
+  void outputClampTest() {
+    m_controller.setPID(1, 0, 0);
+
+    m_controller.setOutputRange(-12, 12);
+
+    m_controller.setEnabled(true);
+
+    m_controller.setSetpoint(20);
+    m_measurement = 1;
+
+    waitForCalculate(1);
+
+    assertEquals(12, m_output, 1e-5);
+    m_controller.setEnabled(false);
+  }
+
   private void waitForCalculate(double periods) {
     long period = 20 * (long) periods + 5;
     try {

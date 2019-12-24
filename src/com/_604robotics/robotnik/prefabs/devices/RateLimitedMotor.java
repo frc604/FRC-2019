@@ -1,10 +1,9 @@
 package com._604robotics.robotnik.prefabs.devices;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PWMSpeedController;
 
-public class RateLimitedMotor implements PIDOutput {
+public class RateLimitedMotor {
   private double nominalRate;
   private double tolerance;
   private double maxPowerUp;
@@ -91,9 +90,5 @@ public class RateLimitedMotor implements PIDOutput {
 
   public void setRampRate(double rampRate) {
     this.rampRate = rampRate;
-  }
-
-  public void pidWrite(double output) {
-    set(output);
   }
 }

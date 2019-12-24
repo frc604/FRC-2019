@@ -2,13 +2,12 @@ package com._604robotics.robotnik.prefabs.devices.wrappers;
 
 import com._604robotics.robotnik.utils.annotations.Untested;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.SpeedController;
 
 /** A motor class that feeds a multiple of the power to overcome static friction */
 @Deprecated
 @Untested("All is intuitive and theoretical")
-public class AntiFrictionPIDOutput implements SpeedController, PIDOutput {
+public class AntiFrictionOutput implements SpeedController {
   private final SpeedController origController;
   private final Encoder enc;
   private final double multiplier;
@@ -18,7 +17,7 @@ public class AntiFrictionPIDOutput implements SpeedController, PIDOutput {
    *
    * @param orig the motor controller
    */
-  public AntiFrictionPIDOutput(SpeedController orig) {
+  public AntiFrictionOutput(SpeedController orig) {
     this(orig, null, 1.5);
   }
 
@@ -28,7 +27,7 @@ public class AntiFrictionPIDOutput implements SpeedController, PIDOutput {
    * @param orig the motor controller
    * @param encoder the encoder
    */
-  public AntiFrictionPIDOutput(SpeedController orig, Encoder encoder) {
+  public AntiFrictionOutput(SpeedController orig, Encoder encoder) {
     this(orig, encoder, 1.5);
   }
 
@@ -37,7 +36,7 @@ public class AntiFrictionPIDOutput implements SpeedController, PIDOutput {
    *
    * @param orig the motor controller
    */
-  public AntiFrictionPIDOutput(SpeedController orig, double multiplier) {
+  public AntiFrictionOutput(SpeedController orig, double multiplier) {
     this(orig, null, multiplier);
   }
 
@@ -48,7 +47,7 @@ public class AntiFrictionPIDOutput implements SpeedController, PIDOutput {
    * @param the encoder
    * @param multiplier the multiplier to overcome static friction
    */
-  public AntiFrictionPIDOutput(SpeedController orig, Encoder encoder, double multiplier) {
+  public AntiFrictionOutput(SpeedController orig, Encoder encoder, double multiplier) {
     origController = orig;
     enc = encoder;
     this.multiplier = Math.abs(multiplier);

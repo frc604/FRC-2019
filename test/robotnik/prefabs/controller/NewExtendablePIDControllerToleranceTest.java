@@ -17,7 +17,7 @@ import com._604robotics.robotnik.prefabs.controller.NewExtendablePIDController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class PIDToleranceTest {
+class NewExtendablePIDControllerToleranceTest {
   private static final double kSetpoint = 50.0;
   private static final double kTolerance = 10.0;
   private static final double kRange = 200;

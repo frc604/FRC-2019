@@ -1,8 +1,6 @@
 package com._604robotics.robotnik.prefabs.devices;
 
 import com._604robotics.robotnik.utils.Pair;
-import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.PIDSourceType;
 import java.util.*;
 
 /**
@@ -13,7 +11,7 @@ import java.util.*;
  * <p>Only use this class if both encoders are measuring the SAME value. Otherwise, this class is
  * useless and will only hurt you.
  */
-public class RedundantEncoder implements PIDSource, Encoder {
+public class RedundantEncoder implements Encoder {
   // NOTE Assumes encoders where 250 clicks is one rotation
   private static final double LARGE_CLICK_DIFF = 250; // One rotation difference
 
@@ -25,8 +23,6 @@ public class RedundantEncoder implements PIDSource, Encoder {
   private Map<Encoder, Double> currentEncoderVal;
   private Map<Encoder, Boolean> encoderStatus;
 
-  private PIDSourceType sourceType;
-
   public RedundantEncoder(Encoder... encoders) {
     if (encoders.length > 2) {
       throw new RuntimeException(
@@ -34,14 +30,7 @@ public class RedundantEncoder implements PIDSource, Encoder {
     } else if (encoders.length < 1) {
       throw new RuntimeException(
           "RedundantEncoder needs at least one encoder (though you should have at least 2)");
-    } else if (!samePIDType(encoders)) {
-      throw new RuntimeException("All encoders in RedundantEncoder must have the same PID type");
-    } else if (encoders[0].getPIDSourceType().equals(PIDSourceType.kRate)) {
-      throw new RuntimeException(
-          "RedundantEncoder does not currently support kRate based encoders");
     }
-
-    sourceType = encoders[0].getPIDSourceType();
 
     prevEncoderVal = new HashMap<>(encoders.length);
     currentEncoderVal = new HashMap<>(encoders.length);
@@ -111,18 +100,6 @@ public class RedundantEncoder implements PIDSource, Encoder {
     return result;
   }
 
-  private boolean samePIDType(Encoder[] encoders) {
-    PIDSourceType first = encoders[0].getPIDSourceType();
-
-    for (int i = 1; i < encoders.length; ++i) {
-      if (!first.equals(encoders[i].getPIDSourceType())) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
   public List<Encoder> getEncoders() {
     return new ArrayList<>(encoderStatus.keySet());
   }
@@ -144,24 +121,5 @@ public class RedundantEncoder implements PIDSource, Encoder {
 
     // Get the average value of all trusted encoders
     return total / trusted.size();
-  }
-
-  @Override
-  public void setPIDSourceType(PIDSourceType pidSource) {
-    // TODO Implement rate based encoders
-    if (sourceType != PIDSourceType.kDisplacement) {
-      throw new IllegalArgumentException(
-          "RedundantEncoder class only implements PIDSourceType.kDisplacement");
-    }
-  }
-
-  @Override
-  public PIDSourceType getPIDSourceType() {
-    return sourceType;
-  }
-
-  @Override
-  public double pidGet() {
-    return getValue();
   }
 }

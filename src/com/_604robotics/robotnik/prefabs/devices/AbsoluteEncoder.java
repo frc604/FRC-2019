@@ -1,7 +1,5 @@
 package com._604robotics.robotnik.prefabs.devices;
 
-import edu.wpi.first.wpilibj.PIDSourceType;
-
 public abstract class AbsoluteEncoder implements Encoder {
 
   /** Sets the zero of the encoder to its current value. */
@@ -40,6 +38,7 @@ public abstract class AbsoluteEncoder implements Encoder {
    *
    * @return the value of {@link AbsoluteEncoder#getAngle()} * 250/360
    */
+  @Override
   public double getValue() {
     return getAngle() * 250 / 360;
   }
@@ -57,24 +56,4 @@ public abstract class AbsoluteEncoder implements Encoder {
    * @return The (raw, non-zeroed) angle of the encoder.
    */
   public abstract double getRawAngle();
-
-  /** Implementer of the pidGet interface. Make sure to return angles if overridden! */
-  @Override
-  public double pidGet() {
-    return getAngle();
-  }
-
-  // AbsoluteEncoders only allow kDisplacement
-  @Override
-  public PIDSourceType getPIDSourceType() {
-    return PIDSourceType.kDisplacement;
-  }
-
-  @Override
-  public void setPIDSourceType(PIDSourceType sourceType) {
-    if (sourceType != PIDSourceType.kDisplacement) {
-      throw new IllegalArgumentException(
-          "AS5145B class only implements PIDSourceType.kDisplacement");
-    }
-  }
 }

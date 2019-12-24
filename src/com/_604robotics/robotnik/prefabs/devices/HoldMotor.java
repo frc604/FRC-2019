@@ -1,10 +1,9 @@
 package com._604robotics.robotnik.prefabs.devices;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.SpeedController;
 
-public class HoldMotor implements PIDOutput {
+public class HoldMotor {
 
   public SpeedController motor;
   public Encoder encoder;
@@ -143,19 +142,5 @@ public class HoldMotor implements PIDOutput {
       at_position = false;
     }
     return at_position;
-  }
-
-  @Override
-  public void pidWrite(double output) {
-    /*if( !failsafed ) {
-    	if( output != 0 ) {
-    		set(output);
-    	} else {
-    		hold();
-    	}
-    } else {
-    	set(output);
-    }*/
-    set(output);
   }
 }

@@ -1,12 +1,10 @@
 package com._604robotics.robotnik.prefabs.devices;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.wpilibj.PIDSourceType;
 
 public class TalonPWMEncoder implements Encoder {
   // Use TalonSRX because WPI_TalonSRX extends this
   private final TalonSRX talon;
-  private PIDSourceType sourceType;
 
   public enum EncoderType {
     ABSOLUTE,
@@ -18,16 +16,11 @@ public class TalonPWMEncoder implements Encoder {
   private double offset = 0;
 
   public TalonPWMEncoder(TalonSRX talon) {
-    this(talon, PIDSourceType.kDisplacement);
+    this(talon, EncoderType.RELATIVE);
   }
 
-  public TalonPWMEncoder(TalonSRX talon, PIDSourceType sourceType) {
-    this(talon, sourceType, EncoderType.ABSOLUTE);
-  }
-
-  public TalonPWMEncoder(TalonSRX talon, PIDSourceType sourceType, EncoderType type) {
+  public TalonPWMEncoder(TalonSRX talon, EncoderType type) {
     this.talon = talon;
-    this.sourceType = sourceType;
     this.encoderType = type;
     this.inverted = false;
   }
@@ -40,6 +33,7 @@ public class TalonPWMEncoder implements Encoder {
     this.inverted = inverted;
   }
 
+  @Override
   public double getValue() {
     return getPosition();
   }
@@ -64,27 +58,6 @@ public class TalonPWMEncoder implements Encoder {
     }
   }
 
-  @Override
-  public double pidGet() {
-    if (sourceType.equals(PIDSourceType.kDisplacement)) {
-      return getPosition();
-    } else if (sourceType.equals(PIDSourceType.kRate)) {
-      return getVelocity();
-    } else {
-      throw new IllegalArgumentException();
-    }
-  }
-
-  @Override
-  public PIDSourceType getPIDSourceType() {
-    return sourceType;
-  }
-
-  @Override
-  public void setPIDSourceType(PIDSourceType sourceType) {
-    this.sourceType = sourceType;
-  }
-
   public void zero() {
     if (encoderType == EncoderType.ABSOLUTE) {
       offset = (talon.getSensorCollection().getPulseWidthPosition());
@@ -95,15 +68,6 @@ public class TalonPWMEncoder implements Encoder {
     if (encoderType == EncoderType.ABSOLUTE) {
       int multfactor = inverted ? -1 : 1;
       offset = talon.getSensorCollection().getPulseWidthPosition() - (multfactor * value);
-    }
-  }
-
-  // Use zeroing things instead of setting the offset directly
-  @Deprecated
-  public void setOffset(double offset) {
-    if (encoderType == EncoderType.ABSOLUTE) {
-      int multfactor = inverted ? -1 : 1;
-      this.offset = multfactor * offset;
     }
   }
 
