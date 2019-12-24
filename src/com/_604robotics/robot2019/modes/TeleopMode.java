@@ -5,9 +5,9 @@ import com._604robotics.marionette.InputRecorder;
 import com._604robotics.marionette.InputRecording;
 import com._604robotics.marionette.MarionetteJoystick;
 import com._604robotics.robot2019.constants.Calibration;
+import com._604robotics.robot2019.modules.Arm;
 import com._604robotics.robot2019.modules.Drive;
 import com._604robotics.robot2019.modules.Intake;
-import com._604robotics.robot2019.modules.ProfiledArm;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
 import com._604robotics.robotnik.prefabs.controller.NewExtendablePIDController;
@@ -464,7 +464,7 @@ public class TeleopMode extends Coordinator {
   }
 
   private class ArmManager {
-    private ProfiledArm arm;
+    private Arm arm;
     private Toggle hardstopToggle;
     protected boolean disableArm;
     private Toggle manualHardstop;

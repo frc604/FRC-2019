@@ -95,7 +95,7 @@ public class Drive extends Module {
       new DifferentialDriveKinematics(Calibration.Drive.TRACK_WIDTH);
 
   public DifferentialDriveOdometry m_driveOdometry =
-      new DifferentialDriveOdometry(m_driveKinematics, Rotation2d.fromDegrees(getHeading()));
+      new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
   /* Drive Actions */
 

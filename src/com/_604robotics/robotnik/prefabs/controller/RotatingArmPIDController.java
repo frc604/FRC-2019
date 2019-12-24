@@ -1,5 +1,6 @@
 package com._604robotics.robotnik.prefabs.controller;
 
+import edu.wpi.first.wpilibj.controller.ArmFeedforward;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
@@ -9,8 +10,9 @@ import java.util.function.DoubleSupplier;
  * Users are responsible for properly zeroing the PIDSource beforehand.
  */
 public class RotatingArmPIDController extends NewExtendablePIDController {
-  private double encoderPeriod = 360;
-  private double zeroOffset = 0;
+  private ArmFeedforward m_feedforward;
+  private double m_encoderPeriod = 360;
+  private double m_zeroOffset = 0;
 
   public RotatingArmPIDController(
       double Kp, double Ki, double Kd, DoubleSupplier source, DoubleConsumer output) {
@@ -28,31 +30,38 @@ public class RotatingArmPIDController extends NewExtendablePIDController {
   }
 
   public RotatingArmPIDController(
-      double Kp, double Ki, double Kd, double Kcos, DoubleSupplier source, DoubleConsumer output) {
-    super(Kp, Ki, Kd, Kcos, source, output);
+      double Kp,
+      double Ki,
+      double Kd,
+      ArmFeedforward feedforward,
+      DoubleSupplier source,
+      DoubleConsumer output) {
+    super(Kp, Ki, Kd, source, output);
+    this.m_feedforward = feedforward;
   }
 
   public RotatingArmPIDController(
       double Kp,
       double Ki,
       double Kd,
-      double Kcos,
+      ArmFeedforward feedforward,
       DoubleSupplier source,
       DoubleConsumer output,
       double period) {
-    super(Kp, Ki, Kd, Kcos, period, source, output);
+    super(Kp, Ki, Kd, period, source, output);
+    this.m_feedforward = feedforward;
   }
 
   public double getEncoderPeriod() {
-    return encoderPeriod;
+    return m_encoderPeriod;
   }
 
   public void setEncoderPeriod(double encoderPeriod) {
-    this.encoderPeriod = encoderPeriod;
+    this.m_encoderPeriod = encoderPeriod;
   }
 
   public void setFeedforwardZeroOffset(double zeroOffset) {
-    this.zeroOffset = zeroOffset;
+    this.m_zeroOffset = zeroOffset;
   }
 
   /**
@@ -66,18 +75,17 @@ public class RotatingArmPIDController extends NewExtendablePIDController {
   protected double calculateFeedForward() {
     // Calculate cosine for torque factor
     double angle;
-    double fValue;
     m_thisMutex.lock();
     try {
-      angle = m_pidSource.getAsDouble() - zeroOffset;
-      fValue = getF();
+      angle = m_pidSource.getAsDouble() - m_zeroOffset;
     } finally {
       m_thisMutex.unlock();
     }
+
     // Cosine is periodic so sawtooth wraparound is not a concern
-    angle /= encoderPeriod;
-    angle *= (2 * Math.PI);
-    double cosine = Math.cos(angle);
-    return fValue * cosine;
+    angle /= m_encoderPeriod;
+    angle *= 360;
+
+    return m_feedforward.calculate(angle, 0) / 12;
   }
 }

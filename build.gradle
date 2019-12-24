@@ -4,7 +4,7 @@ plugins {
     id "eclipse"
     id "idea"
     id "com.diffplug.gradle.spotless" version "3.26.1"
-    id "edu.wpi.first.GradleRIO" version "2020.1.1-beta-3"
+    id "edu.wpi.first.GradleRIO" version "2020.1.1-beta-4"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11

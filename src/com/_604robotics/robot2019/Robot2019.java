@@ -24,7 +24,7 @@ public class Robot2019 extends Robot {
   public final Tilter tilter = addModule(new Tilter());
 
   public final Intake intake = addModule(new Intake());
-  public final ProfiledArm arm = addModule(new ProfiledArm());
+  public final Arm arm = addModule(new Arm());
   public final Hardstop hardstop = addModule(new Hardstop());
 
   public final HatchSlider slider = addModule(new HatchSlider());

@@ -36,6 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * and derivative calculations. Therefore, the sample rate affects the controller's behavior for a
  * given set of PID constants.
  */
+@Deprecated
 public class ExtendablePIDController extends SendableBase implements PIDInterface, Sendable {
   public static final double kDefaultPeriod = .05;
   private static int instances = 0;

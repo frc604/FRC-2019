@@ -50,7 +50,7 @@ public class Calibration {
     public static final double ROCKET_SETPOINT = 2606;
     public static final double VERTICAL_POSITION = 440; // The arm is straight up
     public static final double HORIZONTAL_POSITION =
-        -1527; // The arm is horizontally backwards NOTE: Did not modify with HARDSTOP b.c. it works
+        1700; // The arm is horizontally backwards NOTE: Did not modify with HARDSTOP b.c. it works
     // still
     public static final double BACK_ROCKET_SETPOINT = -985;
     public static final double BACK_CARGO_SETPOINT = -377;
@@ -61,10 +61,10 @@ public class Calibration {
     public static final double MIN_ENCODER_VAL = 0; // The lowest value the encoder can have
     public static final double MAX_ENCODER_VAL = 0; // The largest value the encoder can have
 
-    public static final double kP = -0.0004;
+    public static final double kP = 0.0004;
     public static final double kI = 0;
-    public static final double kD = -0.00025;
-    public static final double kF = -0.075;
+    public static final double kD = 0.00025 * 0.02; // Multiplying by 0.02 to time parameterize it.
+    public static final double kF = -0.709;
     // -0.05
 
     public static final double SCALE_JOYSTICK = 0.6; // Multiply the input joystick by this
