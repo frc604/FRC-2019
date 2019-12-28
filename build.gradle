@@ -48,7 +48,7 @@ sourceSets {
 deploy {
     targets {
         roboRIO("roborio") {
-            team = frc.getTeamOrDefault(TEAM)
+            team = frc.getTeamOrDefault(604)
             // addresses << '10.6.4.2' // RIO IP Address
         }
     }

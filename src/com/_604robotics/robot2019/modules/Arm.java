@@ -22,8 +22,6 @@ public class Arm extends Module {
 
   private TalonPWMEncoder leftEncoder;
 
-  private ArmFeedforward feedforward;
-
   public Input<Double> holdPoint;
 
   public Output<Double> pidError;
@@ -53,7 +51,7 @@ public class Arm extends Module {
     holdPoint = addInput("Setpoint", 300.0);
     leftEncoderClicks = addOutput("Left Encoder Clicks", () -> leftEncoder.getPosition());
 
-    feedforward = new ArmFeedforward(0, Calibration.Arm.kF, 0, 0);
+    ArmFeedforward feedforward = new ArmFeedforward(0, Calibration.Arm.kF, 0, 0);
 
     this.pid =
         new ProfiledRotatingArmPIDController(
@@ -68,13 +66,12 @@ public class Arm extends Module {
     pid.setOutputRange(-0.65, 0.65);
     pid.setEncoderPeriod(Calibration.Arm.CLICKS_FULL_ROTATION);
     pid.setFeedforwardZeroOffset(Calibration.Arm.HORIZONTAL_POSITION);
-
     setDefaultAction(move);
   }
 
   public class Hold extends Action {
 
-    public Hold() {
+    private Hold() {
       super(Arm.this, Hold.class);
       holdPoint = addInput("Hold Point", 300.0, true);
     }
@@ -98,7 +95,7 @@ public class Arm extends Module {
   public class Move extends Action {
     public Input<Double> inputPower;
 
-    public Move() {
+    private Move() {
       super(Arm.this, Move.class);
       inputPower = addInput("Input Power", 0.0, true);
     }
@@ -117,7 +114,7 @@ public class Arm extends Module {
   public class Setpoint extends Action {
     public Input<Double> setpoint;
 
-    public Setpoint() {
+    private Setpoint() {
       super(Arm.this, Setpoint.class);
       setpoint = addInput("Setpoint", 0.0, true);
     }

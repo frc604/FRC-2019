@@ -1,7 +1,6 @@
 package com._604robotics.robotnik;
 
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.tables.ITable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,30 +75,10 @@ public abstract class Action {
     parent.activate(this);
   }
 
-  @Deprecated
-  void updateActiveAction(ITable activeActionTable) {
-    activeActionTable.putString("name", getName());
-    activeActionTable.putString("inputList", inputListValue);
-    activeActionTable.putString("outputList", outputListValue);
-  }
-
   void updateActiveAction(NetworkTable activeActionTable) {
     activeActionTable.getEntry("name").setString(getName());
     activeActionTable.getEntry("inputList").setString(inputListValue);
     activeActionTable.getEntry("outputList").setString(outputListValue);
-  }
-
-  @Deprecated
-  synchronized void updateInputs(ITable activeActionInputsTable) {
-    for (@SuppressWarnings("rawtypes") Input input : inputs) {
-      Object res = input.get();
-      if (res == null) {
-        System.err.println("Got null input.get!");
-        System.err.println("Input name is " + input.getName());
-      } else {
-        activeActionInputsTable.putValue(input.getName(), res);
-      }
-    }
   }
 
   synchronized void updateInputs(NetworkTable activeActionInputsTable) {
@@ -111,15 +90,6 @@ public abstract class Action {
       } else {
         activeActionInputsTable.getEntry(input.getName()).setValue(res);
       }
-    }
-  }
-
-  @Deprecated
-  synchronized void updateOutputs(ITable activeActionOutputsTable) {
-    for (@SuppressWarnings("rawtypes") OutputProxy output : outputs) {
-      Reliability.swallowThrowables(
-          output::update, "Error updating output " + output.getName() + " of action " + getName());
-      activeActionOutputsTable.putValue(output.getName(), output.get());
     }
   }
 

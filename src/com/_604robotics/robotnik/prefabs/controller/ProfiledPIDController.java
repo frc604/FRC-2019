@@ -7,9 +7,9 @@ import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
 /**
- * Subclass of ProfiledPIDController that has a feedforward for rotating arms. This subclass
- * requires an PIDSource as the PIDSource and uses only continuous error. Zero is assumed to be
- * horizontal. Users are responsible for properly zeroing the PIDSource beforehand.
+ * An extension of {@link com._604robotics.robotnik.prefabs.controller.NewExtendablePIDController}
+ * that uses a WPILib trapezoidal profile {@link edu.wpi.first.wpilibj.trajectory.TrapezoidProfile}
+ * in the output calculation.
  */
 public class ProfiledPIDController extends NewExtendablePIDController {
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
@@ -20,7 +20,7 @@ public class ProfiledPIDController extends NewExtendablePIDController {
 
   /**
    * Allocates a ProfiledPIDController with the given constants for Kp, Ki, Kd, and motion profile
-   * constrains and a default period of 0.02 seconds with no feedforward.
+   * constraints and a default period of 0.02 seconds with no feedforward.
    *
    * @param Kp The proportional coefficient.
    * @param Ki The integral coefficient.
@@ -41,7 +41,7 @@ public class ProfiledPIDController extends NewExtendablePIDController {
 
   /**
    * Allocates a ProfiledPIDController with the given constants for Kp, Ki, Kd, motion profile
-   * constrains, and period with no feedforward.
+   * constraints, and period with no feedforward.
    *
    * @param Kp The proportional coefficient.
    * @param Ki The integral coefficient.
@@ -63,8 +63,8 @@ public class ProfiledPIDController extends NewExtendablePIDController {
   }
 
   /**
-   * Allocates a ProfiledPIDController with the given constants for Kp, Ki, Kd, motion profile
-   * constrains, and period with no feedforward.
+   * Allocates a ProfiledPIDController with the given constants for Kp, Ki, Kd, Kf, and motion
+   * profile constraints and a default period of 0.02 seconds.
    *
    * @param Kp The proportional coefficient.
    * @param Ki The integral coefficient.
@@ -86,7 +86,8 @@ public class ProfiledPIDController extends NewExtendablePIDController {
   }
 
   /**
-   * Allocates a NewExtendablePIDController with the given constants for Kp, Ki, Kd, Kf, and period.
+   * Allocates a ProfiledPIDController with the given constants for Kp, Ki, Kd, Kf, motion profile
+   * constraints, and peroid.
    *
    * @param Kp The proportional coefficient.
    * @param Ki The integral coefficient.

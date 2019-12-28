@@ -74,9 +74,9 @@ public class ProfiledRotatingArmPIDController extends ProfiledPIDController {
   }
 
   /**
-   * Overriden feed forward part of PIDController. This is a physically based model which multiplies
-   * feed forward coefficient by cosine. The feedforward calculates the expected torque needed to
-   * hold an arm steady, scaled to motor power.
+   * Overridden feed forward part of ProfiledPIDController. This is a physically based model which
+   * multiplies feed forward coefficient by cosine. The feedforward calculates the expected torque
+   * needed to hold an arm steady, scaled to motor power.
    *
    * @return the feed forward value
    */
@@ -95,6 +95,9 @@ public class ProfiledRotatingArmPIDController extends ProfiledPIDController {
     angle /= m_encoderPeriod;
     angle *= 360;
 
+    /*
+     Dividing by 12 to convert volts to motor output power. We can ignore the current voltage of the battery as voltage saturation is available on talons.
+    */
     return m_feedforward.calculate(angle, 0) / 12;
   }
 }
