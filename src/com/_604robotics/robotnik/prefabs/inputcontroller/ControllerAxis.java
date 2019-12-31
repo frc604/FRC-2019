@@ -58,7 +58,7 @@ public class ControllerAxis {
     } else if (!factorSign && !inverted) {
       this.factor = Math.abs(this.factor);
     }
-    
-    //Anything that falls through means the current sign is the same as desired
+
+    // Anything that falls through means the current sign is the same as desired
   }
 }
