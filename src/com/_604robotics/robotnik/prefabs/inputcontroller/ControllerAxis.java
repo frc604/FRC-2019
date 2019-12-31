@@ -46,7 +46,19 @@ public class ControllerAxis {
   }
 
   /** Inverts the multiplication factor of the axis. */
-  public void flipFactor() {
-    this.factor = -this.factor;
+  public void invertFactor(boolean inverted) {
+    // True is positive, False is negative
+    boolean factorSign = Math.signum(this.factor) == 1;
+
+    // If positive and should be negative
+    if (factorSign && inverted) {
+      this.factor *= -1;
+
+      // If negative and shouldn't be negative
+    } else if (!factorSign && !inverted) {
+      this.factor = Math.abs(this.factor);
+    }
+    
+    //Anything that falls through means the current sign is the same as desired
   }
 }
