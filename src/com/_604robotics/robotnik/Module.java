@@ -14,7 +14,7 @@ public abstract class Module {
   private final TableIndex inputsTableIndex;
 
   private final NetworkTable outputsTable;
-  private final TableIndex outputsTableIndex; // Should be replaced with proper solution
+  private final TableIndex outputsTableIndex;
 
   private final NetworkTable activeActionTable;
   private final NetworkTable activeActionInputsTable;

@@ -7,11 +7,12 @@ import static com._604robotics.robot2019.constants.Calibration.Auto.MAX_CENTRIPE
 import static com._604robotics.robot2019.constants.Calibration.Auto.MAX_SPEED_METERS_PER_SECOND;
 
 import com._604robotics.robot2019.Robot2019;
-import com._604robotics.robot2019.auto.TrajectoryCreator;
-import com._604robotics.robot2019.auto.TrajectoryTracker;
+import com._604robotics.robot2019.constants.Calibration;
 import com._604robotics.robot2019.macros.ArcadeTimedDriveMacro;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
+import com._604robotics.robotnik.prefabs.auto.TrajectoryCreator;
+import com._604robotics.robotnik.prefabs.auto.TrajectoryTracker;
 import com._604robotics.robotnik.prefabs.coordinators.SleepCoordinator;
 import com._604robotics.robotnik.prefabs.coordinators.StatefulCoordinator;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -39,6 +40,7 @@ public class AutonomousMode extends Coordinator {
     trajectoryCreator =
         new TrajectoryCreator(
             robot.drive.m_driveKinematics,
+            Calibration.Auto.TRACKER_CONSTANTS,
             new DifferentialDriveKinematicsConstraint(
                 robot.drive.m_driveKinematics, MAX_SPEED_METERS_PER_SECOND),
             new DifferentialDriveVoltageConstraint(
@@ -68,7 +70,6 @@ public class AutonomousMode extends Coordinator {
         break;
       case OFF:
       default:
-        System.out.println("huh");
         selectedModeMacro = null;
         break;
     }
@@ -154,7 +155,8 @@ public class AutonomousMode extends Coordinator {
                       new Pose2d(1.5, -1, new Rotation2d(0)),
                       new Pose2d(3, 0, new Rotation2d(Math.PI / 2))),
                   false),
-              robot.drive));
+              robot.drive,
+              Calibration.Auto.TRACKER_CONSTANTS));
       addState("Waiting...", new SleepCoordinator(3));
       addState(
           "",
@@ -165,7 +167,8 @@ public class AutonomousMode extends Coordinator {
                       new Pose2d(1.5, -0.5, Rotation2d.fromDegrees(90)),
                       new Pose2d(0, 0, new Rotation2d(0))),
                   true),
-              robot.drive));
+              robot.drive,
+              Calibration.Auto.TRACKER_CONSTANTS));
     }
   }
 
@@ -175,7 +178,8 @@ public class AutonomousMode extends Coordinator {
       super(
           trajectoryCreator.getTrajectory(
               List.of(new Pose2d(), new Pose2d(meters, 0, new Rotation2d(0))), false),
-          robot.drive);
+          robot.drive,
+          Calibration.Auto.TRACKER_CONSTANTS);
     }
   }
 
@@ -185,7 +189,8 @@ public class AutonomousMode extends Coordinator {
       super(
           trajectoryCreator.getTrajectory(
               List.of(new Pose2d(), new Pose2d(-meters, 0, new Rotation2d(0))), true),
-          robot.drive);
+          robot.drive,
+          Calibration.Auto.TRACKER_CONSTANTS);
     }
   }
 }

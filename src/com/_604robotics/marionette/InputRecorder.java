@@ -5,7 +5,9 @@ import java.io.Closeable;
 import java.io.IOException;
 
 public class InputRecorder implements Closeable {
+  @SuppressWarnings("unused")
   private final GenericHID[] sources;
+
   private final InputRecording recording;
   private final Thread thread;
 

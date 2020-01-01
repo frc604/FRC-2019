@@ -41,16 +41,12 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
   public static final double kDefaultPeriod = .05;
   private static int instances = 0;
 
-  @SuppressWarnings("MemberName")
   private double m_P; // factor for "proportional" control
 
-  @SuppressWarnings("MemberName")
   private double m_I; // factor for "integral" control
 
-  @SuppressWarnings("MemberName")
   private double m_D; // factor for "derivative" control
 
-  @SuppressWarnings("MemberName")
   private double m_F; // factor for feedforward term
 
   private double m_maximumOutput = 1.0; // |maximum output|
@@ -70,7 +66,7 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
   private double m_setpoint = 0.0;
   private double m_prevSetpoint = 0.0;
 
-  @SuppressWarnings("PMD.UnusedPrivateField")
+  @SuppressWarnings("unused")
   private double m_error = 0.0;
 
   private double m_result = 0.0;
@@ -161,7 +157,6 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
    * @param period the loop time for doing calculations. This particularly effects calculations of
    *     the integral and differential terms. The default is 50ms.
    */
-  @SuppressWarnings("ParameterName")
   public ExtendablePIDController(
       double Kp,
       double Ki,
@@ -218,7 +213,6 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
    * @param period the loop time for doing calculations. This particularly effects calculations of
    *     the integral and differential terms. The default is 50ms.
    */
-  @SuppressWarnings("ParameterName")
   public ExtendablePIDController(
       double Kp, double Ki, double Kd, PIDSource source, PIDOutput output, double period) {
     this(Kp, Ki, Kd, 0.0, source, output, period);
@@ -233,7 +227,6 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
    * @param source The PIDSource object that is used to get values
    * @param output The PIDOutput object that is set to the output percentage
    */
-  @SuppressWarnings("ParameterName")
   public ExtendablePIDController(
       double Kp, double Ki, double Kd, PIDSource source, PIDOutput output) {
     this(Kp, Ki, Kd, source, output, kDefaultPeriod);
@@ -249,7 +242,6 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
    * @param source The PIDSource object that is used to get values
    * @param output The PIDOutput object that is set to the output percentage
    */
-  @SuppressWarnings("ParameterName")
   public ExtendablePIDController(
       double Kp, double Ki, double Kd, double Kf, PIDSource source, PIDOutput output) {
     this(Kp, Ki, Kd, Kf, source, output, kDefaultPeriod);
@@ -259,7 +251,6 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
    * Read the input, calculate the output accordingly, and write to the output. This should only be
    * called by the PIDTask and is created during initialization.
    */
-  @SuppressWarnings("LocalVariableName")
   protected void calculate() {
     if (m_origSource == null || m_pidOutput == null) {
       return;
@@ -460,7 +451,6 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
    * @param i Integral coefficient
    * @param d Differential coefficient
    */
-  @SuppressWarnings("ParameterName")
   public void setPID(double p, double i, double d) {
     m_thisMutex.lock();
     try {
@@ -481,7 +471,6 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
    * @param d Differential coefficient
    * @param f Feed forward coefficient
    */
-  @SuppressWarnings("ParameterName")
   public void setPID(double p, double i, double d, double f) {
     m_thisMutex.lock();
     try {
@@ -499,7 +488,6 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
    *
    * @param p Proportional coefficient
    */
-  @SuppressWarnings("ParameterName")
   public void setP(double p) {
     m_thisMutex.lock();
     try {
@@ -514,7 +502,6 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
    *
    * @param i Integral coefficient
    */
-  @SuppressWarnings("ParameterName")
   public void setI(double i) {
     m_thisMutex.lock();
     try {
@@ -529,7 +516,6 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
    *
    * @param d differential coefficient
    */
-  @SuppressWarnings("ParameterName")
   public void setD(double d) {
     m_thisMutex.lock();
     try {
@@ -544,7 +530,6 @@ public class ExtendablePIDController extends SendableBase implements PIDInterfac
    *
    * @param f feed forward coefficient
    */
-  @SuppressWarnings("ParameterName")
   public void setF(double f) {
     m_thisMutex.lock();
     try {

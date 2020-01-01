@@ -1,7 +1,9 @@
 package com._604robotics.robot2019.constants;
 
+import com._604robotics.robotnik.prefabs.auto.TrackerConstants;
 import com._604robotics.robotnik.utils.annotations.Unreal;
 import com._604robotics.robotnik.utils.annotations.Untested;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 
 public class Calibration {
 
@@ -79,7 +81,7 @@ public class Calibration {
         (WHEEL_DIAMETER * Math.PI) / (double) ENCODER_CPR;
   }
 
-  public static class Auto {
+  public static final class Auto {
     public static final double RAMSETE_B = 2.0;
     public static final double RAMSETE_ZETA = 0.7;
     public static final double KS_VOLTS = 0.933;
@@ -90,6 +92,16 @@ public class Calibration {
     public static final double MAX_SPEED_METERS_PER_SECOND = 10; // 10
     public static final double MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 2; // 1.5
     public static final double MAX_CENTRIPETAL_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2; // 1.5
+
+    public static final TrackerConstants TRACKER_CONSTANTS =
+        new TrackerConstants(
+            new SimpleMotorFeedforward(
+                KS_VOLTS, KV_VOLT_SECONDS_PER_METER, KA_VOLT_SECONDS_SQUARED_PER_METER),
+            KP_DRIVE_VELCOTIY,
+            RAMSETE_B,
+            RAMSETE_ZETA,
+            MAX_SPEED_METERS_PER_SECOND,
+            MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
   }
 
   public static final double HATCH_PUSH_TIME = 0.5;

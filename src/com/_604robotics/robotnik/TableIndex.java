@@ -2,8 +2,7 @@ package com._604robotics.robotnik;
 
 import edu.wpi.first.networktables.NetworkTable;
 
-@Deprecated
-class TableIndex { // Stores multiple values under one key. Why, though.
+class TableIndex {
   private final NetworkTable table;
   private final String key;
 

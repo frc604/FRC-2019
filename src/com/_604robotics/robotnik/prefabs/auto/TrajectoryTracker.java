@@ -1,6 +1,5 @@
-package com._604robotics.robot2019.auto;
+package com._604robotics.robotnik.prefabs.auto;
 
-import com._604robotics.robot2019.constants.Calibration;
 import com._604robotics.robot2019.modules.Drive;
 import com._604robotics.robotnik.Coordinator;
 import edu.wpi.first.wpilibj.Timer;
@@ -23,17 +22,13 @@ public class TrajectoryTracker extends Coordinator {
   private final PIDController m_rightVelController;
   private double m_prevTime;
 
-  public TrajectoryTracker(Trajectory trajectory, Drive drivetrain) {
+  public TrajectoryTracker(Trajectory trajectory, Drive drivetrain, TrackerConstants constants) {
     this.m_trajectory = trajectory;
     this.m_drivetrain = drivetrain;
-    m_controller = new RamseteController(Calibration.Auto.RAMSETE_B, Calibration.Auto.RAMSETE_ZETA);
-    m_feedforward =
-        new SimpleMotorFeedforward(
-            Calibration.Auto.KS_VOLTS,
-            Calibration.Auto.KV_VOLT_SECONDS_PER_METER,
-            Calibration.Auto.KA_VOLT_SECONDS_SQUARED_PER_METER);
-    m_leftVelController = new PIDController(Calibration.Auto.KP_DRIVE_VELCOTIY, 0, 0);
-    m_rightVelController = new PIDController(Calibration.Auto.KP_DRIVE_VELCOTIY, 0, 0);
+    m_controller = new RamseteController(constants.b, constants.zeta);
+    m_feedforward = constants.feedforward;
+    m_leftVelController = new PIDController(constants.kP, 0, 0);
+    m_rightVelController = new PIDController(constants.kP, 0, 0);
   }
 
   @Override

@@ -1,6 +1,5 @@
-package com._604robotics.robot2019.auto;
+package com._604robotics.robotnik.prefabs.auto;
 
-import com._604robotics.robot2019.constants.Calibration;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
@@ -13,17 +12,21 @@ public class TrajectoryCreator {
   private DifferentialDriveKinematics m_kinematics;
   private TrajectoryConstraint[] m_constraints;
 
+  private double m_maxSpeed;
+  private double m_maxAcceleration;
+
   public TrajectoryCreator(
-      DifferentialDriveKinematics kinematics, TrajectoryConstraint... constraints) {
+      DifferentialDriveKinematics kinematics,
+      TrackerConstants constants,
+      TrajectoryConstraint... constraints) {
     m_constraints = constraints;
     m_kinematics = kinematics;
+    m_maxSpeed = constants.maxSpeed;
+    m_maxAcceleration = constants.maxAcceleration;
   }
 
   public Trajectory getTrajectory(List<Pose2d> waypoints, boolean reverse) {
-    var config =
-        new TrajectoryConfig(
-            Calibration.Auto.MAX_SPEED_METERS_PER_SECOND,
-            Calibration.Auto.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
+    var config = new TrajectoryConfig(m_maxSpeed, m_maxAcceleration);
     config.setKinematics(m_kinematics);
 
     for (TrajectoryConstraint i : m_constraints) {

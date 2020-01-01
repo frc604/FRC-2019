@@ -25,6 +25,8 @@ class NewExtendablePIDControllerToleranceTest {
   private NewExtendablePIDController m_controller;
 
   private double m_measurement = 0.0;
+
+  @SuppressWarnings("unused")
   private double m_output = 0.0;
 
   @BeforeEach

@@ -6,11 +6,9 @@ import com._604robotics.robotnik.Module;
 import com._604robotics.robotnik.Output;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Tilter extends Module {
   private WPI_TalonSRX tiltMotor;
-  private DigitalInput tiltComplete;
 
   public Output<Boolean> isTilted;
 
@@ -18,7 +16,6 @@ public class Tilter extends Module {
     super(Tilter.class);
 
     tiltMotor = new WPI_TalonSRX(Ports.TILT_MOTOR);
-    // tiltComplete = new DigitalInput(Ports.TILT_SWITCH);
 
     isTilted = addOutput("Tilted", () -> tilt.isRunning());
 
