@@ -40,62 +40,10 @@ public class Calibration {
 
   /* Arm Calibration */
   @Unreal("Values must be updated when robot is designed")
-  public static final class Arm {
-    public static final double CLICKS_FULL_ROTATION =
-        10240; // One rotation of the encoder in clicks
-
-    public static final double LOW_SETPOINT = 4116; // Ready to intake from front
-    public static final double STOW_SETPOINT = 0 - 3; // Starting position
-    public static final double OUTPUT_SETPOINT = 1182; // Output from front TODO: be higher
-    public static final double ROCKET_SETPOINT = 2606;
-    public static final double VERTICAL_POSITION = 440; // The arm is straight up
-    public static final double HORIZONTAL_POSITION =
-        1700; // The arm is horizontally backwards NOTE: Did not modify with HARDSTOP b.c. it works
-    // still
-    public static final double BACK_ROCKET_SETPOINT = -985;
-    public static final double BACK_CARGO_SETPOINT = -377;
-
-    public static final double HARDSTOP_CLOSE_POSITION = -25;
-    // HORIZONTAL_POSITION = Arm balance point - (CLICKS_FULL_ROTATION / 4)
-
-    public static final double MIN_ENCODER_VAL = 0; // The lowest value the encoder can have
-    public static final double MAX_ENCODER_VAL = 0; // The largest value the encoder can have
-
-    public static final double kP = 0.0004;
-    public static final double kI = 0;
-    public static final double kD = 0.00025 * 0.02; // Multiplying by 0.02 to time parameterize it.
-    public static final double kF = -0.709;
-    // -0.05
-
-    public static final double SCALE_JOYSTICK = 0.6; // Multiply the input joystick by this
+  public static final class Flywheel {
+    public static final double kP = 0.055;
+    public static final double kD = 0;
   }
-
-  public static final class Drive {
-    public static final boolean GYRO_REVERSED = false;
-    public static final double TRACK_WIDTH = 0.5969;
-    public static final double WHEEL_DIAMETER = 0.127;
-    public static final double ENCODER_CPR = 245;
-    public static final double DISTANCE_PER_CLICK =
-        (WHEEL_DIAMETER * Math.PI) / (double) ENCODER_CPR;
-  }
-
-  public static class Auto {
-    public static final double RAMSETE_B = 2.0;
-    public static final double RAMSETE_ZETA = 0.7;
-    public static final double KS_VOLTS = 0.933;
-    public static final double KV_VOLT_SECONDS_PER_METER = 2.58;
-    public static final double KA_VOLT_SECONDS_SQUARED_PER_METER = 0.586;
-    public static final double KP_DRIVE_VELCOTIY = 1.5;
-
-    public static final double MAX_SPEED_METERS_PER_SECOND = 10; // 10
-    public static final double MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 2; // 1.5
-    public static final double MAX_CENTRIPETAL_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2; // 1.5
-  }
-
-  public static final double HATCH_PUSH_TIME = 0.5;
-  public static final double HATCH_BACK_TIME = 0.5;
-  public static final double HATCH_PULL_TIME = 0.5;
-  public static final double HATCH_RELEASE_TIME = 0.5;
 
   /* Marionette */
   public static final boolean AUTO_APPEND_TIMESTAMP = true;

@@ -3,8 +3,10 @@ package com._604robotics.robotnik.prefabs.devices;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class TalonPWMEncoder implements Encoder {
-  // Use TalonSRX because WPI_TalonSRX extends this
-  private final TalonSRX talon;
+  // Use m_talonSRX because WPI_m_talonSRX extends this
+  private final TalonSRX m_talon;
+
+  private double m_distancePerClick = 1;
 
   public enum EncoderType {
     ABSOLUTE,
@@ -15,12 +17,12 @@ public class TalonPWMEncoder implements Encoder {
   private boolean inverted;
   private double offset = 0;
 
-  public TalonPWMEncoder(TalonSRX talon) {
-    this(talon, EncoderType.RELATIVE);
+  public TalonPWMEncoder(TalonSRX m_talon) {
+    this(m_talon, EncoderType.RELATIVE);
   }
 
   public TalonPWMEncoder(TalonSRX talon, EncoderType type) {
-    this.talon = talon;
+    this.m_talon = talon;
     this.encoderType = type;
     this.inverted = false;
   }
@@ -38,13 +40,21 @@ public class TalonPWMEncoder implements Encoder {
     return getPosition();
   }
 
+  public void setDistancePerClick(double distancePerClick) {
+    m_distancePerClick = distancePerClick;
+  }
+
+  public double getDistancePerClick() {
+    return m_distancePerClick;
+  }
+
   // Use quadrature output for relative and pulse width output for absolute
   public double getPosition() {
     int multfactor = inverted ? -1 : 1;
     if (encoderType == EncoderType.ABSOLUTE) {
-      return multfactor * (talon.getSensorCollection().getPulseWidthPosition() - offset);
+      return multfactor * (getPWMPos() - offset);
     } else {
-      return multfactor * talon.getSensorCollection().getQuadraturePosition();
+      return multfactor * getQuadraturePos();
     }
   }
 
@@ -52,22 +62,22 @@ public class TalonPWMEncoder implements Encoder {
   public double getVelocity() {
     int multfactor = inverted ? -1 : 1;
     if (encoderType == EncoderType.ABSOLUTE) {
-      return multfactor * talon.getSensorCollection().getPulseWidthVelocity();
+      return multfactor * getPWMVel();
     } else {
-      return multfactor * talon.getSensorCollection().getQuadratureVelocity();
+      return multfactor * getQuadratureVel();
     }
   }
 
   public void zero() {
     if (encoderType == EncoderType.ABSOLUTE) {
-      offset = (talon.getSensorCollection().getPulseWidthPosition());
+      offset = (getPWMPos());
     }
   }
 
   public void zero(double value) {
     if (encoderType == EncoderType.ABSOLUTE) {
       int multfactor = inverted ? -1 : 1;
-      offset = talon.getSensorCollection().getPulseWidthPosition() - (multfactor * value);
+      offset = getPWMPos() - (multfactor * value);
     }
   }
 
@@ -77,5 +87,23 @@ public class TalonPWMEncoder implements Encoder {
     } else {
       return 0;
     }
+  }
+
+  private double getPWMPos() {
+    return m_talon.getSensorCollection().getPulseWidthPosition() * m_distancePerClick;
+  }
+
+  private double getQuadraturePos() {
+    return m_talon.getSensorCollection().getQuadraturePosition() * m_distancePerClick;
+  }
+
+  private double getPWMVel() {
+    // Velocity is over 100ms(0.1s) so multiply by 10 to get seconds.
+    return m_talon.getSensorCollection().getPulseWidthVelocity() * 10 * m_distancePerClick;
+  }
+
+  private double getQuadratureVel() {
+    // Velocity is over 100ms(0.1s) so multiply by 10 to get seconds.
+    return m_talon.getSensorCollection().getQuadratureVelocity() * 10 * m_distancePerClick;
   }
 }
