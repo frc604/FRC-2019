@@ -9,6 +9,7 @@ import com._604robotics.robot2019.modules.Flywheel;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
 import com._604robotics.robotnik.prefabs.inputcontroller.xbox.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.IOException;
 
 public class TeleopMode extends Coordinator {
@@ -240,17 +241,19 @@ public class TeleopMode extends Coordinator {
 
     public void run() {
 
+      SmartDashboard.putNumber("Encoder SPEEEED", flywheel.flywheelEncoderRate.get());
+
       if (driverA) {
-        flywheel.setpoint.setpoint.set(5.0);
-        flywheel.setpoint.activate();
-      } else if (driverB) {
-        flywheel.setpoint.setpoint.set(10.0);
-        flywheel.setpoint.activate();
-      } else if (driverX) {
         flywheel.setpoint.setpoint.set(20.0);
         flywheel.setpoint.activate();
+      } else if (driverB) {
+        flywheel.setpoint.setpoint.set(100.0);
+        flywheel.setpoint.activate();
+      } else if (driverX) {
+        flywheel.setpoint.setpoint.set(200.0);
+        flywheel.setpoint.activate();
       } else if (driverY) {
-        flywheel.setpoint.setpoint.set(30.0);
+        flywheel.setpoint.setpoint.set(500.0);
         flywheel.setpoint.activate();
       } else {
         flywheel.stop.activate();

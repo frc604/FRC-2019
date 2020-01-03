@@ -45,15 +45,16 @@ public class Flywheel extends Module {
     flywheelEncoder = new TalonPWMEncoder(flywheelMotor);
     flywheelEncoder.setInverted(true);
 
-    flywheelEncoder.setDistancePerClick(0.1016 * Math.PI / 4096);
+    flywheelEncoder.setDistancePerClick(2 * Math.PI / 4096);
 
     flywheelEncoder.zero();
 
     flywheelEncoderClicks =
         addOutput("Flywheel Encoder Clicks", () -> flywheelEncoder.getPosition());
-    flywheelEncoderClicks = addOutput("Flywheel Encoder Rate", () -> flywheelEncoder.getVelocity());
+    flywheelEncoderRate = addOutput("Flywheel Encoder Rate", () -> flywheelEncoder.getVelocity());
 
-    final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0, 0, 0);
+    final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.592, 0.0313, 0.00065);
+    // final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0, 0, 0);
 
     this.pid =
         new FlyWheelPDController(

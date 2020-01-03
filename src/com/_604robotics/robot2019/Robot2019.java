@@ -1,6 +1,5 @@
 package com._604robotics.robot2019;
 
-import com._604robotics.robot2019.constants.Ports;
 import com._604robotics.robot2019.modes.*;
 import com._604robotics.robot2019.modules.*;
 import com._604robotics.robot2019.modules.Flywheel;
@@ -18,9 +17,6 @@ public class Robot2019 extends Robot {
   public final Dashboard dashboard = addModule(new Dashboard());
   public final DashboardSystem dashboardSystem =
       addSystem(DashboardSystem.class, new DashboardSystem(this));
-  public final PowerMonitor powermonitor =
-      addModule(new PowerMonitor(Ports.PDP_MODULE, Ports.COMPRESSOR));
-
   public final Flywheel flywheel = addModule(new Flywheel());
 
   public final TeleopMode teleopMode = setTeleopMode(new TeleopMode(this));

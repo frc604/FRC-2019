@@ -41,7 +41,7 @@ public class Calibration {
   /* Arm Calibration */
   @Unreal("Values must be updated when robot is designed")
   public static final class Flywheel {
-    public static final double kP = 0.055;
+    public static final double kP = 0;
     public static final double kD = 0;
   }
 
