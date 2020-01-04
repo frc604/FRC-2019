@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.zip.InflaterInputStream;
 
+@Deprecated
 public abstract class Robot_Old extends RobotBase {
   public static double DEFAULT_REPORT_INTERVAL = 5;
   private volatile boolean m_exit;

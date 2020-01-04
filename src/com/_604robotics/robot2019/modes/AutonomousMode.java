@@ -7,12 +7,12 @@ import static com._604robotics.robot2019.constants.Calibration.Auto.MAX_CENTRIPE
 import static com._604robotics.robot2019.constants.Calibration.Auto.MAX_SPEED_METERS_PER_SECOND;
 
 import com._604robotics.robot2019.Robot2019;
+import com._604robotics.robot2019.auto.TrajectoryTracker;
 import com._604robotics.robot2019.constants.Calibration;
 import com._604robotics.robot2019.macros.ArcadeTimedDriveMacro;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
 import com._604robotics.robotnik.prefabs.auto.TrajectoryCreator;
-import com._604robotics.robotnik.prefabs.auto.TrajectoryTracker;
 import com._604robotics.robotnik.prefabs.coordinators.SleepCoordinator;
 import com._604robotics.robotnik.prefabs.coordinators.StatefulCoordinator;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;

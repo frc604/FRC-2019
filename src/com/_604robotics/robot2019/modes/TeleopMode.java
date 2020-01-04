@@ -8,13 +8,13 @@ import com._604robotics.robot2019.constants.Calibration;
 import com._604robotics.robot2019.modules.Arm;
 import com._604robotics.robot2019.modules.Drive;
 import com._604robotics.robot2019.modules.Intake;
+import com._604robotics.robot2019.modules.Limelight;
 import com._604robotics.robotnik.Coordinator;
 import com._604robotics.robotnik.Logger;
 import com._604robotics.robotnik.prefabs.controller.NewExtendablePIDController;
 import com._604robotics.robotnik.prefabs.flow.SmartTimer;
 import com._604robotics.robotnik.prefabs.flow.Toggle;
 import com._604robotics.robotnik.prefabs.inputcontroller.xbox.XboxController;
-import com._604robotics.robotnik.prefabs.modules.Limelight;
 import java.io.IOException;
 
 public class TeleopMode extends Coordinator {

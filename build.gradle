@@ -33,6 +33,8 @@ sourceSets {
     main {
         java {
             srcDirs = ["src"]
+            exclude 'src/com/_604robotics/robotnik/Robot_Old.java'
+            exclude 'src/com/_604robotics/robotnik/prefabs/controller/BangBangController.java'
         }
     }
 

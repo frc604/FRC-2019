@@ -3,7 +3,6 @@ package com._604robotics.robot2019.modules;
 import com._604robotics.robotnik.Input;
 import com._604robotics.robotnik.Output;
 import com._604robotics.robotnik.prefabs.modules.DashboardModule;
-import com._604robotics.robotnik.prefabs.modules.Limelight;
 
 public class Dashboard extends DashboardModule {
   public final Input<Integer> leftDriveClicks = addDashboardInput("leftDriveClicks", 0);

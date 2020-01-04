@@ -1,7 +1,8 @@
-package com._604robotics.robotnik.prefabs.auto;
+package com._604robotics.robot2019.auto;
 
 import com._604robotics.robot2019.modules.Drive;
 import com._604robotics.robotnik.Coordinator;
+import com._604robotics.robotnik.prefabs.auto.TrackerConstants;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
