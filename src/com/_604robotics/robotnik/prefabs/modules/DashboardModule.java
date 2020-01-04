@@ -19,6 +19,7 @@ public class DashboardModule extends Module {
     ENUM
   }
 
+  @SuppressWarnings("rawtypes")
   private final List<Pair<Input, InputType>> inputs = new ArrayList<>();
 
   protected Input<Boolean> addDashboardInput(String name, boolean initialValue) {
@@ -96,6 +97,7 @@ public class DashboardModule extends Module {
   }
 
   @Override
+  @SuppressWarnings("rawtypes")
   protected void run() {
     for (Pair<Input, InputType> input : inputs) {
       if (input.getKey().isFresh()) {

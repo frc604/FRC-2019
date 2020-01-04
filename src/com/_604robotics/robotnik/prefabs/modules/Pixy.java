@@ -176,6 +176,7 @@ public class Pixy extends Module {
     public int checksumError;
   }
 
+  @SuppressWarnings("serial")
   public static class PixyException extends Exception {
 
     public PixyException(String message) {
