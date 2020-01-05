@@ -19,7 +19,7 @@ public class ParallelCoordinator extends Coordinator {
   }
 
   public ParallelCoordinator(String name, Coordinator... coordinators) {
-    logger = new Logger(StatefulCoordinator.class, name);
+    logger = new Logger(ParallelCoordinator.class, name);
   }
 
   public ParallelCoordinator(Class<?> klass, Coordinator... coordinators) {

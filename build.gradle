@@ -4,7 +4,7 @@ plugins {
     id "eclipse"
     id "idea"
     id "com.diffplug.gradle.spotless" version "3.26.1"
-    id "edu.wpi.first.GradleRIO" version "2020.1.1-beta-4"
+    id "edu.wpi.first.GradleRIO" version "2020.1.2"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -35,6 +35,7 @@ sourceSets {
             srcDirs = ["src"]
             exclude 'src/com/_604robotics/robotnik/Robot_Old.java'
             exclude 'src/com/_604robotics/robotnik/prefabs/controller/BangBangController.java'
+            exclude 'src/com/_604robotics/robotnik/prefabs/controller/ExtendablePIDController.java'
         }
     }
 
